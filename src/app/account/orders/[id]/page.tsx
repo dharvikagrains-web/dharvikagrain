@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
@@ -15,29 +15,72 @@ import {
   MapPin,
   ExternalLink,
   ShieldCheck,
+  RefreshCw,
 } from 'lucide-react';
 
 const trackingStages = [
   { key: 'Order Placed', label: 'Order Placed', desc: 'Received and verified in system' },
-  { key: 'Payment Confirmed', label: 'Payment Confirmed', desc: 'Secure payment cleared via UPI' },
-  { key: 'Order Processing', label: 'Order Processing', desc: 'Stone-picked & destoned fresh' },
-  { key: 'Packed', label: 'Packed', desc: 'Sealed in moisture-barrier aroma pouches' },
-  { key: 'Shipped', label: 'Shipped', desc: 'Handed over to courier partner' },
-  { key: 'Out for Delivery', label: 'Out for Delivery', desc: 'Courier executive assigned' },
-  { key: 'Delivered', label: 'Delivered', desc: 'Delivered to your doorstep' },
+  { key: 'Payment Confirmed', label: 'Payment Confirmed', desc: 'Secure payment cleared via UPI / Gateway' },
+  { key: 'PROCESSING', label: 'Order Processing', desc: 'Stone-picked & destoned fresh' },
+  { key: 'PACKED', label: 'Packed', desc: 'Sealed in moisture-barrier aroma pouches' },
+  { key: 'SHIPPED', label: 'Shipped', desc: 'Handed over to courier partner' },
+  { key: 'OUT_FOR_DELIVERY', label: 'Out for Delivery', desc: 'Courier executive assigned' },
+  { key: 'DELIVERED', label: 'Delivered', desc: 'Delivered to your doorstep' },
 ];
 
 export default function OrderTrackingPage() {
   const params = useParams();
-  const orderId = (params.id as string) || 'DG10248';
+  const rawId = (params.id as string) || 'DG10248';
+  const orderId = decodeURIComponent(rawId);
 
-  const order =
-    mockOrdersList.find((o) => o.orderId.toLowerCase() === orderId.toLowerCase()) ||
-    mockOrdersList[0];
+  const [order, setOrder] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Determine which step index the order is currently at
-  const currentStageIndex = trackingStages.findIndex((s) => s.key === order.status);
-  const activeIndex = currentStageIndex !== -1 ? currentStageIndex : 5; // default to Out for Delivery
+  useEffect(() => {
+    async function loadOrder() {
+      try {
+        const res = await fetch(`/api/orders/${encodeURIComponent(orderId)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.order) {
+            setOrder(data.order);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching order', err);
+      }
+
+      // Fallback to mock order if in local preview
+      const fallback =
+        mockOrdersList.find((o) => o.orderId.toLowerCase() === orderId.toLowerCase()) ||
+        mockOrdersList[0];
+      setOrder(fallback);
+      setLoading(false);
+    }
+
+    loadOrder();
+  }, [orderId]);
+
+  if (loading || !order) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center bg-[#FAF7F2]">
+        <RefreshCw className="w-8 h-8 animate-spin text-[#0D3522]" />
+      </div>
+    );
+  }
+
+  // Calculate timeline index
+  const normalizedStatus = (order.status || 'PROCESSING').toUpperCase();
+  let activeIndex = 2; // default processing
+  if (normalizedStatus.includes('DELIVERED')) activeIndex = 6;
+  else if (normalizedStatus.includes('OUT_FOR_DELIVERY')) activeIndex = 5;
+  else if (normalizedStatus.includes('SHIPPED')) activeIndex = 4;
+  else if (normalizedStatus.includes('PACKED')) activeIndex = 3;
+  else if (normalizedStatus.includes('PROCESSING') || normalizedStatus.includes('PAID')) activeIndex = 2;
+  else if (normalizedStatus.includes('PAYMENT_CONFIRMED')) activeIndex = 1;
+  else if (normalizedStatus.includes('PLACED') || normalizedStatus.includes('PENDING')) activeIndex = 0;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-8">
@@ -54,10 +97,11 @@ export default function OrderTrackingPage() {
             Shipment Status
           </span>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#0D3522] mt-0.5">
-            ORDER #{order.orderId}
+            ORDER #{order.orderNumber || order.orderId}
           </h1>
           <p className="text-xs text-[#6B5B52] mt-1">
-            Placed on {order.date} • Estimated Delivery: <strong className="text-[#241611]">{order.estimatedDelivery || '24–27 September 2026'}</strong>
+            Status: <strong className="text-[#0D3522]">{order.status}</strong> • Estimated Delivery:{' '}
+            <strong className="text-[#241611]">{order.estimatedDelivery || '24–27 September 2026'}</strong>
           </p>
         </div>
 
@@ -65,7 +109,7 @@ export default function OrderTrackingPage() {
           <p className="text-[10px] uppercase tracking-wider text-[#6B5B52] font-semibold">Delivery Partner</p>
           <p className="text-sm font-bold text-[#0D3522]">{order.courierPartner || 'BlueDart Express'}</p>
           <p className="text-[11px] text-[#241611] mt-0.5 font-mono">
-            AWB: {order.trackingId || 'BD-IN-88392019'}
+            AWB: {order.trackingId || order.awbNumber || 'BD-IN-88392019'}
           </p>
         </div>
       </div>
@@ -126,10 +170,10 @@ export default function OrderTrackingPage() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         <div className="md:col-span-7 bg-white border border-[#E7DED4] p-6 space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-wider text-[#241611] pb-2 border-b border-[#E7DED4]">
-            Package Contents ({order.items.length})
+            Package Contents ({order.items?.length || 0})
           </h3>
           <div className="divide-y divide-[#E7DED4]">
-            {order.items.map((item, idx) => (
+            {order.items?.map((item: any, idx: number) => (
               <div key={idx} className="py-3 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
                 <div className="flex items-center space-x-3">
                   <div className="relative w-12 h-12 bg-[#FAF7F2] border border-[#E7DED4] overflow-hidden flex-shrink-0">
@@ -157,6 +201,12 @@ export default function OrderTrackingPage() {
               <span>Subtotal</span>
               <span>₹{order.subtotal}</span>
             </div>
+            {order.discount > 0 && (
+              <div className="flex justify-between text-[#0D3522] font-semibold">
+                <span>Coupon Savings</span>
+                <span>-₹{order.discount}</span>
+              </div>
+            )}
             <div className="flex justify-between">
               <span>Delivery</span>
               <span className="text-[#0D3522] font-semibold">{order.shippingFee === 0 ? 'FREE' : `₹${order.shippingFee}`}</span>
@@ -175,10 +225,10 @@ export default function OrderTrackingPage() {
               <span>Delivery Address</span>
             </h3>
             <div className="text-xs text-[#6B5B52] space-y-1">
-              <p className="font-bold text-[#241611]">{order.shippingAddress.fullName || order.customerName}</p>
-              <p>{order.shippingAddress.street}</p>
-              {order.shippingAddress.apartment && <p>{order.shippingAddress.apartment}</p>}
-              <p>{order.shippingAddress.city}, {order.shippingAddress.state} — {order.shippingAddress.pincode}</p>
+              <p className="font-bold text-[#241611]">{order.shippingAddress?.fullName || order.customerName}</p>
+              <p>{order.shippingAddress?.houseFlat || order.shippingAddress?.street}</p>
+              {order.shippingAddress?.streetArea && <p>{order.shippingAddress?.streetArea}</p>}
+              <p>{order.shippingAddress?.city}, {order.shippingAddress?.state} — {order.shippingAddress?.pincode}</p>
               <p className="pt-1 text-[#241611]">Contact: {order.mobile}</p>
             </div>
           </div>

@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { brandConfig } from '@/data/brandConfig';
 import { mockOrdersList } from '@/data/orders';
 import { useWishlist } from '@/context/WishlistContext';
@@ -21,14 +22,65 @@ import {
 } from 'lucide-react';
 
 export default function AccountHubPage() {
+  const router = useRouter();
   const { wishlist } = useWishlist();
+  const [userName, setUserName] = useState('Pavan');
   const [fullName, setFullName] = useState('Pavan Geesala');
   const [mobile, setMobile] = useState('+91 98765 43210');
-  const [email, setEmail] = useState('pavan@example.com');
+  const [email, setEmail] = useState('pavangeesala81@gmail.com');
   const [dietary, setDietary] = useState('Gluten-Free & High Fiber');
   const [savedSuccess, setSavedSuccess] = useState(false);
 
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.authenticated && data.user) {
+            setUserName(data.user.fullName.split(' ')[0]);
+            setFullName(data.user.fullName);
+            setEmail(data.user.email);
+            setMobile(data.user.mobile || '+91 98765 43210');
+            return;
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('dharvika_user');
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            if (parsed.name) {
+              setUserName(parsed.name.split(' ')[0]);
+              setFullName(parsed.name);
+            }
+            if (parsed.email) setEmail(parsed.email);
+            if (parsed.mobile) setMobile(parsed.mobile);
+          } catch {}
+        }
+      }
+    }
+
+    checkAuth();
+  }, []);
+
   const activeOrder = mockOrdersList[0];
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {}
+
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('dharvika_user');
+      sessionStorage.removeItem('auth_identifier');
+    }
+    router.push('/signin');
+  };
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +104,7 @@ export default function AccountHubPage() {
       badge: `${wishlist.length} Items`,
     },
     {
-      title: 'Addresses',
+      title: 'Saved Addresses',
       icon: MapPin,
       href: '/account/addresses',
       desc: 'Manage Home & Work delivery addresses',
@@ -71,6 +123,13 @@ export default function AccountHubPage() {
       href: '/account/reviews',
       desc: 'Verified purchase ratings and feedback',
       badge: '3 Published',
+    },
+    {
+      title: 'Profile Settings',
+      icon: User,
+      href: '/account/profile',
+      desc: 'Update full name, verified email & phone',
+      badge: 'Verified',
     },
   ];
 
@@ -93,7 +152,7 @@ export default function AccountHubPage() {
               Customer Account
             </span>
             <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#0D3522]">
-              Hello, Pavan 👋
+              Hello, {userName} 👋
             </h1>
             <p className="text-xs text-[#6B5B52] mt-0.5">
               Welcome back to your DHARVIKA GRAINS personal pantry portal.
@@ -108,13 +167,14 @@ export default function AccountHubPage() {
           >
             Shop Catalogue
           </Link>
-          <Link
-            href="/login"
-            className="px-4 py-2.5 border border-[#E7DED4] hover:border-[#B35638] text-[#6B5B52] hover:text-[#B35638] text-xs uppercase tracking-widest font-semibold transition-colors flex items-center space-x-1.5"
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="px-4 py-2.5 border border-[#E7DED4] hover:border-[#B35638] text-[#6B5B52] hover:text-[#B35638] text-xs uppercase tracking-widest font-semibold transition-colors flex items-center space-x-1.5 cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Logout</span>
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -187,13 +247,22 @@ export default function AccountHubPage() {
         })}
       </div>
 
-      {/* Profile Details Card */}
+      {/* Quick Profile Summary Card */}
       <div className="bg-white border border-[#E7DED4] p-6 sm:p-8 space-y-6 shadow-xs">
-        <div className="flex items-center space-x-2 pb-3 border-b border-[#E7DED4]">
-          <User className="w-5 h-5 text-[#C5A059]" />
-          <h2 className="text-lg font-serif font-bold text-[#0D3522] uppercase tracking-wider">
-            Personal Information & Preferences
-          </h2>
+        <div className="flex items-center justify-between pb-3 border-b border-[#E7DED4]">
+          <div className="flex items-center space-x-2">
+            <User className="w-5 h-5 text-[#C5A059]" />
+            <h2 className="text-lg font-serif font-bold text-[#0D3522] uppercase tracking-wider">
+              Personal Information & Preferences
+            </h2>
+          </div>
+          <Link
+            href="/account/profile"
+            className="text-xs text-[#0D3522] font-semibold hover:underline flex items-center space-x-1"
+          >
+            <span>Edit Full Profile</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
 
         {savedSuccess && (

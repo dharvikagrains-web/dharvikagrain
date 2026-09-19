@@ -1,15 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { initialAddresses } from '@/data/addresses';
 import { SavedAddress } from '@/types';
-import { MapPin, Plus, Trash2, Edit2, Check, ArrowLeft, Home, Briefcase } from 'lucide-react';
+import { MapPin, Plus, Trash2, Edit2, Check, ArrowLeft, Home, Briefcase, RefreshCw, AlertCircle } from 'lucide-react';
 
 export default function AddressesPage() {
   const [addresses, setAddresses] = useState<SavedAddress[]>(initialAddresses);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Form state
   const [fullName, setFullName] = useState('');
@@ -22,6 +25,25 @@ export default function AddressesPage() {
   const [state, setState] = useState('');
   const [type, setType] = useState<'Home' | 'Work'>('Home');
 
+  useEffect(() => {
+    async function fetchAddresses() {
+      try {
+        const res = await fetch('/api/account/addresses');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.addresses && data.addresses.length > 0) {
+            setAddresses(data.addresses);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAddresses();
+  }, []);
+
   const openAddModal = () => {
     setEditingId(null);
     setFullName('Pavan Geesala');
@@ -33,6 +55,7 @@ export default function AddressesPage() {
     setCity('Hyderabad');
     setState('Telangana');
     setType('Home');
+    setErrorMsg(null);
     setIsModalOpen(true);
   };
 
@@ -47,40 +70,71 @@ export default function AddressesPage() {
     setCity(addr.city);
     setState(addr.state);
     setType(addr.type);
+    setErrorMsg(null);
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    setAddresses((prev) => prev.filter((a) => a.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      await fetch(`/api/account/addresses?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      setAddresses((prev) => prev.filter((a) => a.id !== id));
+    } catch {
+      setAddresses((prev) => prev.filter((a) => a.id !== id));
+    }
   };
 
-  const handleSaveAddress = (e: React.FormEvent) => {
+  const handleSaveAddress = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingId) {
-      setAddresses((prev) =>
-        prev.map((a) =>
-          a.id === editingId
-            ? { ...a, fullName, mobile, pincode, houseFlat, streetArea, landmark, city, state, type }
-            : a
-        )
-      );
-    } else {
-      const newAddress: SavedAddress = {
-        id: `addr-${Date.now()}`,
-        type,
-        fullName,
-        mobile,
-        pincode,
-        houseFlat,
-        streetArea,
-        landmark,
-        city,
-        state,
-        isDefault: addresses.length === 0,
-      };
-      setAddresses((prev) => [...prev, newAddress]);
+    setErrorMsg(null);
+
+    // Validate Indian PIN code (6 digits, non-zero start)
+    const cleanPin = pincode.replace(/\D/g, '');
+    if (!/^[1-9][0-9]{5}$/.test(cleanPin)) {
+      setErrorMsg('Please enter a valid 6-digit Indian Postal PIN code (e.g. 500081).');
+      return;
     }
-    setIsModalOpen(false);
+
+    setSaving(true);
+
+    try {
+      const res = await fetch('/api/account/addresses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingId || undefined,
+          fullName,
+          mobile,
+          pincode: cleanPin,
+          houseFlat,
+          streetArea,
+          landmark,
+          city,
+          state,
+          type,
+        }),
+      });
+
+      const data = await res.json();
+      setSaving(false);
+
+      if (!res.ok || !data.success) {
+        setErrorMsg(data.error || 'Failed to save address.');
+        return;
+      }
+
+      if (editingId) {
+        setAddresses((prev) =>
+          prev.map((a) => (a.id === editingId ? data.address : a))
+        );
+      } else {
+        setAddresses((prev) => [data.address, ...prev]);
+      }
+
+      setIsModalOpen(false);
+    } catch {
+      setSaving(false);
+      setErrorMsg('Network error saving address.');
+    }
   };
 
   return (
@@ -111,54 +165,59 @@ export default function AddressesPage() {
         </button>
       </div>
 
-      {/* Address Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {addresses.map((addr) => (
-          <div
-            key={addr.id}
-            className="bg-white border border-[#E7DED4] p-6 space-y-4 relative group hover:border-[#C5A059] transition-all"
-          >
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center space-x-1 px-2.5 py-1 bg-[#FAF7F2] border border-[#E7DED4] text-[10px] uppercase tracking-wider font-bold text-[#0D3522]">
-                {addr.type === 'Home' ? <Home className="w-3 h-3" /> : <Briefcase className="w-3 h-3" />}
-                <span>{addr.type}</span>
-              </span>
-              {addr.isDefault && (
-                <span className="text-[10px] text-[#C5A059] font-bold uppercase tracking-wider">
-                  Default Delivery Address
+      {loading ? (
+        <div className="py-12 flex justify-center">
+          <RefreshCw className="w-6 h-6 animate-spin text-[#0D3522]" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {addresses.map((addr) => (
+            <div
+              key={addr.id}
+              className="bg-white border border-[#E7DED4] p-6 space-y-4 relative group hover:border-[#C5A059] transition-all"
+            >
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center space-x-1 px-2.5 py-1 bg-[#FAF7F2] border border-[#E7DED4] text-[10px] uppercase tracking-wider font-bold text-[#0D3522]">
+                  {addr.type === 'Home' ? <Home className="w-3 h-3" /> : <Briefcase className="w-3 h-3" />}
+                  <span>{addr.type}</span>
                 </span>
-              )}
-            </div>
+                {addr.isDefault && (
+                  <span className="text-[10px] text-[#C5A059] font-bold uppercase tracking-wider">
+                    Default Delivery Address
+                  </span>
+                )}
+              </div>
 
-            <div className="space-y-1 text-xs text-[#6B5B52]">
-              <p className="font-bold text-sm text-[#241611]">{addr.fullName}</p>
-              <p>{addr.houseFlat}, {addr.streetArea}</p>
-              {addr.landmark && <p className="text-[11px] text-[#8C7A70]">Landmark: {addr.landmark}</p>}
-              <p>{addr.city}, {addr.state} — <strong className="text-[#241611]">{addr.pincode}</strong></p>
-              <p className="pt-1 text-[#241611]">Phone: {addr.mobile}</p>
-            </div>
+              <div className="space-y-1 text-xs text-[#6B5B52]">
+                <p className="font-bold text-sm text-[#241611]">{addr.fullName}</p>
+                <p>{addr.houseFlat}, {addr.streetArea}</p>
+                {addr.landmark && <p className="text-[11px] text-[#8C7A70]">Landmark: {addr.landmark}</p>}
+                <p>{addr.city}, {addr.state} — <strong className="text-[#241611]">{addr.pincode}</strong></p>
+                <p className="pt-1 text-[#241611]">Phone: {addr.mobile}</p>
+              </div>
 
-            <div className="pt-4 border-t border-[#E7DED4] flex items-center space-x-4 text-xs">
-              <button
-                type="button"
-                onClick={() => openEditModal(addr)}
-                className="text-[#0D3522] font-semibold hover:underline flex items-center space-x-1"
-              >
-                <Edit2 className="w-3.5 h-3.5" />
-                <span>Edit</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDelete(addr.id)}
-                className="text-[#8C7A70] hover:text-[#B35638] flex items-center space-x-1"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Delete</span>
-              </button>
+              <div className="pt-4 border-t border-[#E7DED4] flex items-center space-x-4 text-xs">
+                <button
+                  type="button"
+                  onClick={() => openEditModal(addr)}
+                  className="text-[#0D3522] font-semibold hover:underline flex items-center space-x-1"
+                >
+                  <Edit2 className="w-3.5 h-3.5" />
+                  <span>Edit</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(addr.id)}
+                  className="text-[#8C7A70] hover:text-[#B35638] flex items-center space-x-1"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete</span>
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Add / Edit Address Modal */}
       {isModalOpen && (
@@ -167,6 +226,13 @@ export default function AddressesPage() {
             <h2 className="text-xl font-serif font-bold text-[#0D3522] pb-3 border-b border-[#E7DED4]">
               {editingId ? 'Edit Address' : 'Add New Address'}
             </h2>
+
+            {errorMsg && (
+              <div className="p-3 bg-[#FAF0ED] border border-[#B35638]/40 text-[#B35638] text-xs flex items-center space-x-1.5">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
 
             <form onSubmit={handleSaveAddress} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-4">
@@ -223,9 +289,9 @@ export default function AddressesPage() {
                     type="text"
                     required
                     maxLength={6}
-                    placeholder="500032"
+                    placeholder="500081"
                     value={pincode}
-                    onChange={(e) => setPincode(e.target.value)}
+                    onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
                     className="w-full bg-[#FAF7F2] border border-[#E7DED4] p-2.5 focus:border-[#0D3522] focus:outline-none"
                   />
                 </div>
@@ -298,9 +364,11 @@ export default function AddressesPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-[#0D3522] hover:bg-[#134B31] text-white font-semibold uppercase tracking-wider"
+                  disabled={saving}
+                  className="px-6 py-2 bg-[#0D3522] hover:bg-[#134B31] text-white font-semibold uppercase tracking-wider disabled:opacity-60 flex items-center space-x-1.5"
                 >
-                  Save Address
+                  {saving && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                  <span>Save Address</span>
                 </button>
               </div>
             </form>
