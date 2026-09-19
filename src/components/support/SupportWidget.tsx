@@ -45,7 +45,7 @@ export function SupportWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-30">
       {/* Expanded Support Card */}
       {isOpen && (
         <div className="mb-4 w-80 sm:w-96 bg-white border border-[#E7DED4] shadow-2xl rounded-xs overflow-hidden transition-all animate-in fade-in slide-in-from-bottom-5">
