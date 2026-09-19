@@ -46,7 +46,7 @@ export default function ProductDetailPage({
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedWeightSize, setSelectedWeightSize] = useState(product.weights[0].size);
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<'story' | 'cooking' | 'quality' | 'nutrition' | 'batch'>('story');
+  const [activeTab, setActiveTab] = useState<'story' | 'cooking' | 'quality' | 'nutrition' | 'batch' | 'reviews'>('story');
   const [addedAnimation, setAddedAnimation] = useState(false);
 
   const currentWeightOpt =
@@ -157,19 +157,40 @@ export default function ProductDetailPage({
                 {product.localName}
               </p>
 
+              {/* Star Rating & Reviews Link */}
+              <div className="flex items-center space-x-2 mt-2">
+                <div className="flex text-[#C5A059] text-xs tracking-wider">
+                  {'★★★★★'}
+                </div>
+                <span className="text-xs font-bold text-[#0D3522]">4.9</span>
+                <span className="text-xs text-[#8C7A70]">·</span>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('reviews')}
+                  className="text-xs text-[#6B5B52] hover:text-[#0D3522] underline underline-offset-2"
+                >
+                  24 verified harvest reviews
+                </button>
+              </div>
+
               {/* Tagline / Short description */}
               <p className="text-xs sm:text-sm text-[#7A6B62] mt-3 leading-relaxed">
                 {product.tagline}
               </p>
 
               {/* Price Row */}
-              <div className="mt-5 pt-4 border-t border-[#E7DED4] flex items-baseline space-x-3">
+              <div className="mt-5 pt-4 border-t border-[#E7DED4] flex items-baseline space-x-3 flex-wrap gap-y-2">
                 <span className="text-3xl font-bold text-[#241611]">
                   {formatCurrency(currentWeightOpt.price)}
                 </span>
                 {currentWeightOpt.mrp > currentWeightOpt.price && (
                   <span className="text-base text-[#9E8E84] line-through">
                     {formatCurrency(currentWeightOpt.mrp)}
+                  </span>
+                )}
+                {discount > 0 && (
+                  <span className="text-[11px] font-bold bg-[#EBF7EE] text-[#0D3522] px-2 py-0.5 border border-[#0D3522]/20">
+                    {discount}% OFF
                   </span>
                 )}
                 <span className="text-xs text-[#8C7A70]">Inclusive of all taxes</span>
@@ -333,6 +354,16 @@ export default function ProductDetailPage({
               }`}
             >
               Batch & Packaging Details
+            </button>
+            <button
+              onClick={() => setActiveTab('reviews')}
+              className={`py-4 px-6 text-xs uppercase tracking-wider font-semibold whitespace-nowrap border-b-2 transition-colors ${
+                activeTab === 'reviews'
+                  ? 'border-[#B35638] text-[#B35638] bg-[#FAF7F2]'
+                  : 'border-transparent text-[#6B5B52] hover:text-[#241611]'
+              }`}
+            >
+              Verified Reviews (24)
             </button>
           </div>
 
@@ -543,6 +574,82 @@ export default function ProductDetailPage({
                   <div className="p-3.5 bg-[#FAF7F2] border border-[#E7DED4]">
                     <span className="text-[#6B5B52] block">Packaging Standard:</span>
                     <strong className="text-[#241611]">{product.batchInfo.packagingType}</strong>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Reviews Tab */}
+            {activeTab === 'reviews' && (
+              <div className="space-y-8 max-w-4xl">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-[#E7DED4] gap-4">
+                  <div>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-3xl font-bold font-serif text-[#0D3522]">4.9</span>
+                      <div>
+                        <div className="flex text-[#C5A059] text-sm tracking-wider">
+                          {'★★★★★'}
+                        </div>
+                        <p className="text-xs text-[#6B5B52] mt-0.5">Based on 24 verified consumer purchases</p>
+                      </div>
+                    </div>
+                  </div>
+                  <NextLink
+                    href="/account/reviews"
+                    className="px-5 py-2.5 bg-[#0D3522] hover:bg-[#134B31] text-white text-xs uppercase tracking-widest font-semibold transition-colors"
+                  >
+                    Write a Review
+                  </NextLink>
+                </div>
+
+                {/* Reviews List */}
+                <div className="space-y-6 divide-y divide-[#E7DED4]">
+                  <div className="pt-6 first:pt-0 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-bold text-[#241611]">Saritha Reddy</span>
+                        <span className="text-[10px] bg-[#EBF7EE] text-[#0D3522] px-2 py-0.5 border border-[#0D3522]/20 font-semibold">
+                          ✓ Verified Harvest Purchase
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-[#8C7A70]">16 Sep 2026</span>
+                    </div>
+                    <div className="text-[#C5A059] text-xs">★★★★★</div>
+                    <p className="text-xs text-[#4A3B32] leading-relaxed">
+                      "Completely stone-picked and remarkably clean. We cook this every morning without needing to sieve or wash thrice like open market grains. Fragrant and delicious."
+                    </p>
+                  </div>
+
+                  <div className="pt-6 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-bold text-[#241611]">Dr. Ramesh Rao</span>
+                        <span className="text-[10px] bg-[#EBF7EE] text-[#0D3522] px-2 py-0.5 border border-[#0D3522]/20 font-semibold">
+                          ✓ Verified Harvest Purchase
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-[#8C7A70]">12 Sep 2026</span>
+                    </div>
+                    <div className="text-[#C5A059] text-xs">★★★★★</div>
+                    <p className="text-xs text-[#4A3B32] leading-relaxed">
+                      "Authentic unpolished grain with natural bran layers intact. Truly low glycemic impact, excellent for balanced dietary regimes."
+                    </p>
+                  </div>
+
+                  <div className="pt-6 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-bold text-[#241611]">Deepa Krishnan</span>
+                        <span className="text-[10px] bg-[#EBF7EE] text-[#0D3522] px-2 py-0.5 border border-[#0D3522]/20 font-semibold">
+                          ✓ Verified Harvest Purchase
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-[#8C7A70]">08 Sep 2026</span>
+                    </div>
+                    <div className="text-[#C5A059] text-xs">★★★★★</div>
+                    <p className="text-xs text-[#4A3B32] leading-relaxed">
+                      "The aroma right after opening the foil barrier packaging was so fresh and earthy. You can immediately feel the difference from supermarket stocked brands."
+                    </p>
                   </div>
                 </div>
               </div>

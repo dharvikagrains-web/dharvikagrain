@@ -5,6 +5,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 interface WishlistContextType {
   wishlist: string[];
   toggleWishlist: (productId: string) => void;
+  addToWishlist: (productId: string) => void;
+  removeFromWishlist: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
   wishlistCount: number;
 }
@@ -45,6 +47,14 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const addToWishlist = (productId: string) => {
+    setWishlist((prev) => (prev.includes(productId) ? prev : [...prev, productId]));
+  };
+
+  const removeFromWishlist = (productId: string) => {
+    setWishlist((prev) => prev.filter((id) => id !== productId));
+  };
+
   const isInWishlist = (productId: string) => wishlist.includes(productId);
 
   return (
@@ -52,6 +62,8 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       value={{
         wishlist,
         toggleWishlist,
+        addToWishlist,
+        removeFromWishlist,
         isInWishlist,
         wishlistCount: wishlist.length,
       }}

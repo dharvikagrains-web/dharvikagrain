@@ -1,4 +1,4 @@
-export type ProductCategory = 'millets' | 'spices' | 'signature';
+export type ProductCategory = 'millets' | 'spices' | 'masalas' | 'combos' | 'signature';
 
 export interface ProductWeightOption {
   size: string; // e.g. "500g", "1kg", "250g"
@@ -36,19 +36,22 @@ export interface Product {
   images: string[];
   weights: ProductWeightOption[];
   ingredients: string[];
-  origin: string; // Origin / Sourcing location (explicit, honest or marked placeholder)
+  origin: string; // Origin / Sourcing location
   processing: string; // Processing description
   cookingInstructions: string[];
   culinaryUses: string[];
   storage: string;
   nutrition: ProductNutrition;
-  certificationsPlaceholder: string; // e.g., "[ADD ORGANIC / NPOP CERTIFICATION WHEN CERTIFIED]"
+  certificationsPlaceholder: string;
   batchInfo: BatchInfo;
-  labTestPlaceholder: string; // e.g., "[ADD INDEPENDENT LAB PURITY REPORT]"
+  labTestPlaceholder: string;
   bestseller?: boolean;
   featured?: boolean;
   rating?: number | null; // null if unrated, avoids fake ratings
   reviewCount?: number;
+  sku?: string;
+  stockQuantity?: number;
+  dietaryPreferences?: string[]; // 'Gluten-Free', 'Low GI', 'High Fiber', 'Cold-Ground', 'Single-Origin'
   spiceProfile?: {
     aroma: string;
     heatLevel?: string;
@@ -135,14 +138,132 @@ export interface FAQItem {
   category: 'Sourcing & Quality' | 'Millets & Preparation' | 'Spices & Storage' | 'Shipping & Orders';
 }
 
+export interface SavedAddress {
+  id: string;
+  type: 'Home' | 'Work';
+  isDefault?: boolean;
+  fullName: string;
+  mobile: string;
+  pincode: string;
+  houseFlat: string;
+  streetArea: string;
+  landmark?: string;
+  city: string;
+  state: string;
+}
+
+export interface Coupon {
+  id?: string;
+  code: string;
+  discountPercent?: number;
+  discountAmount?: number;
+  minOrderValue: number;
+  minOrderAmount?: number;
+  description: string;
+  expiryDate?: string;
+  expiresAt?: string;
+  usageCount?: number;
+  isActive?: boolean;
+}
+
+export interface ProductReview {
+  id: string;
+  productId: string;
+  productName: string;
+  customerName: string;
+  rating: number;
+  date: string;
+  verifiedPurchase: boolean;
+  comment: string;
+  images?: string[];
+}
+
+export interface BatchRecord {
+  batchNumber: string;
+  batchId?: string;
+  productId: string;
+  productName: string;
+  cropName?: string;
+  harvestDate: string;
+  sourceRegion: string;
+  farmerCluster?: string;
+  processingDate: string;
+  millingDate?: string;
+  qualityCheckStatus: 'Passed' | 'Pending' | 'Flagged';
+  qualityPassed?: boolean;
+  packagingDate: string;
+  bestBefore: string;
+  moisturePercent: string;
+  moisturePercentage?: number;
+  totalQuantityKg?: number;
+  purityPercent: string;
+  labReportUrl?: string;
+}
+
+export interface InventoryItem {
+  id: string;
+  sku: string;
+  productName: string;
+  variant: string;
+  stock: number;
+  threshold: number;
+  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
+  batchNumber: string;
+  sellingPrice: number;
+}
+
+export interface ShipmentRecord {
+  id?: string;
+  orderId: string;
+  customerName?: string;
+  trackingId?: string;
+  awbNumber?: string;
+  courierPartner: string;
+  destinationCity?: string;
+  dispatchDate?: string;
+  status: 'Ready to Ship' | 'Shipped' | 'In Transit' | 'Out for Delivery' | 'Delivered';
+  labelGenerated?: boolean;
+  estimatedDelivery: string;
+}
+
+export interface ReturnRequest {
+  id: string;
+  orderId: string;
+  customerName: string;
+  productName: string;
+  reason: string;
+  status: 'Pending Review' | 'Approved' | 'Rejected' | 'Refund Processed';
+  refundAmount: number;
+  refundMethod: string;
+  requestedAt: string;
+}
+
+export interface AdminMetrics {
+  todaySales: number;
+  todayOrders: number;
+  totalCustomers: number;
+  activeProducts: number;
+  pendingOrders: number;
+  revenueLakhs: number;
+  totalLifetimeOrders: number;
+  aov: number;
+  conversionRate: number;
+  repeatRate: number;
+}
+
 export interface OrderDetails {
+  id?: string;
   orderId: string;
   date: string;
-  status: 'Pending' | 'Confirmed' | 'Processing' | 'Packed' | 'Shipped' | 'Delivered' | 'Cancelled';
+  status: 'Order Placed' | 'Payment Confirmed' | 'Order Processing' | 'Processing' | 'Packed' | 'Shipped' | 'Out for Delivery' | 'Delivered' | 'Cancelled';
   customerName: string;
   mobile: string;
   email: string;
   shippingAddress: {
+    name?: string;
+    fullName?: string;
+    phone?: string;
+    type?: 'Home' | 'Work';
     street: string;
     apartment?: string;
     city: string;
@@ -156,4 +277,7 @@ export interface OrderDetails {
   total: number;
   paymentStatus: 'Pending' | 'Paid (Integration Ready)' | 'Cash on Delivery';
   paymentMethod: string;
+  courierPartner?: string;
+  trackingId?: string;
+  estimatedDelivery?: string;
 }

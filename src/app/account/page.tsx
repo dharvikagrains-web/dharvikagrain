@@ -3,231 +3,260 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useWishlist } from '@/context/WishlistContext';
-import { products } from '@/data/products';
-import { ProductCard } from '@/components/product/ProductCard';
 import { brandConfig } from '@/data/brandConfig';
-import { User, Package, Heart, MapPin, LogOut } from 'lucide-react';
+import { mockOrdersList } from '@/data/orders';
+import { useWishlist } from '@/context/WishlistContext';
+import {
+  Package,
+  Heart,
+  MapPin,
+  Tag,
+  Star,
+  User,
+  LogOut,
+  Truck,
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
+} from 'lucide-react';
 
-export default function AccountPage() {
-  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'wishlist' | 'addresses'>('orders');
+export default function AccountHubPage() {
   const { wishlist } = useWishlist();
+  const [fullName, setFullName] = useState('Pavan Geesala');
+  const [mobile, setMobile] = useState('+91 98765 43210');
+  const [email, setEmail] = useState('pavan@example.com');
+  const [dietary, setDietary] = useState('Gluten-Free & High Fiber');
+  const [savedSuccess, setSavedSuccess] = useState(false);
 
-  const wishlistProducts = products.filter((p) => wishlist.includes(p.id));
+  const activeOrder = mockOrdersList[0];
 
-  // Mock past orders
-  const mockOrders = [
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 2500);
+  };
+
+  const navMenuItems = [
     {
-      id: 'ORD-IN-729104',
-      date: '14 Sep 2026',
-      status: 'Delivered',
-      total: 360,
-      items: 'Korralu (Foxtail Millet) 1kg, Pure Turmeric Powder 250g',
+      title: 'My Orders',
+      icon: Package,
+      href: '/account/orders',
+      desc: 'Track live orders, view past receipts',
+      badge: `${mockOrdersList.length} Orders`,
     },
     {
-      id: 'ORD-IN-619280',
-      date: '28 Aug 2026',
-      status: 'Delivered',
-      total: 515,
-      items: 'Signature Regional Spice Blend 200g, Arikelu 1kg, Ragi 1kg',
+      title: 'Wishlist',
+      icon: Heart,
+      href: '/wishlist',
+      desc: 'Products saved for later harvests',
+      badge: `${wishlist.length} Items`,
+    },
+    {
+      title: 'Addresses',
+      icon: MapPin,
+      href: '/account/addresses',
+      desc: 'Manage Home & Work delivery addresses',
+      badge: '2 Saved',
+    },
+    {
+      title: 'Coupons',
+      icon: Tag,
+      href: '/account/coupons',
+      desc: 'Exclusive discounts & free shipping codes',
+      badge: '4 Active',
+    },
+    {
+      title: 'My Reviews',
+      icon: Star,
+      href: '/account/reviews',
+      desc: 'Verified purchase ratings and feedback',
+      badge: '3 Published',
     },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-8">
-      <div className="border-b border-[#E7DED4] pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span className="text-xs uppercase tracking-widest font-bold text-[#B35638]">
-            Customer Portal
-          </span>
-          <h1 className="text-2xl sm:text-4xl font-serif font-semibold text-[#241611]">
-            My Account & Orders
-          </h1>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
+      {/* Welcome Banner */}
+      <div className="bg-white border border-[#E7DED4] p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xs">
+        <div className="flex items-center space-x-4">
+          <div className="relative w-16 h-16 rounded-full bg-[#FAF7F2] p-1 border-2 border-[#C5A059] flex items-center justify-center overflow-hidden flex-shrink-0">
+            <Image
+              src={brandConfig.logoImage || '/images/brand/dharvika-emblem-transparent.png'}
+              alt="Dharvika Emblem"
+              width={64}
+              height={64}
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <div>
+            <span className="text-[10px] tracking-[0.25em] text-[#C5A059] uppercase font-bold block">
+              Customer Account
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#0D3522]">
+              Hello, Pavan 👋
+            </h1>
+            <p className="text-xs text-[#6B5B52] mt-0.5">
+              Welcome back to your DHARVIKA GRAINS personal pantry portal.
+            </p>
+          </div>
         </div>
-        <div className="text-xs text-[#6B5B52]">
-          Logged in as: <strong className="text-[#241611]">Customer / Guest Session</strong>
+
+        <div className="flex items-center space-x-3">
+          <Link
+            href="/shop"
+            className="px-5 py-2.5 bg-[#0D3522] hover:bg-[#134B31] text-white text-xs uppercase tracking-widest font-semibold transition-colors shadow-xs"
+          >
+            Shop Catalogue
+          </Link>
+          <Link
+            href="/login"
+            className="px-4 py-2.5 border border-[#E7DED4] hover:border-[#B35638] text-[#6B5B52] hover:text-[#B35638] text-xs uppercase tracking-widest font-semibold transition-colors flex items-center space-x-1.5"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Logout</span>
+          </Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Navigation Sidebar */}
-        <div className="lg:col-span-3 bg-white border border-[#E7DED4] p-4 divide-y divide-[#F0E8DF]">
-          <nav className="space-y-1 pb-4">
-            <button
-              onClick={() => setActiveTab('orders')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 text-xs font-semibold transition-colors ${
-                activeTab === 'orders'
-                  ? 'bg-[#241611] text-white'
-                  : 'text-[#6B5B52] hover:bg-[#FAF7F2] hover:text-[#241611]'
-              }`}
-            >
-              <Package className="w-4 h-4" />
-              <span>Past Orders ({mockOrders.length})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('wishlist')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 text-xs font-semibold transition-colors ${
-                activeTab === 'wishlist'
-                  ? 'bg-[#241611] text-white'
-                  : 'text-[#6B5B52] hover:bg-[#FAF7F2] hover:text-[#241611]'
-              }`}
-            >
-              <Heart className="w-4 h-4" />
-              <span>My Wishlist ({wishlistProducts.length})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('addresses')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 text-xs font-semibold transition-colors ${
-                activeTab === 'addresses'
-                  ? 'bg-[#241611] text-white'
-                  : 'text-[#6B5B52] hover:bg-[#FAF7F2] hover:text-[#241611]'
-              }`}
-            >
-              <MapPin className="w-4 h-4" />
-              <span>Saved Addresses</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('profile')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 text-xs font-semibold transition-colors ${
-                activeTab === 'profile'
-                  ? 'bg-[#241611] text-white'
-                  : 'text-[#6B5B52] hover:bg-[#FAF7F2] hover:text-[#241611]'
-              }`}
-            >
-              <User className="w-4 h-4" />
-              <span>Profile Settings</span>
-            </button>
-          </nav>
-        </div>
-
-        {/* Tab Content Panes */}
-        <div className="lg:col-span-9 bg-white border border-[#E7DED4] p-6 sm:p-8">
-          {/* Orders Pane */}
-          {activeTab === 'orders' && (
-            <div className="space-y-6">
-              <h2 className="text-lg font-serif font-semibold text-[#241611] pb-3 border-b border-[#E7DED4]">
-                Order History
-              </h2>
-
-              <div className="space-y-4">
-                {mockOrders.map((order) => (
-                  <div
-                    key={order.id}
-                    className="p-4 sm:p-5 bg-[#FAF7F2] border border-[#E7DED4] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                  >
-                    <div className="space-y-1 text-xs">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-mono font-bold text-[#241611]">{order.id}</span>
-                        <span className="bg-[#274135] text-white text-[10px] px-2 py-0.5 font-bold uppercase">
-                          {order.status}
-                        </span>
-                      </div>
-                      <p className="text-[#6B5B52]">Placed on {order.date}</p>
-                      <p className="text-[#241611] font-medium">{order.items}</p>
-                    </div>
-
-                    <div className="text-right sm:border-l sm:border-[#E7DED4] sm:pl-6 text-xs">
-                      <span className="text-[#6B5B52] block">Total Amount</span>
-                      <strong className="text-[#241611] text-sm">₹{order.total}</strong>
-                      <div className="mt-2">
-                        <Link
-                          href={`/order-success?orderId=${order.id}`}
-                          className="text-[#B35638] hover:underline font-semibold text-xs"
-                        >
-                          View Receipt →
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+      {/* Active Order Spotlight Banner */}
+      {activeOrder && (
+        <div className="bg-[#FAF7F2] border border-[#C5A059]/50 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-start space-x-3">
+            <div className="p-2.5 bg-[#0D3522] text-[#C5A059] rounded-full mt-0.5 flex-shrink-0">
+              <Truck className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0D3522]">
+                  Active Order #{activeOrder.orderId}
+                </span>
+                <span className="px-2 py-0.5 bg-[#FDF7E7] text-[#C5A059] text-[10px] font-bold uppercase rounded-xs">
+                  {activeOrder.status}
+                </span>
               </div>
+              <p className="text-xs text-[#6B5B52] mt-1">
+                Estimated arrival: <strong className="text-[#241611]">{activeOrder.estimatedDelivery}</strong> via {activeOrder.courierPartner}
+              </p>
             </div>
-          )}
+          </div>
 
-          {/* Wishlist Pane */}
-          {activeTab === 'wishlist' && (
-            <div className="space-y-6">
-              <h2 className="text-lg font-serif font-semibold text-[#241611] pb-3 border-b border-[#E7DED4]">
-                Saved Wishlist Items ({wishlistProducts.length})
-              </h2>
+          <Link
+            href={`/account/orders/${activeOrder.orderId}`}
+            className="inline-flex items-center space-x-2 px-5 py-2.5 bg-white border border-[#C5A059] text-[#0D3522] hover:bg-[#0D3522] hover:text-white text-xs uppercase tracking-widest font-semibold transition-colors shadow-xs flex-shrink-0"
+          >
+            <span>Track Shipment</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      )}
 
-              {wishlistProducts.length === 0 ? (
-                <div className="text-center py-12 space-y-3">
-                  <Heart className="w-10 h-10 text-[#9E8E84] mx-auto stroke-[1.2]" />
-                  <p className="text-base font-serif text-[#241611]">Your wishlist is empty</p>
-                  <p className="text-xs text-[#6B5B52]">
-                    Explore our grains and spices and click the heart icon on any card to save it here.
-                  </p>
-                  <Link
-                    href="/shop"
-                    className="inline-block mt-2 px-6 py-2.5 bg-[#241611] text-white text-xs uppercase tracking-wider font-semibold"
-                  >
-                    Explore Shop
-                  </Link>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {wishlistProducts.map((p) => (
-                    <ProductCard key={p.id} product={p} />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Addresses Pane */}
-          {activeTab === 'addresses' && (
-            <div className="space-y-6">
-              <h2 className="text-lg font-serif font-semibold text-[#241611] pb-3 border-b border-[#E7DED4]">
-                Saved Delivery Addresses
-              </h2>
-              <div className="p-4 bg-[#FAF7F2] border border-[#E7DED4] text-xs space-y-2 max-w-md">
-                <div className="flex justify-between items-center">
-                  <strong className="text-[#241611]">Primary Home Address</strong>
-                  <span className="text-[10px] bg-[#241611] text-white px-2 py-0.5 uppercase font-semibold">
-                    Default
+      {/* Account Navigation Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {navMenuItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.title}
+              href={item.href}
+              className="bg-white border border-[#E7DED4] p-6 hover:border-[#C5A059] transition-all group shadow-xs flex flex-col justify-between"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-full bg-[#FAF7F2] border border-[#E7DED4] flex items-center justify-center text-[#0D3522] group-hover:bg-[#0D3522] group-hover:text-white transition-colors">
+                    <Icon className="w-5 h-5 stroke-[1.5]" />
+                  </div>
+                  <span className="text-[10px] tracking-wider uppercase font-bold px-2 py-0.5 bg-[#FAF7F2] text-[#0D3522] border border-[#E7DED4] rounded-xs">
+                    {item.badge}
                   </span>
                 </div>
-                <p className="text-[#6B5B52]">
-                  [ADD SAVED ADDRESS — Will automatically populate from checkout]
-                </p>
-                <p className="text-[#8C7A70] text-[11px]">Hyderabad, Telangana — 500081</p>
-              </div>
-            </div>
-          )}
 
-          {/* Profile Pane */}
-          {activeTab === 'profile' && (
-            <div className="space-y-6 max-w-md">
-              <h2 className="text-lg font-serif font-semibold text-[#241611] pb-3 border-b border-[#E7DED4]">
-                Customer Profile
-              </h2>
-              <div className="space-y-3 text-xs">
-                <div className="space-y-1">
-                  <label className="text-[#6B5B52] block">Contact Mobile Number</label>
-                  <input
-                    type="text"
-                    disabled
-                    value="+91 [VERIFIED ON CHECKOUT]"
-                    className="w-full bg-[#FAF7F2] border border-[#E7DED4] p-2.5 text-xs text-[#241611]"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[#6B5B52] block">Email Address</label>
-                  <input
-                    type="text"
-                    disabled
-                    value={brandConfig.supportEmail}
-                    className="w-full bg-[#FAF7F2] border border-[#E7DED4] p-2.5 text-xs text-[#241611]"
-                  />
+                <div>
+                  <h3 className="text-lg font-serif font-bold text-[#241611] group-hover:text-[#0D3522] transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-[#6B5B52] mt-0.5">{item.desc}</p>
                 </div>
               </div>
-            </div>
-          )}
+
+              <div className="pt-4 border-t border-[#E7DED4] mt-4 flex items-center justify-between text-xs font-semibold text-[#C5A059] group-hover:text-[#0D3522]">
+                <span>Manage</span>
+                <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Profile Details Card */}
+      <div className="bg-white border border-[#E7DED4] p-6 sm:p-8 space-y-6 shadow-xs">
+        <div className="flex items-center space-x-2 pb-3 border-b border-[#E7DED4]">
+          <User className="w-5 h-5 text-[#C5A059]" />
+          <h2 className="text-lg font-serif font-bold text-[#0D3522] uppercase tracking-wider">
+            Personal Information & Preferences
+          </h2>
         </div>
+
+        {savedSuccess && (
+          <div className="p-3 bg-[#EBF7EE] border border-[#0D3522]/30 text-[#0D3522] text-xs flex items-center space-x-2">
+            <CheckCircle2 className="w-4 h-4" />
+            <span>Profile details saved successfully!</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSaveProfile} className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+          <div className="space-y-1.5">
+            <label className="font-semibold text-[#241611]">Full Name</label>
+            <input
+              type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full bg-[#FAF7F2] border border-[#E7DED4] p-2.5 focus:border-[#0D3522] focus:outline-none"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="font-semibold text-[#241611]">Mobile Number</label>
+            <input
+              type="text"
+              value={mobile}
+              onChange={(e) => setMobile(e.target.value)}
+              className="w-full bg-[#FAF7F2] border border-[#E7DED4] p-2.5 focus:border-[#0D3522] focus:outline-none"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="font-semibold text-[#241611]">Email Address</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-[#FAF7F2] border border-[#E7DED4] p-2.5 focus:border-[#0D3522] focus:outline-none"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="font-semibold text-[#241611]">Dietary Preference</label>
+            <select
+              value={dietary}
+              onChange={(e) => setDietary(e.target.value)}
+              className="w-full bg-[#FAF7F2] border border-[#E7DED4] p-2.5 focus:border-[#0D3522] focus:outline-none"
+            >
+              <option value="Gluten-Free & High Fiber">Gluten-Free & High Fiber</option>
+              <option value="Diabetic & Low GI">Diabetic & Low GI</option>
+              <option value="Traditional Indian Culinary">Traditional Indian Culinary</option>
+              <option value="All Grains">All Grains</option>
+            </select>
+          </div>
+
+          <div className="md:col-span-2 pt-2 flex justify-end">
+            <button
+              type="submit"
+              className="px-6 py-2.5 bg-[#0D3522] hover:bg-[#134B31] text-white font-semibold uppercase tracking-wider text-xs shadow-xs"
+            >
+              Save Profile Changes
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

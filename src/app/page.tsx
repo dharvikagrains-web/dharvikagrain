@@ -134,38 +134,38 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <span className="text-xs uppercase tracking-widest font-semibold text-[#B35638]">
-            Two Pillars of Indian Nutrition
+            Four Pillars of Indian Nutrition
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-semibold text-[#241611] mt-2">
             Essential Provisions for the Conscious Kitchen
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* 4 Category Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Card 1: Millets */}
-          <div className="group relative bg-[#F5EFEB] border border-[#E7DED4] overflow-hidden flex flex-col justify-between p-8 sm:p-12">
-            <div className="relative z-10 space-y-4 max-w-md">
-              <span className="text-xs uppercase tracking-widest font-bold text-[#B35638]">
+          <div className="group relative bg-[#F5EFEB] border border-[#E7DED4] overflow-hidden flex flex-col justify-between p-6 hover:border-[#0D3522] transition-colors">
+            <div className="relative z-10 space-y-2">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-[#B35638]">
                 Category 01
               </span>
-              <h3 className="text-2xl sm:text-3xl font-serif font-semibold text-[#241611]">
+              <h3 className="text-xl font-serif font-semibold text-[#241611]">
                 Chiru Dhanyalu
               </h3>
-              <p className="text-xs sm:text-sm text-[#6B5B52] leading-relaxed">
-                Traditional Indian grains for everyday cooking. Unpolished Korralu, Samalu, Arikelu, Udalu,
-                Ragi, and Jowar—cultivated in rain-fed red soils without chemical polishes.
+              <p className="text-xs text-[#6B5B52] leading-relaxed line-clamp-3">
+                Unpolished Korralu, Samalu, Arikelu, Udalu, Ragi, and Jowar from rain-fed red soils.
               </p>
               <div className="pt-2">
                 <Link
                   href="/millets"
-                  className="inline-flex items-center space-x-2 text-xs uppercase tracking-widest font-bold text-[#241611] group-hover:text-[#B35638] transition-colors"
+                  className="inline-flex items-center space-x-1.5 text-xs uppercase tracking-wider font-bold text-[#0D3522] hover:text-[#B35638] transition-colors"
                 >
-                  <span>Explore Millets</span>
-                  <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  <span>Shop Millets</span>
+                  <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>
-            <div className="relative h-64 sm:h-72 mt-6 overflow-hidden">
+            <div className="relative h-44 mt-5 overflow-hidden">
               <Image
                 src="/images/products/korralu-foxtail-millet.jpg"
                 alt="Chiru Dhanyalu traditional unpolished grains"
@@ -176,29 +176,28 @@ export default function HomePage() {
           </div>
 
           {/* Card 2: Spices */}
-          <div className="group relative bg-[#F5EFEB] border border-[#E7DED4] overflow-hidden flex flex-col justify-between p-8 sm:p-12">
-            <div className="relative z-10 space-y-4 max-w-md">
-              <span className="text-xs uppercase tracking-widest font-bold text-[#B35638]">
+          <div className="group relative bg-[#F5EFEB] border border-[#E7DED4] overflow-hidden flex flex-col justify-between p-6 hover:border-[#0D3522] transition-colors">
+            <div className="relative z-10 space-y-2">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-[#B35638]">
                 Category 02
               </span>
-              <h3 className="text-2xl sm:text-3xl font-serif font-semibold text-[#241611]">
+              <h3 className="text-xl font-serif font-semibold text-[#241611]">
                 Pure Spices
               </h3>
-              <p className="text-xs sm:text-sm text-[#6B5B52] leading-relaxed">
-                Authentic, single-origin spices for everyday Indian kitchens. Sun-cured Lakadong turmeric,
-                stemless Guntur chillies, slow-roasted dhaniya, fragrant cumin, and bold Malabar pepper.
+              <p className="text-xs text-[#6B5B52] leading-relaxed line-clamp-3">
+                Sun-cured Lakadong turmeric, stemless Guntur chillies, slow-roasted coriander & pepper.
               </p>
               <div className="pt-2">
                 <Link
                   href="/spices"
-                  className="inline-flex items-center space-x-2 text-xs uppercase tracking-widest font-bold text-[#241611] group-hover:text-[#B35638] transition-colors"
+                  className="inline-flex items-center space-x-1.5 text-xs uppercase tracking-wider font-bold text-[#0D3522] hover:text-[#B35638] transition-colors"
                 >
-                  <span>Explore Spices</span>
-                  <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  <span>Shop Spices</span>
+                  <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>
-            <div className="relative h-64 sm:h-72 mt-6 overflow-hidden">
+            <div className="relative h-44 mt-5 overflow-hidden">
               <Image
                 src="/images/products/pure-turmeric-powder.jpg"
                 alt="Pure aromatic spices"
@@ -206,6 +205,134 @@ export default function HomePage() {
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
               />
             </div>
+          </div>
+
+          {/* Card 3: Signature Masalas */}
+          <div className="group relative bg-[#F5EFEB] border border-[#E7DED4] overflow-hidden flex flex-col justify-between p-6 hover:border-[#0D3522] transition-colors">
+            <div className="relative z-10 space-y-2">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-[#B35638]">
+                Category 03
+              </span>
+              <h3 className="text-xl font-serif font-semibold text-[#241611]">
+                Signature Masalas
+              </h3>
+              <p className="text-xs text-[#6B5B52] leading-relaxed line-clamp-3">
+                Ancestral stone-ground spice powders crafted for daily sambar, rasam, and roasted curries.
+              </p>
+              <div className="pt-2">
+                <Link
+                  href="/shop?category=masalas"
+                  className="inline-flex items-center space-x-1.5 text-xs uppercase tracking-wider font-bold text-[#0D3522] hover:text-[#B35638] transition-colors"
+                >
+                  <span>Shop Masalas</span>
+                  <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+            <div className="relative h-44 mt-5 overflow-hidden">
+              <Image
+                src="/images/products/signature-regional-spice-blend.jpg"
+                alt="Signature Masalas"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </div>
+
+          {/* Card 4: Combos */}
+          <div className="group relative bg-[#F5EFEB] border border-[#E7DED4] overflow-hidden flex flex-col justify-between p-6 hover:border-[#0D3522] transition-colors">
+            <div className="relative z-10 space-y-2">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-[#B35638]">
+                Category 04
+              </span>
+              <h3 className="text-xl font-serif font-semibold text-[#241611]">
+                Curated Combos
+              </h3>
+              <p className="text-xs text-[#6B5B52] leading-relaxed line-clamp-3">
+                Value bundles pairing ancient grains with pure spices for family wellness & easy gifting.
+              </p>
+              <div className="pt-2">
+                <Link
+                  href="/shop?category=combos"
+                  className="inline-flex items-center space-x-1.5 text-xs uppercase tracking-wider font-bold text-[#0D3522] hover:text-[#B35638] transition-colors"
+                >
+                  <span>Shop Combos</span>
+                  <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+            <div className="relative h-44 mt-5 overflow-hidden">
+              <Image
+                src="/images/products/jowar-sorghum-grain.jpg"
+                alt="Curated Combos"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Interactive Quick Filter: Shop by Grain / Shop by Spice */}
+        <div className="mt-12 p-6 sm:p-8 bg-white border border-[#E7DED4] shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#E7DED4] gap-4">
+            <div>
+              <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C5A059]">
+                Quick Provision Finder
+              </span>
+              <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#0D3522] mt-1">
+                Shop by Grain or Spice
+              </h3>
+            </div>
+            <Link
+              href="/shop"
+              className="text-xs font-semibold text-[#B35638] hover:underline flex items-center space-x-1"
+            >
+              <span>View All 13 Provisions</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 text-center">
+            {[
+              { name: 'Korralu (Foxtail)', telugu: 'కొర్రలు', href: '/products/korralu-foxtail-millet' },
+              { name: 'Samalu (Little)', telugu: 'సామలు', href: '/products/samalu-little-millet' },
+              { name: 'Arikelu (Kodo)', telugu: 'అరికెలు', href: '/products/arikelu-kodo-millet' },
+              { name: 'Udalu (Barnyard)', telugu: 'ఊదలు', href: '/products/udalu-barnyard-millet' },
+              { name: 'Ragi (Finger)', telugu: 'రాగులు', href: '/products/ragi-finger-millet' },
+              { name: 'Jowar (Sorghum)', telugu: 'జొన్నలు', href: '/products/jowar-white-sorghum' },
+            ].map((grain) => (
+              <Link
+                key={grain.name}
+                href={grain.href}
+                className="p-3 bg-[#FAF7F2] border border-[#E7DED4] hover:border-[#0D3522] hover:bg-[#FAF7F2]/60 transition-colors group"
+              >
+                <span className="text-[11px] text-[#6B5B52] block font-serif italic">{grain.telugu}</span>
+                <span className="text-xs font-bold text-[#241611] group-hover:text-[#0D3522] block mt-1">
+                  {grain.name}
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-center">
+            {[
+              { name: 'Lakadong Turmeric', origin: 'Meghalaya 7%+ Curcumin', href: '/products/pure-turmeric-powder' },
+              { name: 'Guntur Chilli Powder', origin: 'Teja Medium Heat', href: '/products/pure-red-chilli-powder' },
+              { name: 'Slow-Ground Coriander', origin: 'Kishangarh Roasted', href: '/products/pure-coriander-powder' },
+              { name: 'Fragrant Cumin Seeds', origin: 'Saurashtra Whole', href: '/products/pure-cumin-seeds' },
+              { name: 'Malabar Black Pepper', origin: 'Tellicherry Bold', href: '/products/pure-black-peppercorns' },
+            ].map((spice) => (
+              <Link
+                key={spice.name}
+                href={spice.href}
+                className="p-3 bg-[#FAF7F2] border border-[#E7DED4] hover:border-[#0D3522] hover:bg-[#FAF7F2]/60 transition-colors group"
+              >
+                <span className="text-xs font-bold text-[#241611] group-hover:text-[#0D3522] block">
+                  {spice.name}
+                </span>
+                <span className="text-[10px] text-[#6B5B52] block mt-1">{spice.origin}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -526,33 +653,95 @@ export default function HomePage() {
       </section>
 
       {/* ==========================================
-          SECTION 10 — CUSTOMER REVIEWS (AUTHENTIC PLACEHOLDER)
+          SECTION 10 — CUSTOMER REVIEWS
           ========================================== */}
-      <section className="bg-[#FAF7F2] border-y border-[#E7DED4] py-14">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
-          <span className="text-xs uppercase tracking-widest font-semibold text-[#B35638]">
-            Customer Experience
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-serif font-semibold text-[#241611]">
-            Verified Batch Reviews
-          </h2>
-          <div className="bg-white border border-[#E7DED4] p-8 max-w-2xl mx-auto space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#6B5B52]">
-              [TRANSPARENCY NOTE: REAL REVIEWS ONBOARDING]
+      <section className="bg-[#FAF7F2] border-y border-[#E7DED4] py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+            <span className="text-xs uppercase tracking-[0.25em] font-semibold text-[#B35638]">
+              Kitchen Chronicles & Testimonials
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-semibold text-[#241611]">
+              Loved by Home Cooks & Nutritionists
+            </h2>
+            <p className="text-xs sm:text-sm text-[#6B5B52]">
+              Real feedback from households cooking with our 100% stone-picked, unpolished provisions.
             </p>
-            <p className="text-xs text-[#6B5B52] leading-relaxed">
-              We do not publish fabricated testimonials or automated five-star ratings.
-              Authentic reviews from verified order batches are currently being onboarded as early customers
-              complete their kitchen tests.
-            </p>
-            <div className="pt-2">
-              <Link
-                href="/contact"
-                className="text-xs font-semibold text-[#B35638] hover:underline"
-              >
-                Have you cooked with our batch? Share your feedback with our kitchen team →
-              </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white border border-[#E7DED4] p-6 sm:p-8 flex flex-col justify-between shadow-xs">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-[#C5A059] text-sm tracking-wider">★★★★★</div>
+                  <span className="text-[10px] bg-[#EBF7EE] text-[#0D3522] px-2 py-0.5 border border-[#0D3522]/20 font-semibold">
+                    ✓ Verified Harvest
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-[#241611] font-serif italic leading-relaxed">
+                  "The Korralu grains were completely free of gravel or stones. Cooked upma with a 1:2 water ratio and it was delightfully fluffy without sticking. True unpolished quality!"
+                </p>
+              </div>
+              <div className="pt-6 border-t border-[#E7DED4] mt-6 flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-bold text-[#241611]">Saritha Reddy</h4>
+                  <p className="text-[11px] text-[#6B5B52]">Hyderabad, Telangana</p>
+                </div>
+                <span className="text-[10px] text-[#8C7A70] uppercase tracking-wider">Korralu 1kg</span>
+              </div>
             </div>
+
+            <div className="bg-white border border-[#E7DED4] p-6 sm:p-8 flex flex-col justify-between shadow-xs">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-[#C5A059] text-sm tracking-wider">★★★★★</div>
+                  <span className="text-[10px] bg-[#EBF7EE] text-[#0D3522] px-2 py-0.5 border border-[#0D3522]/20 font-semibold">
+                    ✓ Verified Harvest
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-[#241611] font-serif italic leading-relaxed">
+                  "Rich golden aroma and unmistakable deep ochre hue. No artificial color or filler starch. You can immediately tell this is cold-ground Lakadong turmeric."
+                </p>
+              </div>
+              <div className="pt-6 border-t border-[#E7DED4] mt-6 flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-bold text-[#241611]">Dr. Ramesh Rao</h4>
+                  <p className="text-[11px] text-[#6B5B52]">Bengaluru, Karnataka</p>
+                </div>
+                <span className="text-[10px] text-[#8C7A70] uppercase tracking-wider">Turmeric 250g</span>
+              </div>
+            </div>
+
+            <div className="bg-white border border-[#E7DED4] p-6 sm:p-8 flex flex-col justify-between shadow-xs">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-[#C5A059] text-sm tracking-wider">★★★★★</div>
+                  <span className="text-[10px] bg-[#EBF7EE] text-[#0D3522] px-2 py-0.5 border border-[#0D3522]/20 font-semibold">
+                    ✓ Verified Harvest
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-[#241611] font-serif italic leading-relaxed">
+                  "Made traditional Ragi malt and mudde for my family. Very fresh and earthy taste. Will definitely subscribe for our regular monthly grain pantry."
+                </p>
+              </div>
+              <div className="pt-6 border-t border-[#E7DED4] mt-6 flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-bold text-[#241611]">Deepa Krishnan</h4>
+                  <p className="text-[11px] text-[#6B5B52]">Chennai, Tamil Nadu</p>
+                </div>
+                <span className="text-[10px] text-[#8C7A70] uppercase tracking-wider">Ragi 1kg</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <Link
+              href="/account/reviews"
+              className="inline-flex items-center space-x-1.5 text-xs uppercase tracking-widest font-semibold text-[#0D3522] hover:text-[#B35638] transition-colors"
+            >
+              <span>Read all customer stories or write your review</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
       </section>

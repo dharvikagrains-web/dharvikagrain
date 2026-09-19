@@ -20,13 +20,12 @@ export function Header({ onOpenSearch }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { label: 'Shop All', href: '/shop' },
-    { label: 'Chiru Dhanyalu', href: '/millets' },
-    { label: 'Pure Spices', href: '/spices' },
+    { label: 'Shop', href: '/shop' },
+    { label: 'Millets', href: '/millets' },
+    { label: 'Spices', href: '/spices' },
+    { label: 'Combos', href: '/shop?category=combos' },
     { label: 'Our Story', href: '/about' },
-    { label: 'Sourcing & Quality', href: '/sourcing' },
     { label: 'Recipes', href: '/recipes' },
-    { label: 'Journal', href: '/journal' },
   ];
 
   return (
@@ -138,7 +137,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
 
             {/* Wishlist Link */}
             <Link
-              href="/account?tab=wishlist"
+              href="/wishlist"
               className="hidden sm:inline-flex relative p-2 text-[#241611] hover:text-[#B35638] transition-colors rounded-full"
               aria-label={`Wishlist (${wishlistCount} items)`}
             >
