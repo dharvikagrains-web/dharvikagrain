@@ -21,6 +21,9 @@ function VerifyOtpContent() {
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
+  const [storedEmail, setStoredEmail] = useState('');
+  const [storedMobile, setStoredMobile] = useState('');
+
   useEffect(() => {
     // Read target from query or session
     const paramTarget = searchParams.get('target');
@@ -29,15 +32,23 @@ function VerifyOtpContent() {
     if (paramTarget) {
       setIdentifier(paramTarget);
       setAuthType(paramType);
-    } else if (typeof window !== 'undefined') {
+    }
+    
+    if (typeof window !== 'undefined') {
       const stored = sessionStorage.getItem('auth_identifier');
       const storedType = sessionStorage.getItem('auth_type') as 'mobile' | 'email';
       const storedName = sessionStorage.getItem('auth_name');
-      if (stored) {
+      const emailVal = sessionStorage.getItem('auth_email');
+      const mobileVal = sessionStorage.getItem('auth_mobile');
+
+      if (emailVal) setStoredEmail(emailVal);
+      if (mobileVal) setStoredMobile(mobileVal);
+
+      if (!paramTarget && stored) {
         setIdentifier(stored);
         if (storedType) setAuthType(storedType);
         if (storedName) setFullName(storedName);
-      } else {
+      } else if (!paramTarget && !stored) {
         router.push('/signin');
       }
     }
@@ -105,6 +116,8 @@ function VerifyOtpContent() {
           identifier,
           code: enteredCode,
           fullName: fullName || undefined,
+          email: authType === 'email' ? identifier : storedEmail || undefined,
+          mobile: authType === 'mobile' ? identifier : storedMobile || undefined,
         }),
       });
 
@@ -129,6 +142,12 @@ function VerifyOtpContent() {
             role: data.user.role,
           })
         );
+        // Clean up temporary signup credentials from sessionStorage
+        sessionStorage.removeItem('auth_identifier');
+        sessionStorage.removeItem('auth_type');
+        sessionStorage.removeItem('auth_name');
+        sessionStorage.removeItem('auth_email');
+        sessionStorage.removeItem('auth_mobile');
       }
 
       setTimeout(() => {

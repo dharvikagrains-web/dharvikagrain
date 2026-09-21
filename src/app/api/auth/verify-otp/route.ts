@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify OTP against cryptographic store
-    const verifyResult = verifyOtp(identifier, code);
+    const verifyResult = await verifyOtp(identifier, code);
     if (!verifyResult.success) {
       return NextResponse.json(
         { success: false, error: verifyResult.message },

@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = requestOtp(trimmed);
+    const result = await requestOtp(trimmed);
     if (!result.success) {
       return NextResponse.json(
         { success: false, error: result.message, cooldownRemaining: result.cooldownRemaining },

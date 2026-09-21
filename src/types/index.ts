@@ -179,24 +179,34 @@ export interface ProductReview {
 }
 
 export interface BatchRecord {
+  id?: string;
   batchNumber: string;
   batchId?: string;
   productId: string;
   productName: string;
   cropName?: string;
-  harvestDate: string;
+  harvestDate?: string;
+  manufacturingDate?: string;
+  expiryDate?: string;
+  quantity?: number;
+  totalQuantityKg?: number;
+  remainingQuantity?: number;
+  remainingQuantityKg?: number;
+  supplier?: string;
+  purchaseCost?: number;
+  sellingPrice?: number;
+  status?: 'ACTIVE' | 'ARCHIVED' | 'DEPLETED' | 'LOW_STOCK' | 'EXPIRED';
   sourceRegion: string;
   farmerCluster?: string;
-  processingDate: string;
+  processingDate?: string;
   millingDate?: string;
-  qualityCheckStatus: 'Passed' | 'Pending' | 'Flagged';
+  qualityCheckStatus?: 'Passed' | 'Pending' | 'Flagged';
   qualityPassed?: boolean;
-  packagingDate: string;
-  bestBefore: string;
-  moisturePercent: string;
+  packagingDate?: string;
+  bestBefore?: string;
+  moisturePercent?: string;
   moisturePercentage?: number;
-  totalQuantityKg?: number;
-  purityPercent: string;
+  purityPercent?: string;
   labReportUrl?: string;
 }
 

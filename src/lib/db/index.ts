@@ -72,19 +72,24 @@ export interface BatchEntity {
   productId: string;
   productName: string;
   cropName: string;
-  harvestDate: string;
+  harvestDate?: string;
+  manufacturingDate?: string;
+  expiryDate?: string;
   sourceRegion: string;
-  farmerCluster: string;
-  processingDate: string;
-  millingDate: string;
+  farmerCluster?: string;
+  supplier?: string;
+  purchaseCost?: number;
+  sellingPrice?: number;
+  processingDate?: string;
+  millingDate?: string;
   qualityPassed: boolean;
-  packagingDate: string;
-  bestBefore: string;
-  moisturePercent: string;
+  packagingDate?: string;
+  bestBefore?: string;
+  moisturePercent?: string;
   totalQuantityKg: number;
   remainingQuantityKg: number;
-  purityPercent: string;
-  status: 'ACTIVE' | 'ARCHIVED' | 'DEPLETED';
+  purityPercent?: string;
+  status: 'ACTIVE' | 'ARCHIVED' | 'DEPLETED' | 'LOW_STOCK' | 'EXPIRED';
   createdAt: string;
 }
 
@@ -306,28 +311,41 @@ class DatabaseStore {
 
     // 4. Seed Batches
     batchRecords.forEach((b, idx) => {
+      const entityId = `batch_${b.productId}_${b.batchNumber.toLowerCase()}_${idx}`;
       const entity: BatchEntity = {
-        id: `batch_${idx + 1}`,
+        id: entityId,
         batchNumber: b.batchNumber,
         productId: b.productId,
         productName: b.productName,
         cropName: b.cropName || b.productName,
         harvestDate: b.harvestDate,
+        manufacturingDate: b.manufacturingDate || b.packagingDate || '2026-08-01',
+        expiryDate: b.expiryDate || b.bestBefore || '2027-07-31',
         sourceRegion: b.sourceRegion,
-        farmerCluster: b.farmerCluster || 'Regional Organic Cluster',
+        farmerCluster: b.farmerCluster || b.supplier || 'Regional Organic Cluster',
+        supplier: b.supplier || b.farmerCluster || 'Regional Organic Cluster',
+        purchaseCost: b.purchaseCost || 50,
+        sellingPrice: b.sellingPrice || 150,
         processingDate: b.processingDate,
         millingDate: b.millingDate || b.processingDate,
-        qualityPassed: b.qualityCheckStatus === 'Passed',
+        qualityPassed: b.qualityPassed ?? (b.qualityCheckStatus === 'Passed'),
         packagingDate: b.packagingDate,
         bestBefore: b.bestBefore,
         moisturePercent: b.moisturePercent,
-        totalQuantityKg: b.totalQuantityKg || 1000,
-        remainingQuantityKg: b.totalQuantityKg ? Math.round(b.totalQuantityKg * 0.8) : 800,
+        totalQuantityKg: b.quantity || b.totalQuantityKg || 1000,
+        remainingQuantityKg:
+          b.remainingQuantity !== undefined
+            ? b.remainingQuantity
+            : b.remainingQuantityKg !== undefined
+            ? b.remainingQuantityKg
+            : b.totalQuantityKg
+            ? Math.round(b.totalQuantityKg * 0.8)
+            : 800,
         purityPercent: b.purityPercent,
-        status: 'ACTIVE',
+        status: b.status || 'ACTIVE',
         createdAt: new Date().toISOString(),
       };
-      this.batches.set(entity.batchNumber, entity);
+      this.batches.set(entity.id, entity);
     });
 
     // 5. Seed Inventory from Product Catalog Variants
@@ -1115,26 +1133,44 @@ class DatabaseStore {
     return Array.from(this.batches.values());
   }
 
-  public getBatch(batchNumber: string): BatchEntity | undefined {
-    return this.batches.get(batchNumber.toUpperCase());
+  public getBatchesByProduct(productId: string): BatchEntity[] {
+    return Array.from(this.batches.values()).filter((b) => b.productId === productId);
+  }
+
+  public getBatch(batchIdentifier: string, productId?: string): BatchEntity | undefined {
+    if (productId) {
+      return Array.from(this.batches.values()).find(
+        (b) =>
+          b.productId === productId &&
+          (b.batchNumber.toUpperCase() === batchIdentifier.toUpperCase() || b.id === batchIdentifier)
+      );
+    }
+    return (
+      this.batches.get(batchIdentifier) ||
+      Array.from(this.batches.values()).find(
+        (b) =>
+          b.batchNumber.toUpperCase() === batchIdentifier.toUpperCase() ||
+          b.id === batchIdentifier
+      )
+    );
   }
 
   public createBatch(batch: Omit<BatchEntity, 'id' | 'createdAt'>, actorEmail: string): BatchEntity {
-    const id = `batch_${Date.now()}`;
+    const id = `batch_${batch.productId}_${batch.batchNumber.toLowerCase()}_${Date.now()}`;
     const newBatch: BatchEntity = {
       ...batch,
       id,
       batchNumber: batch.batchNumber.toUpperCase(),
       createdAt: new Date().toISOString(),
     };
-    this.batches.set(newBatch.batchNumber, newBatch);
+    this.batches.set(newBatch.id, newBatch);
 
     this.addAuditLog(
       actorEmail,
       'OPERATIONS',
       'BATCH_CREATED',
       'BATCH',
-      newBatch.batchNumber,
+      `${newBatch.productId}:${newBatch.batchNumber}`,
       `Batch ${newBatch.batchNumber} created for ${newBatch.productName} (${newBatch.totalQuantityKg} kg)`
     );
 
@@ -1142,12 +1178,12 @@ class DatabaseStore {
   }
 
   public updateBatch(
-    batchNumber: string,
+    batchIdentifier: string,
     updates: Partial<BatchEntity>,
     actorEmail: string
   ): BatchEntity {
-    const batch = this.batches.get(batchNumber.toUpperCase());
-    if (!batch) throw new Error(`Batch ${batchNumber} not found.`);
+    const batch = this.getBatch(batchIdentifier);
+    if (!batch) throw new Error(`Batch ${batchIdentifier} not found.`);
 
     Object.assign(batch, updates);
 
@@ -1156,7 +1192,7 @@ class DatabaseStore {
       'OPERATIONS',
       'BATCH_UPDATED',
       'BATCH',
-      batch.batchNumber,
+      `${batch.productId}:${batch.batchNumber}`,
       `Updated batch parameters: ${Object.keys(updates).join(', ')}`
     );
 
@@ -1271,3 +1307,6 @@ class DatabaseStore {
 const globalForDb = global as unknown as { dharvikaDbInstance?: DatabaseStore };
 export const db = globalForDb.dharvikaDbInstance || new DatabaseStore();
 if (process.env.NODE_ENV !== 'production') globalForDb.dharvikaDbInstance = db;
+
+export { prisma, hasDatabaseUrl } from './client';
+

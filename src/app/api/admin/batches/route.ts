@@ -2,14 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireAuth } from '@/lib/auth/session';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const auth = await requireAuth(['SUPER_ADMIN', 'ADMIN', 'OPERATIONS', 'INVENTORY_MANAGER']);
     if ('error' in auth) {
       return NextResponse.json({ error: auth.error }, { status: auth.status });
     }
 
-    const batches = db.getAllBatches();
+    const { searchParams } = new URL(req.url);
+    const productId = searchParams.get('productId');
+
+    const batches = productId ? db.getBatchesByProduct(productId) : db.getAllBatches();
     return NextResponse.json({ success: true, batches });
   } catch {
     return NextResponse.json({ error: 'Failed to fetch batches' }, { status: 500 });
@@ -30,8 +33,13 @@ export async function POST(req: NextRequest) {
       productName,
       cropName,
       harvestDate,
+      manufacturingDate,
+      expiryDate,
       sourceRegion,
       farmerCluster,
+      supplier,
+      purchaseCost,
+      sellingPrice,
       processingDate,
       millingDate,
       qualityPassed = true,
@@ -39,7 +47,9 @@ export async function POST(req: NextRequest) {
       bestBefore,
       moisturePercent,
       totalQuantityKg,
+      remainingQuantityKg,
       purityPercent,
+      status = 'ACTIVE',
     } = body;
 
     if (!batchNumber || !productId || !productName || !sourceRegion) {
@@ -56,18 +66,26 @@ export async function POST(req: NextRequest) {
         productName,
         cropName: cropName || productName,
         harvestDate: harvestDate || 'Current Season',
+        manufacturingDate: manufacturingDate || packagingDate || 'Current Month',
+        expiryDate: expiryDate || bestBefore || '12 Months from Packaging',
         sourceRegion,
-        farmerCluster: farmerCluster || 'Regional FPO Cluster',
+        farmerCluster: farmerCluster || supplier || 'Regional FPO Cluster',
+        supplier: supplier || farmerCluster || 'Regional FPO Cluster',
+        purchaseCost: purchaseCost !== undefined ? Number(purchaseCost) : undefined,
+        sellingPrice: sellingPrice !== undefined ? Number(sellingPrice) : undefined,
         processingDate: processingDate || 'Recent',
         millingDate: millingDate || processingDate || 'Recent',
         qualityPassed: Boolean(qualityPassed),
-        packagingDate: packagingDate || 'Recent',
-        bestBefore: bestBefore || '12 Months from Packaging',
+        packagingDate: packagingDate || manufacturingDate || 'Recent',
+        bestBefore: bestBefore || expiryDate || '12 Months from Packaging',
         moisturePercent: moisturePercent || '10.5%',
         totalQuantityKg: Number(totalQuantityKg) || 1000,
-        remainingQuantityKg: Number(totalQuantityKg) || 1000,
+        remainingQuantityKg:
+          remainingQuantityKg !== undefined
+            ? Number(remainingQuantityKg)
+            : Number(totalQuantityKg) || 1000,
         purityPercent: purityPercent || '99.8%',
-        status: 'ACTIVE',
+        status: status as any,
       },
       auth.user.email
     );

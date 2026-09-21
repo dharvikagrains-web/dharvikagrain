@@ -54,6 +54,7 @@ export default function SignupPage() {
         sessionStorage.setItem('auth_type', 'mobile');
         sessionStorage.setItem('auth_name', fullName.trim());
         sessionStorage.setItem('auth_email', email.trim().toLowerCase());
+        sessionStorage.setItem('auth_mobile', cleanMobile);
       }
 
       router.push(`/verify-otp?target=${encodeURIComponent(cleanMobile)}&type=mobile`);
