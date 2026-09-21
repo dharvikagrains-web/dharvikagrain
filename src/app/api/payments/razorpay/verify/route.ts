@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { verifyRazorpaySignature } from '@/lib/payments/razorpay';
+import { sendOrderConfirmationViaResend } from '@/lib/email/resend';
+import { sendOrderConfirmationViaMsg91 } from '@/lib/sms/msg91';
 
 export async function POST(req: NextRequest) {
   try {
@@ -58,6 +60,26 @@ export async function POST(req: NextRequest) {
       signature: razorpay_signature,
       method,
     });
+
+    // Fire and forget transactional receipt email & SMS
+    sendOrderConfirmationViaResend({
+      orderNumber: updatedOrder.orderNumber,
+      email: updatedOrder.email,
+      customerName: updatedOrder.customerName,
+      items: updatedOrder.items,
+      total: updatedOrder.total,
+      subtotal: updatedOrder.subtotal,
+      discount: updatedOrder.discount,
+      shippingFee: updatedOrder.shippingFee,
+      shippingAddress: updatedOrder.shippingAddressSnapshot,
+      paymentMethod: method,
+    }).catch((e) => console.error('Order confirmation email error:', e));
+
+    sendOrderConfirmationViaMsg91({
+      mobile: updatedOrder.mobile,
+      orderNumber: updatedOrder.orderNumber,
+      total: updatedOrder.total,
+    }).catch((e) => console.error('Order confirmation SMS error:', e));
 
     return NextResponse.json({
       success: true,

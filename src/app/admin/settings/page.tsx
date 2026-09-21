@@ -21,7 +21,7 @@ export default function AdminSettingsPage() {
     codFee: '40',
     supportEmail: brandConfig.supportEmail,
     supportPhone: brandConfig.supportPhone,
-    fssaiNumber: '[ADD FSSAI LICENCE NUMBER]',
+    fssaiNumber: brandConfig.fssaiNumber,
     gstin: '36AABCD1234E1Z5',
     warehouseAddress: 'Plot 42, APIIC Industrial Park, Patancheru, Hyderabad, Telangana - 502319',
     returnWindowDays: '7',

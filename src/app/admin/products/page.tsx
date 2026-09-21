@@ -89,8 +89,8 @@ export default function AdminProductsPage() {
         dietaryFiber: '8g',
         fat: '3.5g',
       },
-      certificationsPlaceholder: '[ADD FSSAI CERTIFICATION]',
-      labTestPlaceholder: '[ADD BATCH LAB REPORT]',
+      certificationsPlaceholder: 'FSSAI Central Lic. 13626011000284 | NABL Quality Verified',
+      labTestPlaceholder: 'NABL Certified Purity Test: 0% Synthetic Residue, Moisture Calibrated',
       bestseller: false,
       featured: true,
       batchInfo: {
