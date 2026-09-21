@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { brandConfig } from '@/data/brandConfig';
 import { ArrowRight, RefreshCw, ShieldCheck, Mail, Phone } from 'lucide-react';
 
-export default function SignInPage() {
+function SignInContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams.get('redirect') || searchParams.get('from') || '';
+  const isCheckoutRedirect = redirectParam === '/checkout' || redirectParam.startsWith('/checkout');
+
   const [authMethod, setAuthMethod] = useState<'mobile' | 'email'>('mobile');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
@@ -52,9 +56,13 @@ export default function SignInPage() {
       if (typeof window !== 'undefined') {
         sessionStorage.setItem('auth_identifier', identifier);
         sessionStorage.setItem('auth_type', authMethod);
+        if (redirectParam) {
+          sessionStorage.setItem('auth_redirect', redirectParam);
+        }
       }
 
-      router.push(`/verify-otp?target=${encodeURIComponent(identifier)}&type=${authMethod}`);
+      const redirectQuery = redirectParam ? `&redirect=${encodeURIComponent(redirectParam)}` : '';
+      router.push(`/verify-otp?target=${encodeURIComponent(identifier)}&type=${authMethod}${redirectQuery}`);
     } catch (err) {
       setError('Network communication error. Please check your internet connection.');
       setLoading(false);
@@ -66,7 +74,8 @@ export default function SignInPage() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      router.push('/account');
+      const destination = redirectParam || '/account';
+      router.push(destination);
     }, 800);
   };
 
@@ -88,12 +97,26 @@ export default function SignInPage() {
             Dharvika Grains
           </span>
           <h1 className="text-2xl font-serif font-bold text-[#0D3522]">
-            Welcome Back
+            {isCheckoutRedirect ? 'Sign In to Place Order' : 'Welcome Back'}
           </h1>
           <p className="text-xs text-[#6B5B52]">
-            Sign in to access your orders, saved addresses, and wishlist
+            {isCheckoutRedirect
+              ? 'Please sign in or register to complete your order and track delivery'
+              : 'Sign in to access your orders, saved addresses, and wishlist'}
           </p>
         </div>
+
+        {isCheckoutRedirect && (
+          <div className="p-3.5 bg-[#FAF3E8] border border-[#C5A059] text-[#785416] text-xs leading-relaxed flex items-start space-x-2.5 rounded-xs">
+            <ShieldCheck className="w-4 h-4 text-[#C5A059] shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-[#241611]">Account Required to Checkout</p>
+              <p className="text-[11px] text-[#6B5B52] mt-0.5">
+                We track every order, batch certificate, and delivery updates against your verified account. Your cart will be ready when you return.
+              </p>
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="p-3 bg-[#FAF0ED] border border-[#B35638]/40 text-[#B35638] text-xs text-center leading-relaxed">
@@ -230,11 +253,28 @@ export default function SignInPage() {
 
         <div className="pt-4 border-t border-[#E7DED4] text-center text-xs text-[#6B5B52]">
           New to DHARVIKA GRAINS?{' '}
-          <Link href="/signup" className="text-[#0D3522] font-bold hover:underline">
+          <Link
+            href={redirectParam ? `/signup?redirect=${encodeURIComponent(redirectParam)}` : '/signup'}
+            className="text-[#0D3522] font-bold hover:underline"
+          >
             CREATE ACCOUNT
           </Link>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[80vh] flex items-center justify-center bg-[#FAF7F2]">
+          <div className="w-8 h-8 border-2 border-[#0D3522] border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <SignInContent />
+    </Suspense>
   );
 }

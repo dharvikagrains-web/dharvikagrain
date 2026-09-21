@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { mockOrdersList } from '@/data/orders';
@@ -8,10 +8,48 @@ import { Package, ArrowLeft, ArrowRight, Truck, CheckCircle2, Clock } from 'luci
 
 export default function MyOrdersPage() {
   const [filter, setFilter] = useState<'All' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled'>('All');
+  const [orders, setOrders] = useState<any[]>(mockOrdersList);
+  const [loading, setLoading] = useState(true);
 
-  const filteredOrders = mockOrdersList.filter((order) => {
+  useEffect(() => {
+    async function loadCustomerOrders() {
+      try {
+        const res = await fetch('/api/account/orders');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.orders && data.orders.length > 0) {
+            // Map live DB orders to page model
+            const liveMapped = data.orders.map((o: any) => ({
+              orderId: o.orderNumber,
+              date: o.date,
+              status: o.status,
+              total: o.total,
+              paymentMethod: o.paymentMethod,
+              paymentStatus: o.paymentStatus,
+              items: o.items.map((it: any) => ({
+                name: it.name,
+                selectedWeight: it.weight,
+                quantity: it.quantity,
+                price: it.price,
+                image: it.image,
+              })),
+            }));
+            setOrders(liveMapped);
+          }
+        }
+      } catch (e) {
+        console.error('Failed to fetch live orders', e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCustomerOrders();
+  }, []);
+
+  const filteredOrders = orders.filter((order) => {
     if (filter === 'All') return true;
-    if (filter === 'Processing') return order.status === 'Order Processing' || order.status === 'Packed';
+    if (filter === 'Processing') return order.status === 'Order Processing' || order.status === 'Processing' || order.status === 'Packed';
     if (filter === 'Shipped') return order.status === 'Shipped' || order.status === 'Out for Delivery';
     return order.status === filter;
   });
@@ -53,7 +91,12 @@ export default function MyOrdersPage() {
         </div>
       </div>
 
-      {filteredOrders.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-16 bg-white border border-[#E7DED4] p-8 space-y-3">
+          <div className="w-8 h-8 border-2 border-[#0D3522] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs text-[#6B5B52]">Loading your verified orders...</p>
+        </div>
+      ) : filteredOrders.length === 0 ? (
         <div className="text-center py-16 bg-white border border-[#E7DED4] p-8 space-y-3">
           <p className="text-base font-serif text-[#241611]">No orders found for this status</p>
           <p className="text-xs text-[#6B5B52]">Try viewing &ldquo;All&rdquo; orders or discover our traditional grain catalogue.</p>
@@ -96,7 +139,7 @@ export default function MyOrdersPage() {
 
               {/* Order Items Preview */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {order.items.map((item, idx) => (
+                {order.items.map((item: any, idx: number) => (
                   <div key={idx} className="flex items-center space-x-3">
                     <div className="relative w-14 h-14 bg-[#FAF7F2] border border-[#E7DED4] flex-shrink-0 overflow-hidden">
                       <Image

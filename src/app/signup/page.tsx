@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { brandConfig } from '@/data/brandConfig';
 import { ArrowRight, RefreshCw, ShieldCheck } from 'lucide-react';
 
-export default function SignupPage() {
+function SignupContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams.get('redirect') || searchParams.get('from') || '';
+  const isCheckoutRedirect = redirectParam === '/checkout' || redirectParam.startsWith('/checkout');
+
   const [fullName, setFullName] = useState('');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
@@ -55,9 +59,13 @@ export default function SignupPage() {
         sessionStorage.setItem('auth_name', fullName.trim());
         sessionStorage.setItem('auth_email', email.trim().toLowerCase());
         sessionStorage.setItem('auth_mobile', cleanMobile);
+        if (redirectParam) {
+          sessionStorage.setItem('auth_redirect', redirectParam);
+        }
       }
 
-      router.push(`/verify-otp?target=${encodeURIComponent(cleanMobile)}&type=mobile`);
+      const redirectQuery = redirectParam ? `&redirect=${encodeURIComponent(redirectParam)}` : '';
+      router.push(`/verify-otp?target=${encodeURIComponent(cleanMobile)}&type=mobile${redirectQuery}`);
     } catch {
       setIsLoading(false);
       setError('Network communication error. Please try again.');
@@ -81,12 +89,26 @@ export default function SignupPage() {
             Dharvika Grains
           </span>
           <h1 className="text-2xl font-serif font-bold text-[#0D3522]">
-            Create Your Account
+            {isCheckoutRedirect ? 'Register to Checkout' : 'Create Your Account'}
           </h1>
           <p className="text-xs text-[#6B5B52]">
-            Join our community for fresh harvests, exclusive releases, and farm-to-table traceability
+            {isCheckoutRedirect
+              ? 'Enter your verified details to place your order with live courier tracking'
+              : 'Join our community for fresh harvests, exclusive releases, and farm-to-table traceability'}
           </p>
         </div>
+
+        {isCheckoutRedirect && (
+          <div className="p-3.5 bg-[#FAF3E8] border border-[#C5A059] text-[#785416] text-xs leading-relaxed flex items-start space-x-2.5 rounded-xs">
+            <ShieldCheck className="w-4 h-4 text-[#C5A059] shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-[#241611]">Verified Customer Account Required</p>
+              <p className="text-[11px] text-[#6B5B52] mt-0.5">
+                Every grain harvest is tracked directly to your phone and email. Your cart is preserved and you will return directly to checkout.
+              </p>
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="p-3 bg-[#FAF0ED] border border-[#B35638]/40 text-[#B35638] text-xs text-center">
@@ -166,11 +188,28 @@ export default function SignupPage() {
 
         <div className="pt-4 border-t border-[#E7DED4] text-center text-xs text-[#6B5B52]">
           Already have an account?{' '}
-          <Link href="/signin" className="text-[#0D3522] font-bold hover:underline">
+          <Link
+            href={redirectParam ? `/signin?redirect=${encodeURIComponent(redirectParam)}` : '/signin'}
+            className="text-[#0D3522] font-bold hover:underline"
+          >
             Sign In
           </Link>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[80vh] flex items-center justify-center bg-[#FAF7F2]">
+          <div className="w-8 h-8 border-2 border-[#0D3522] border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <SignupContent />
+    </Suspense>
   );
 }

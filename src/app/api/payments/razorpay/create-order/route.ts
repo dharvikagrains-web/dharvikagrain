@@ -17,6 +17,15 @@ export async function POST(req: NextRequest) {
       paymentMethod = 'RAZORPAY',
     } = body;
 
+    // 0. Enforce mandatory customer authentication
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required. Please sign in or register to place your order.' },
+        { status: 401 }
+      );
+    }
+
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Cannot create order with an empty cart.' },
@@ -24,18 +33,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!customerName || !email || !mobile || !shippingAddress) {
+    if (!shippingAddress) {
       return NextResponse.json(
-        { success: false, error: 'Customer contact details and delivery address are required.' },
+        { success: false, error: 'Delivery shipping address is required.' },
         { status: 400 }
       );
     }
 
     // 1. Create order in database with server-side price recalculation & atomic inventory reservation
+    // Customer details are strictly bound to the authenticated user account
     const result = db.createOrderWithPriceSnapshot({
-      customerName,
-      email,
-      mobile,
+      customerId: user.id,
+      customerName: user.fullName || customerName || 'Customer',
+      email: user.email || email,
+      mobile: user.mobile || mobile,
       shippingAddress,
       billingAddress,
       items: items.map((it: any) => ({

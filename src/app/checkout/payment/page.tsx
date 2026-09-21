@@ -28,8 +28,11 @@ export default function PaymentGatewayPage() {
   const [upiId, setUpiId] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [authChecking, setAuthChecking] = useState(true);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const [checkoutData, setCheckoutData] = useState<{
+    customerId?: string;
     mobile: string;
     email: string;
     customerName?: string;
@@ -38,9 +41,9 @@ export default function PaymentGatewayPage() {
     appliedCoupon: string | null;
     finalTotal: number;
   }>({
-    mobile: '9876543210',
-    email: 'pavangeesala81@gmail.com',
-    customerName: 'Pavan Geesala',
+    mobile: '',
+    email: '',
+    customerName: '',
     address: null,
     discountAmount: 0,
     appliedCoupon: null,
@@ -48,15 +51,34 @@ export default function PaymentGatewayPage() {
   });
 
   useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (!data.authenticated || !data.user) {
+          router.push('/signin?redirect=/checkout');
+          return;
+        }
+        setCurrentUser(data.user);
+      } catch {
+        router.push('/signin?redirect=/checkout');
+        return;
+      } finally {
+        setAuthChecking(false);
+      }
+    }
+    checkAuth();
+
     if (typeof window !== 'undefined') {
       const stored = sessionStorage.getItem('checkout_state');
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
           setCheckoutData({
-            mobile: parsed.mobile || '9876543210',
-            email: parsed.email || 'pavangeesala81@gmail.com',
-            customerName: parsed.address?.fullName || 'Pavan Geesala',
+            customerId: parsed.customerId,
+            mobile: parsed.mobile || '',
+            email: parsed.email || '',
+            customerName: parsed.customerName || parsed.address?.fullName || '',
             address: parsed.address,
             discountAmount: parsed.discountAmount || 0,
             appliedCoupon: parsed.appliedCoupon || null,
@@ -67,7 +89,7 @@ export default function PaymentGatewayPage() {
         }
       }
     }
-  }, []);
+  }, [router]);
 
   const handlePay = async () => {
     if (cart.length === 0) {
@@ -84,13 +106,14 @@ export default function PaymentGatewayPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          customerName: checkoutData.customerName || 'Customer',
-          email: checkoutData.email,
-          mobile: checkoutData.mobile,
+          customerId: checkoutData.customerId || currentUser?.id,
+          customerName: checkoutData.customerName || currentUser?.fullName || 'Customer',
+          email: checkoutData.email || currentUser?.email,
+          mobile: checkoutData.mobile || currentUser?.mobile,
           shippingAddress: checkoutData.address || {
             type: 'Home',
-            fullName: checkoutData.customerName || 'Customer',
-            mobile: checkoutData.mobile,
+            fullName: checkoutData.customerName || currentUser?.fullName || 'Customer',
+            mobile: checkoutData.mobile || currentUser?.mobile,
             pincode: '500081',
             houseFlat: 'Plot 42, Jubilee Hills',
             streetArea: 'Road No 36',
@@ -106,6 +129,12 @@ export default function PaymentGatewayPage() {
           paymentMethod: paymentMethod === 'cod' ? 'COD' : 'RAZORPAY',
         }),
       });
+
+      if (res.status === 401) {
+        setIsProcessing(false);
+        router.push('/signin?redirect=/checkout');
+        return;
+      }
 
       const orderResult = await res.json();
 
@@ -202,6 +231,17 @@ export default function PaymentGatewayPage() {
   };
 
   const currentTotal = checkoutData.finalTotal > 0 ? checkoutData.finalTotal : cart.reduce((t, it) => t + it.price * it.quantity, 0);
+
+  if (authChecking) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-4 bg-[#FAF7F2]">
+        <div className="w-10 h-10 border-2 border-[#0D3522] border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs text-[#6B5B52] font-serif tracking-wide">
+          Verifying Customer Identity & Payment Security...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-8">

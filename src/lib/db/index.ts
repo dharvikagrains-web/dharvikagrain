@@ -860,6 +860,7 @@ class DatabaseStore {
    * Never trusts prices sent from the client.
    */
   public createOrderWithPriceSnapshot(data: {
+    customerId?: string;
     customerName: string;
     email: string;
     mobile: string;
@@ -943,6 +944,7 @@ class DatabaseStore {
     const newOrder: OrderEntity = {
       id: `ord_${orderNumber.toLowerCase()}`,
       orderNumber,
+      customerId: data.customerId,
       customerName: data.customerName,
       email: data.email.toLowerCase(),
       mobile: data.mobile,
@@ -1007,15 +1009,37 @@ class DatabaseStore {
     return undefined;
   }
 
-  public getOrdersForCustomer(emailOrMobile: string): OrderEntity[] {
-    const clean = emailOrMobile.trim().toLowerCase();
-    const cleanPhone = emailOrMobile.replace(/\D/g, '').slice(-10);
+  public getOrdersForCustomer(
+    criteria: { id?: string; email?: string; mobile?: string } | string
+  ): OrderEntity[] {
+    if (typeof criteria === 'object' && criteria !== null) {
+      const cleanId = criteria.id?.trim().toLowerCase();
+      const cleanEmail = criteria.email?.trim().toLowerCase();
+      const rawMobile = criteria.mobile?.replace(/\D/g, '');
+      const cleanMobile = rawMobile && rawMobile.length >= 10 ? rawMobile.slice(-10) : '';
+
+      return Array.from(this.orders.values())
+        .filter((o) => {
+          const matchesId = Boolean(cleanId && o.customerId && o.customerId.toLowerCase() === cleanId);
+          const matchesEmail = Boolean(cleanEmail && o.email && o.email.toLowerCase() === cleanEmail);
+          const orderMobile = o.mobile ? o.mobile.replace(/\D/g, '').slice(-10) : '';
+          const matchesMobile = Boolean(cleanMobile && orderMobile && orderMobile === cleanMobile);
+          return matchesId || matchesEmail || matchesMobile;
+        })
+        .reverse();
+    }
+
+    const clean = criteria.trim().toLowerCase();
+    const rawPhone = criteria.replace(/\D/g, '');
+    const cleanPhone = rawPhone.length >= 10 ? rawPhone.slice(-10) : '';
 
     return Array.from(this.orders.values())
       .filter((o) => {
-        const matchesEmail = o.email.toLowerCase() === clean;
-        const matchesMobile = cleanPhone && o.mobile.replace(/\D/g, '').slice(-10) === cleanPhone;
-        return matchesEmail || matchesMobile;
+        const matchesCustomerId = Boolean(o.customerId && o.customerId.toLowerCase() === clean);
+        const matchesEmail = Boolean(o.email && o.email.toLowerCase() === clean);
+        const orderPhone = o.mobile ? o.mobile.replace(/\D/g, '').slice(-10) : '';
+        const matchesMobile = Boolean(cleanPhone && orderPhone && orderPhone === cleanPhone);
+        return matchesCustomerId || matchesEmail || matchesMobile;
       })
       .reverse();
   }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -24,9 +24,18 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { cart, subtotal, shippingFee, total } = useCart();
 
+  const [authChecking, setAuthChecking] = useState(true);
+  const [currentUser, setCurrentUser] = useState<{
+    id: string;
+    fullName: string;
+    email: string;
+    mobile: string;
+    role: string;
+  } | null>(null);
+
   // Step 1: Contact info
-  const [mobile, setMobile] = useState('9876543210');
-  const [email, setEmail] = useState('pavan@example.com');
+  const [mobile, setMobile] = useState('');
+  const [email, setEmail] = useState('');
 
   // Step 2: Delivery address selection
   const [addresses, setAddresses] = useState<SavedAddress[]>(initialAddresses);
@@ -34,8 +43,8 @@ export default function CheckoutPage() {
   const [showNewAddressModal, setShowNewAddressModal] = useState(false);
 
   // New address form fields
-  const [newFullName, setNewFullName] = useState('Pavan Geesala');
-  const [newMobile, setNewMobile] = useState('+91 98765 43210');
+  const [newFullName, setNewFullName] = useState('');
+  const [newMobile, setNewMobile] = useState('');
   const [newPincode, setNewPincode] = useState('');
   const [newHouse, setNewHouse] = useState('');
   const [newStreet, setNewStreet] = useState('');
@@ -43,6 +52,47 @@ export default function CheckoutPage() {
   const [newCity, setNewCity] = useState('Hyderabad');
   const [newState, setNewState] = useState('Telangana');
   const [newType, setNewType] = useState<'Home' | 'Work'>('Home');
+
+  // Verify authentication & load customer details + saved addresses
+  useEffect(() => {
+    async function checkAuthAndLoadAddresses() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (!data.authenticated || !data.user) {
+          // Unauthenticated customer -> redirect to signin with return URL
+          router.push('/signin?redirect=/checkout');
+          return;
+        }
+
+        const user = data.user;
+        setCurrentUser(user);
+        if (user.mobile) {
+          const clean10 = user.mobile.replace(/\D/g, '').slice(-10);
+          setMobile(clean10);
+          setNewMobile(user.mobile);
+        }
+        if (user.email) setEmail(user.email);
+        if (user.fullName) setNewFullName(user.fullName);
+
+        // Fetch customer saved addresses from backend database
+        const addrRes = await fetch('/api/account/addresses');
+        if (addrRes.ok) {
+          const addrData = await addrRes.json();
+          if (addrData.addresses && addrData.addresses.length > 0) {
+            setAddresses(addrData.addresses);
+            setSelectedAddressId(addrData.addresses[0].id);
+          }
+        }
+      } catch (e) {
+        console.error('Failed to verify customer authentication', e);
+      } finally {
+        setAuthChecking(false);
+      }
+    }
+
+    checkAuthAndLoadAddresses();
+  }, [router]);
 
   // Step 4: Coupon
   const [couponCode, setCouponCode] = useState('');
@@ -91,6 +141,13 @@ export default function CheckoutPage() {
     setAddresses([...addresses, newAddr]);
     setSelectedAddressId(newAddr.id);
     setShowNewAddressModal(false);
+
+    // Persist new address to customer profile
+    fetch('/api/account/addresses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newAddr),
+    }).catch((err) => console.error('Failed to sync address to backend', err));
   };
 
   const finalTotal = Math.max(0, total - discountAmount);
@@ -100,14 +157,19 @@ export default function CheckoutPage() {
       alert('Your cart is empty');
       return;
     }
+
+    const selectedAddr = addresses.find((a) => a.id === selectedAddressId) || addresses[0];
+
     // Save checkout state into session for /checkout/payment
     if (typeof window !== 'undefined') {
       sessionStorage.setItem(
         'checkout_state',
         JSON.stringify({
-          mobile,
-          email,
-          address: addresses.find((a) => a.id === selectedAddressId) || addresses[0],
+          customerId: currentUser?.id,
+          customerName: selectedAddr?.fullName || currentUser?.fullName || 'Customer',
+          mobile: mobile || currentUser?.mobile,
+          email: email || currentUser?.email,
+          address: selectedAddr,
           discountAmount,
           appliedCoupon,
           finalTotal,
@@ -116,6 +178,17 @@ export default function CheckoutPage() {
     }
     router.push('/checkout/payment');
   };
+
+  if (authChecking) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-4 bg-[#FAF7F2]">
+        <div className="w-10 h-10 border-2 border-[#0D3522] border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs text-[#6B5B52] font-serif tracking-wide">
+          Verifying Customer Authentication...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-8">
@@ -144,14 +217,33 @@ export default function CheckoutPage() {
         <div className="lg:col-span-7 space-y-8">
           {/* Step 1 — Contact Information */}
           <div className="bg-white border border-[#E7DED4] p-6 space-y-4 shadow-xs">
-            <div className="flex items-center space-x-2 pb-3 border-b border-[#E7DED4]">
-              <span className="w-5 h-5 rounded-full bg-[#0D3522] text-white text-[11px] font-bold flex items-center justify-center">
-                1
-              </span>
-              <h2 className="text-sm font-serif font-bold text-[#0D3522] uppercase tracking-wider">
-                Contact Information
-              </h2>
+            <div className="flex items-center justify-between pb-3 border-b border-[#E7DED4]">
+              <div className="flex items-center space-x-2">
+                <span className="w-5 h-5 rounded-full bg-[#0D3522] text-white text-[11px] font-bold flex items-center justify-center">
+                  1
+                </span>
+                <h2 className="text-sm font-serif font-bold text-[#0D3522] uppercase tracking-wider">
+                  Contact Information
+                </h2>
+              </div>
+              {currentUser && (
+                <Link
+                  href="/signin?redirect=/checkout"
+                  className="text-[11px] text-[#B35638] font-semibold hover:underline"
+                >
+                  Switch Account
+                </Link>
+              )}
             </div>
+
+            {currentUser && (
+              <div className="bg-[#FAF3E8] border border-[#C5A059]/40 p-3 flex items-center space-x-2.5 text-xs text-[#241611]">
+                <ShieldCheck className="w-4 h-4 text-[#0D3522] shrink-0" />
+                <p>
+                  Ordering as <strong className="text-[#0D3522]">{currentUser.fullName}</strong>. Order invoices and delivery updates will be sent to your verified credentials.
+                </p>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div className="space-y-1">

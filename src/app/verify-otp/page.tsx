@@ -24,6 +24,8 @@ function VerifyOtpContent() {
   const [storedEmail, setStoredEmail] = useState('');
   const [storedMobile, setStoredMobile] = useState('');
 
+  const redirectParam = searchParams.get('redirect') || searchParams.get('from') || (typeof window !== 'undefined' ? sessionStorage.getItem('auth_redirect') : null);
+
   useEffect(() => {
     // Read target from query or session
     const paramTarget = searchParams.get('target');
@@ -129,7 +131,11 @@ function VerifyOtpContent() {
         return;
       }
 
-      setSuccessMsg('Verification successful! Accessing your account...');
+      setSuccessMsg(
+        redirectParam?.startsWith('/checkout')
+          ? 'Verification successful! Returning to your checkout...'
+          : 'Verification successful! Accessing your account...'
+      );
 
       // Save customer session info for UI state
       if (typeof window !== 'undefined') {
@@ -148,11 +154,14 @@ function VerifyOtpContent() {
         sessionStorage.removeItem('auth_name');
         sessionStorage.removeItem('auth_email');
         sessionStorage.removeItem('auth_mobile');
+        sessionStorage.removeItem('auth_redirect');
       }
 
       setTimeout(() => {
         if (data.user.role === 'SUPER_ADMIN' || data.user.role === 'ADMIN') {
-          router.push('/admin');
+          router.push(redirectParam?.startsWith('/admin') ? redirectParam : '/admin');
+        } else if (redirectParam) {
+          router.push(redirectParam);
         } else {
           router.push('/account');
         }
@@ -272,7 +281,7 @@ function VerifyOtpContent() {
 
           <div className="flex items-center justify-between text-xs pt-1">
             <Link
-              href="/signin"
+              href={redirectParam ? `/signin?redirect=${encodeURIComponent(redirectParam)}` : '/signin'}
               className="text-[#6B5B52] hover:text-[#241611] flex items-center space-x-1 underline"
             >
               <ArrowLeft className="w-3 h-3" />

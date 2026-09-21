@@ -93,9 +93,26 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Protect /checkout paths (e.g. /checkout, /checkout/payment)
+  const isCheckoutPath = pathname === '/checkout' || pathname.startsWith('/checkout/');
+  if (isCheckoutPath) {
+    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
+    let payload = null;
+    if (token) {
+      payload = await verifySessionToken(token);
+    }
+
+    if (!payload) {
+      // Unauthenticated customer attempting to checkout -> redirect to signin with return URL
+      const signinUrl = new URL('/signin', request.url);
+      signinUrl.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(signinUrl);
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/admin/:path*', '/checkout', '/checkout/:path*'],
 };
