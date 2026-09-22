@@ -15,7 +15,8 @@ export type UserRole =
   | 'OPERATIONS'
   | 'INVENTORY_MANAGER'
   | 'CUSTOMER_SUPPORT'
-  | 'CUSTOMER';
+  | 'CUSTOMER'
+  | 'INVESTOR';
 
 export interface User {
   id: string;

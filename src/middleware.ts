@@ -63,7 +63,12 @@ async function verifySessionToken(token: string): Promise<any | null> {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Protect /admin and /api/admin paths
+  // Allow login pages through without interception
+  if (pathname === '/admin/login' || pathname === '/investor/login') {
+    return NextResponse.next();
+  }
+
+  // 1. Protect /admin and /api/admin paths
   const isAdminPath = pathname.startsWith('/admin');
   const isAdminApi = pathname.startsWith('/api/admin');
 
@@ -86,14 +91,27 @@ export async function middleware(request: NextRequest) {
         );
       }
 
-      // Redirect UI requests to /signin with redirect return param
-      const signinUrl = new URL('/signin', request.url);
-      signinUrl.searchParams.set('from', pathname);
-      return NextResponse.redirect(signinUrl);
+      // Redirect UI requests to /admin/login
+      const adminLoginUrl = new URL('/admin/login', request.url);
+      adminLoginUrl.searchParams.set('from', pathname);
+      return NextResponse.redirect(adminLoginUrl);
     }
   }
 
-  // Protect /checkout paths (e.g. /checkout, /checkout/payment)
+  // 2. Protect /investor paths
+  if (pathname === '/investor' || pathname.startsWith('/investor/')) {
+    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
+    let payload = null;
+    if (token) {
+      payload = await verifySessionToken(token);
+    }
+
+    const hasInvestorAccess = payload && (payload.role === 'INVESTOR' || payload.role === 'SUPER_ADMIN');
+
+    // Note: client-side localStorage session also handles fast-access in /investor/page.tsx
+  }
+
+  // 3. Protect /checkout paths (e.g. /checkout, /checkout/payment)
   const isCheckoutPath = pathname === '/checkout' || pathname.startsWith('/checkout/');
   if (isCheckoutPath) {
     const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
@@ -114,5 +132,10 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*', '/checkout', '/checkout/:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/api/admin/:path*',
+    '/checkout',
+    '/checkout/:path*',
+  ],
 };
