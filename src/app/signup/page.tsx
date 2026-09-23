@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { brandConfig } from '@/data/brandConfig';
-import { ArrowRight, RefreshCw, MailCheck } from 'lucide-react';
+import { ArrowRight, RefreshCw } from 'lucide-react';
 import { supabase } from '@/supabaseClient';
 
 function SignupContent() {
@@ -13,18 +13,17 @@ function SignupContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setInfoMessage(null);
     setIsLoading(true);
 
     try {
+      const cleanEmail = email.trim().toLowerCase();
       const { data, error: authError } = await supabase.auth.signUp({
-        email,
+        email: cleanEmail,
         password,
       });
 
@@ -34,18 +33,13 @@ function SignupContent() {
         return;
       }
 
-      // After signUp(), if data.session is null, don’t redirect to the dashboard.
-      // Just show: "Check your email and confirm your account before logging in."
-      if (!data?.session) {
-        setInfoMessage('Check your email and confirm your account before logging in.');
-        setIsLoading(false);
-        return;
-      }
+      // Do NOT auto-login: sign out any session if created
+      await supabase.auth.signOut();
 
-      // Only redirect when a real session exists
-      router.push('/');
+      // Redirect to the Sign In page with email prefilled and success query
+      router.push(`/signin?signup=success&email=${encodeURIComponent(cleanEmail)}`);
     } catch (err: any) {
-      setError(err?.message || 'An unexpected error occurred. Please try again.');
+      setError(err?.message || 'Failed to create account. Please try again.');
       setIsLoading(false);
     }
   };
@@ -75,76 +69,57 @@ function SignupContent() {
           </p>
         </div>
 
-        {/* Confirmation required notification */}
-        {infoMessage ? (
-          <div className="space-y-4">
-            <div className="p-4 bg-[#EDF6F1] border border-[#23583C]/30 text-[#1B4D33] text-xs leading-relaxed rounded-xs flex items-start space-x-3">
-              <MailCheck className="w-5 h-5 text-[#23583C] shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-sm text-[#1B4D33]">Confirmation Required</p>
-                <p className="mt-1 text-[#3A5445]">{infoMessage}</p>
-              </div>
-            </div>
-            <Link
-              href="/login"
-              className="w-full py-3.5 bg-[#0D3522] hover:bg-[#134B31] text-white text-xs uppercase tracking-widest font-semibold transition-colors flex items-center justify-center space-x-2 shadow-md block text-center"
-            >
-              <span>Go to Sign In</span>
-            </Link>
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-[#241611] block">
+              Email Address
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="w-full bg-[#FAF7F2] border border-[#E7DED4] px-3.5 py-2.5 text-xs text-[#241611] focus:outline-none focus:border-[#0D3522]"
+              autoFocus
+              required
+            />
           </div>
-        ) : (
-          /* Form */
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#241611] block">
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full bg-[#FAF7F2] border border-[#E7DED4] px-3.5 py-2.5 text-xs text-[#241611] focus:outline-none focus:border-[#0D3522]"
-                autoFocus
-                required
-              />
-            </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#241611] block">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Create a password"
-                className="w-full bg-[#FAF7F2] border border-[#E7DED4] px-3.5 py-2.5 text-xs text-[#241611] focus:outline-none focus:border-[#0D3522]"
-                required
-              />
-            </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-[#241611] block">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Create a password"
+              className="w-full bg-[#FAF7F2] border border-[#E7DED4] px-3.5 py-2.5 text-xs text-[#241611] focus:outline-none focus:border-[#0D3522]"
+              required
+            />
+          </div>
 
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3.5 bg-[#0D3522] hover:bg-[#134B31] text-white text-xs uppercase tracking-widest font-semibold transition-colors flex items-center justify-center space-x-2 shadow-md disabled:opacity-60 cursor-pointer"
-              >
-                {isLoading ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>CREATING ACCOUNT...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>CREATE ACCOUNT</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        )}
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3.5 bg-[#0D3522] hover:bg-[#134B31] text-white text-xs uppercase tracking-widest font-semibold transition-colors flex items-center justify-center space-x-2 shadow-md disabled:opacity-60 cursor-pointer"
+            >
+              {isLoading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>CREATING ACCOUNT...</span>
+                </>
+              ) : (
+                <>
+                  <span>CREATE ACCOUNT</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </div>
+        </form>
 
         {/* Error message under the form */}
         {error && (
@@ -156,7 +131,7 @@ function SignupContent() {
         <div className="pt-4 border-t border-[#E7DED4] text-center text-xs text-[#6B5B52]">
           Already have an account?{' '}
           <Link
-            href="/login"
+            href="/signin"
             className="text-[#0D3522] font-bold hover:underline"
           >
             Sign In

@@ -1,19 +1,30 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { brandConfig } from '@/data/brandConfig';
-import { ArrowRight, RefreshCw } from 'lucide-react';
+import { ArrowRight, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/supabaseClient';
 
 function SignInContent() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const searchParams = useSearchParams();
+  const isSignupSuccess = searchParams.get('signup') === 'success';
+  const emailQuery = searchParams.get('email') || '';
+
+  const [email, setEmail] = useState(emailQuery);
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Sync email from query parameter if it changes or loads asynchronously
+  useEffect(() => {
+    if (emailQuery) {
+      setEmail(emailQuery);
+    }
+  }, [emailQuery]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +33,7 @@ function SignInContent() {
 
     try {
       const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim().toLowerCase(),
         password,
       });
 
@@ -70,6 +81,19 @@ function SignInContent() {
           </p>
         </div>
 
+        {/* Success message above the form when arriving from signup */}
+        {isSignupSuccess && (
+          <div className="p-3.5 bg-[#EDF6F1] border border-[#23583C]/30 text-[#1B4D33] text-xs leading-relaxed rounded-xs flex items-start space-x-2.5">
+            <CheckCircle2 className="w-4 h-4 text-[#23583C] shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-[#1B4D33]">Account Created Successfully</p>
+              <p className="text-[11px] text-[#3A5445] mt-0.5">
+                Your account has been created. Please check your email and verify your address before logging in.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Form */}
         <form onSubmit={handleSignIn} className="space-y-4">
           <div className="space-y-1.5">
@@ -82,7 +106,7 @@ function SignInContent() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@example.com"
               className="w-full bg-[#FAF7F2] border border-[#E7DED4] px-3.5 py-2.5 text-xs text-[#241611] focus:outline-none focus:border-[#0D3522]"
-              autoFocus
+              autoFocus={!isSignupSuccess}
               required
             />
           </div>
@@ -105,6 +129,7 @@ function SignInContent() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               className="w-full bg-[#FAF7F2] border border-[#E7DED4] px-3.5 py-2.5 text-xs text-[#241611] focus:outline-none focus:border-[#0D3522]"
+              autoFocus={isSignupSuccess}
               required
             />
           </div>
