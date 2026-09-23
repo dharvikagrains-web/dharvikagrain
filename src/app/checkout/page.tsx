@@ -8,6 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { initialAddresses } from '@/data/addresses';
 import { availableCoupons } from '@/data/coupons';
 import { SavedAddress } from '@/types';
+import { supabase } from '@/supabaseClient';
 import {
   ShieldCheck,
   Truck,
@@ -53,15 +54,19 @@ export default function CheckoutPage() {
   const [newState, setNewState] = useState('Telangana');
   const [newType, setNewType] = useState<'Home' | 'Work'>('Home');
 
-  // Verify authentication & load customer details + saved addresses
   useEffect(() => {
     async function checkAuthAndLoadAddresses() {
       try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
         const res = await fetch('/api/auth/me');
         const data = await res.json();
-        if (!data.authenticated || !data.user) {
-          // Unauthenticated customer -> redirect to signin with return URL
-          router.push('/signin?redirect=/checkout');
+
+        if (!session && (!data.authenticated || !data.user)) {
+          // Unauthenticated customer -> redirect to /login with return URL
+          router.push('/login?redirect=/checkout');
           return;
         }
 

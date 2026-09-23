@@ -32,7 +32,13 @@ function SignInContent() {
         return;
       }
 
-      router.push('/');
+      // Only redirect when a real session exists after login
+      if (data?.session) {
+        router.push('/');
+      } else {
+        setError('Check your email and confirm your account before logging in.');
+        setLoading(false);
+      }
     } catch (err: any) {
       setError(err?.message || 'An unexpected error occurred. Please try again.');
       setLoading(false);
@@ -106,7 +112,7 @@ function SignInContent() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-[#0D3522] hover:bg-[#134B31] text-white text-xs uppercase tracking-widest font-semibold transition-colors flex items-center justify-center space-x-2 shadow-md disabled:opacity-60"
+            className="w-full py-3.5 bg-[#0D3522] hover:bg-[#134B31] text-white text-xs uppercase tracking-widest font-semibold transition-colors flex items-center justify-center space-x-2 shadow-md disabled:opacity-60 cursor-pointer"
           >
             {loading ? (
               <>

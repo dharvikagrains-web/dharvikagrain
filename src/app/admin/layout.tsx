@@ -40,10 +40,71 @@ const navItems = [
   { name: 'Customers', href: '/admin/customers', icon: Users },
   { name: 'Store Settings', href: '/admin/settings', icon: Settings },
 ];
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/supabaseClient';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [hasSession, setHasSession] = useState<boolean | null>(null);
+
+  const isAdminLogin = pathname === '/admin/login';
+
+  React.useEffect(() => {
+    if (isAdminLogin) {
+      setHasSession(true);
+      return;
+    }
+
+    let mounted = true;
+
+    async function checkAuth() {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session) {
+          if (mounted) {
+            setHasSession(false);
+            router.push('/login');
+          }
+        } else {
+          if (mounted) {
+            setHasSession(true);
+          }
+        }
+      } catch {
+        if (mounted) {
+          setHasSession(false);
+          router.push('/login');
+        }
+      }
+    }
+
+    checkAuth();
+
+    return () => {
+      mounted = false;
+    };
+  }, [isAdminLogin, router]);
+
+  if (isAdminLogin) {
+    return <>{children}</>;
+  }
+
+  if (hasSession === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#161B18]">
+        <div className="w-8 h-8 border-2 border-[#C5A059] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!hasSession) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#F4F5F7] text-[#1E293B] flex">
