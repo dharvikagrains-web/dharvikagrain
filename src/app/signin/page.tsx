@@ -82,9 +82,17 @@ function SignInContent() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-[#241611] block">
-              Password
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-[#241611] block">
+                Password
+              </label>
+              <Link
+                href="/forgot-password"
+                className="text-[11px] text-[#0D3522] hover:underline font-medium"
+              >
+                Forgot Password?
+              </Link>
+            </div>
             <input
               type="password"
               value={password}
