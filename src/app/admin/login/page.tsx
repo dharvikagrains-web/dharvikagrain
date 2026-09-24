@@ -33,48 +33,35 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      // 1. Authenticate via Supabase Auth
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
-        password,
+      // 1. Authenticate via server-side admin login API
+      const res = await fetch('/api/auth/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password,
+        }),
       });
 
-      if (authError) {
-        // Fallback for demo admin testing
-        if (
-          email.toLowerCase().includes('dharvikagrains') ||
-          email.toLowerCase().includes('admin') ||
-          password === 'DharvikaAdmin2026!'
-        ) {
-          // Send request to verify-otp endpoint or create admin session
-          const res = await fetch('/api/auth/verify-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              identifier: '9876543210',
-              code: '123456',
-            }),
-          });
+      const data = await res.json();
 
-          if (res.ok) {
-            router.push('/admin');
-            return;
-          }
-        }
-
-        setError(authError.message || 'Invalid administrator credentials. Access restricted.');
+      if (!res.ok || !data.success) {
+        setError(data.error || 'Invalid administrator credentials. Access restricted.');
         setLoading(false);
         return;
       }
 
-      // Check role
-      const userRole = data.user?.user_metadata?.role || 'ADMIN';
-      if (userRole !== 'ADMIN' && userRole !== 'SUPER_ADMIN' && userRole !== 'OPERATIONS') {
-        setError('Forbidden: This account does not possess administrative clearance.');
-        setLoading(false);
-        return;
+      // 2. Best-effort Supabase client session sync
+      try {
+        await supabase.auth.signInWithPassword({
+          email: email.trim().toLowerCase(),
+          password,
+        });
+      } catch {
+        // Fallback: server session cookie is authoritative
       }
 
+      // 3. Redirect to Admin Command Center
       router.push('/admin');
     } catch {
       setError('Network communication error.');

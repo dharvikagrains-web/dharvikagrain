@@ -66,20 +66,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           data: { session },
         } = await supabase.auth.getSession();
 
-        if (!session) {
-          if (mounted) {
-            setHasSession(false);
-            router.push('/login');
+        if (session) {
+          if (mounted) setHasSession(true);
+          return;
+        }
+
+        // Check authoritative server session (/api/auth/me)
+        const meRes = await fetch('/api/auth/me');
+        if (meRes.ok) {
+          const meData = await meRes.json();
+          const role = meData.user?.role;
+          if (meData.authenticated && ['ADMIN', 'SUPER_ADMIN', 'OWNER', 'OPERATIONS'].includes(role)) {
+            if (mounted) setHasSession(true);
+            return;
           }
-        } else {
-          if (mounted) {
-            setHasSession(true);
-          }
+        }
+
+        if (mounted) {
+          setHasSession(false);
+          router.push('/admin/login');
         }
       } catch {
         if (mounted) {
           setHasSession(false);
-          router.push('/login');
+          router.push('/admin/login');
         }
       }
     }
