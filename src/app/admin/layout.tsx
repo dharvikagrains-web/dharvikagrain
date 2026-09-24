@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { supabase } from '@/supabaseClient';
 import { brandConfig } from '@/data/brandConfig';
 import {
   LayoutDashboard,
@@ -41,8 +42,6 @@ const navItems = [
   { name: 'Customers', href: '/admin/customers', icon: Users },
   { name: 'Store Settings', href: '/admin/settings', icon: Settings },
 ];
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/supabaseClient';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
