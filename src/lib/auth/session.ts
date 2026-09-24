@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import crypto from 'crypto';
-import { db, UserRole, User, prisma, hasDatabaseUrl } from '@/lib/db';
+import { db, UserRole, User, ProfileEntity, prisma, hasDatabaseUrl } from '@/lib/db';
 import { sendOtpViaMsg91 } from '@/lib/sms/msg91';
 import { sendOtpViaResend } from '@/lib/email/resend';
 
@@ -190,12 +190,87 @@ export async function requireAuth(
   }
 
   if (allowedRoles && allowedRoles.length > 0) {
-    if (!allowedRoles.includes(user.role)) {
+    // If OWNER or SUPER_ADMIN is asking for ADMIN access, grant it
+    const isOwnerOrSuper = user.role === 'OWNER' || user.role === 'SUPER_ADMIN';
+    const hasRole = allowedRoles.includes(user.role) || (isOwnerOrSuper && allowedRoles.includes('ADMIN'));
+
+    if (!hasRole) {
       return { error: 'Forbidden: Insufficient privileges.', status: 403 };
     }
   }
 
   return { user };
+}
+
+/**
+ * Retrieve authenticated profile linking auth.users -> public.profiles
+ */
+export async function getAuthenticatedProfile(): Promise<ProfileEntity | null> {
+  // 1. Check Supabase server session
+  try {
+    const { createClient } = await import('@/lib/supabase/server');
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+      const existing = db.getProfileById(user.id);
+      if (existing) return existing;
+
+      const meta = user.user_metadata || {};
+      const assignedRole = (meta.role as 'CUSTOMER' | 'ADMIN' | 'OWNER') || 'CUSTOMER';
+      return db.upsertProfile({
+        id: user.id,
+        fullName: meta.full_name || meta.name || '',
+        email: user.email || '',
+        phone: meta.phone || user.phone || '',
+        avatarUrl: meta.avatar_url,
+        role: assignedRole,
+      });
+    }
+  } catch {}
+
+  // 2. Check session cookie fallback
+  const user = await getCurrentUser();
+  if (user) {
+    let role: 'CUSTOMER' | 'ADMIN' | 'OWNER' = 'CUSTOMER';
+    if (user.role === 'OWNER' || user.role === 'SUPER_ADMIN') role = 'OWNER';
+    else if (user.role === 'ADMIN' || user.role === 'OPERATIONS') role = 'ADMIN';
+
+    return (
+      db.getProfileById(user.id) ||
+      db.upsertProfile({
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.mobile,
+        role,
+      })
+    );
+  }
+
+  return null;
+}
+
+/**
+ * Enforce role requirement for CUSTOMER, ADMIN, OWNER architecture
+ */
+export async function requireRole(
+  allowedRoles: ('CUSTOMER' | 'ADMIN' | 'OWNER')[]
+): Promise<{ profile: ProfileEntity } | { error: string; status: number }> {
+  const profile = await getAuthenticatedProfile();
+  if (!profile) {
+    return { error: 'Authentication required. Please sign in.', status: 401 };
+  }
+
+  // OWNER automatically inherits ADMIN capabilities
+  const isOwner = profile.role === 'OWNER';
+  const hasAccess = allowedRoles.includes(profile.role) || (isOwner && allowedRoles.includes('ADMIN'));
+
+  if (!hasAccess) {
+    return { error: 'Forbidden: Insufficient privileges.', status: 403 };
+  }
+
+  return { profile };
 }
 
 /**

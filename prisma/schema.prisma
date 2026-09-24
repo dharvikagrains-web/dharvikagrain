@@ -11,6 +11,7 @@ datasource db {
 }
 
 enum UserRole {
+  OWNER
   SUPER_ADMIN
   ADMIN
   OPERATIONS
@@ -21,6 +22,12 @@ enum UserRole {
 }
 
 enum InventoryTxType {
+  STOCK_RECEIVED
+  STOCK_RESERVED
+  STOCK_SOLD
+  STOCK_ADJUSTED
+  STOCK_RETURNED
+  STOCK_RELEASED
   PURCHASE
   RESERVATION
   RELEASE
@@ -89,6 +96,43 @@ model CustomerProfile {
   createdAt        DateTime @default(now())
 }
 
+model Profile {
+  id        String   @id @db.Uuid
+  fullName  String?  @map("full_name")
+  email     String?
+  phone     String?
+  avatarUrl String?  @map("avatar_url")
+  role      UserRole @default(CUSTOMER)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([role])
+  @@index([email])
+  @@map("profiles")
+}
+
+model Product {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  slug         String   @unique
+  category     String
+  description  String
+  images       String[]
+  price        Float
+  comparePrice Float?   @map("compare_price")
+  weight       Float    @default(500)
+  unit         String   @default("g")
+  isAvailable  Boolean  @default(true) @map("is_available")
+  status       String   @default("PUBLISHED")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([category])
+  @@index([status])
+  @@index([slug])
+  @@map("products")
+}
+
 model SavedAddress {
   id         String   @id @default(uuid())
   userId     String?
@@ -113,38 +157,48 @@ model SavedAddress {
 // 2. Inventory & Batch Traceability
 // -----------------------------------------------------------------------------
 model InventoryEntity {
-  id           String   @id @default(uuid())
-  sku          String   @unique
-  productId    String
-  productName  String
-  variant      String
-  stock        Int      @default(0)
-  reserved     Int      @default(0)
-  threshold    Int      @default(15)
-  status       String   @default("In Stock")
-  batchNumber  String
-  sellingPrice Float
-  mrp          Float
-  updatedAt    DateTime @updatedAt
+  id            String   @id @default(uuid())
+  sku           String   @unique
+  productId     String
+  productName   String
+  variant       String
+  stockReceived Int      @default(0) @map("stock_received")
+  stockReserved Int      @default(0) @map("stock_reserved")
+  stockSold     Int      @default(0) @map("stock_sold")
+  stockAdjusted Int      @default(0) @map("stock_adjusted")
+  stockReturned Int      @default(0) @map("stock_returned")
+  stock         Int      @default(0)
+  reserved      Int      @default(0)
+  threshold     Int      @default(15)
+  status        String   @default("In Stock")
+  batchNumber   String
+  sellingPrice  Float
+  mrp           Float
+  updatedAt     DateTime @updatedAt
 
   @@index([sku])
   @@index([productId])
+  @@index([batchNumber])
+  @@map("inventory")
 }
 
 model InventoryTransaction {
   id          String          @id @default(uuid())
   sku         String
+  batchNumber String?         @map("batch_number")
   type        InventoryTxType
   quantity    Int
-  stockBefore Int
-  stockAfter  Int
-  referenceId String?
+  stockBefore Int             @map("stock_before")
+  stockAfter  Int             @map("stock_after")
+  referenceId String?         @map("reference_id")
   notes       String
-  actorEmail  String
-  createdAt   DateTime        @default(now())
+  actorEmail  String          @map("actor_email")
+  createdAt   DateTime        @default(now()) @map("created_at")
 
   @@index([sku])
   @@index([referenceId])
+  @@index([batchNumber])
+  @@map("inventory_transactions")
 }
 
 model BatchEntity {
@@ -375,4 +429,35 @@ model OtpVerification {
 
   @@index([identifier])
 }
+
+// -----------------------------------------------------------------------------
+// 9. Customer Cart & Line Items
+// -----------------------------------------------------------------------------
+model Cart {
+  id        String     @id @default(uuid()) @db.Uuid
+  userId    String     @unique @map("user_id") @db.Uuid
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime   @updatedAt @map("updated_at") @db.Timestamptz(6)
+  items     CartItem[]
+
+  @@index([userId])
+  @@map("carts")
+}
+
+model CartItem {
+  id             String   @id @default(uuid()) @db.Uuid
+  cartId         String   @map("cart_id") @db.Uuid
+  cart           Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId      String   @map("product_id")
+  selectedWeight String   @default("500g") @map("selected_weight")
+  quantity       Int      @default(1)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([cartId, productId, selectedWeight])
+  @@index([cartId])
+  @@index([productId])
+  @@map("cart_items")
+}
+
 

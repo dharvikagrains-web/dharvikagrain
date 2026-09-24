@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { requireAuth } from '@/lib/auth/session';
+import { db, isAdmin, isOwner } from '@/lib/db';
+import { requireAuth, getAuthenticatedProfile } from '@/lib/auth/session';
 
 export async function GET(req: NextRequest) {
   try {
@@ -21,9 +21,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const auth = await requireAuth(['SUPER_ADMIN', 'ADMIN', 'OPERATIONS']);
-    if ('error' in auth) {
-      return NextResponse.json({ error: auth.error }, { status: auth.status });
+    const caller = await getAuthenticatedProfile();
+    if (!caller || (!isAdmin(caller.role) && !isOwner(caller.role))) {
+      return NextResponse.json({ error: 'Unauthorized: Admin or Owner role required.' }, { status: 403 });
     }
 
     const body = await req.json();
@@ -52,9 +52,16 @@ export async function POST(req: NextRequest) {
       status = 'ACTIVE',
     } = body;
 
-    if (!batchNumber || !productId || !productName || !sourceRegion) {
+    if (!batchNumber || !productId || !productName || !manufacturingDate || !expiryDate) {
       return NextResponse.json(
-        { error: 'Batch Number, Product, and Source Region are mandatory.' },
+        { error: 'Batch Number, Product, Manufacturing Date, and Expiry Date are mandatory.' },
+        { status: 400 }
+      );
+    }
+
+    if (new Date(expiryDate) < new Date(manufacturingDate)) {
+      return NextResponse.json(
+        { error: 'Invalid dates: Expiry date cannot precede manufacturing date.' },
         { status: 400 }
       );
     }
@@ -87,7 +94,7 @@ export async function POST(req: NextRequest) {
         purityPercent: purityPercent || '99.8%',
         status: status as any,
       },
-      auth.user.email
+      caller.email || 'admin@dharvikagrains.in'
     );
 
     return NextResponse.json({ success: true, batch: newBatch });

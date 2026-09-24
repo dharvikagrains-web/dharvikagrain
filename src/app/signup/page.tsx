@@ -13,11 +13,13 @@ function SignupContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setMessage(null);
     setIsLoading(true);
 
     try {
@@ -33,11 +35,15 @@ function SignupContent() {
         return;
       }
 
-      // Do NOT auto-login: sign out any session if created
-      await supabase.auth.signOut();
+      // After signUp(), if data.session is null, don’t redirect to the dashboard.
+      if (!data?.session) {
+        setMessage('Check your email and confirm your account before logging in.');
+        setIsLoading(false);
+        return;
+      }
 
-      // Redirect to the Sign In page with email prefilled and success query
-      router.push(`/signin?signup=success&email=${encodeURIComponent(cleanEmail)}`);
+      // Only redirect when a real session exists after login
+      router.push('/');
     } catch (err: any) {
       setError(err?.message || 'Failed to create account. Please try again.');
       setIsLoading(false);
@@ -120,6 +126,13 @@ function SignupContent() {
             </button>
           </div>
         </form>
+
+        {/* Message / Notice under the form */}
+        {message && (
+          <div className="p-3 bg-[#EDF6F1] border border-[#23583C]/30 text-[#1B4D33] text-xs text-center leading-relaxed">
+            {message}
+          </div>
+        )}
 
         {/* Error message under the form */}
         {error && (

@@ -11,3 +11,9 @@ const supabaseKey =
  */
 export const createClient = () =>
   createBrowserClient(supabaseUrl, supabaseKey);
+
+/**
+ * Singleton client instance for direct imports
+ */
+export const supabase = createClient();
+

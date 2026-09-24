@@ -24,6 +24,7 @@ import {
   Bell,
   Search,
   ShieldCheck,
+  LogOut,
 } from 'lucide-react';
 
 const navItems = [
@@ -203,14 +204,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <ExternalLink className="w-3.5 h-3.5" />
           </Link>
 
-          <div className="flex items-center space-x-2.5 pt-1">
-            <div className="w-7 h-7 rounded-full bg-[#0D3522] text-white flex items-center justify-center text-xs font-bold font-mono">
-              AD
+          <div className="flex items-center justify-between pt-1">
+            <div className="flex items-center space-x-2.5 min-w-0">
+              <div className="w-7 h-7 rounded-full bg-[#0D3522] text-white flex items-center justify-center text-xs font-bold font-mono">
+                AD
+              </div>
+              <div className="text-[11px] min-w-0">
+                <p className="font-semibold text-white truncate">Administrator</p>
+                <p className="text-[10px] text-white/50 truncate">ops@dharvikagrains.in</p>
+              </div>
             </div>
-            <div className="text-[11px] min-w-0">
-              <p className="font-semibold text-white truncate">Administrator</p>
-              <p className="text-[10px] text-white/50 truncate">ops@dharvikagrains.in</p>
-            </div>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await supabase.auth.signOut();
+                } catch {}
+                try {
+                  await fetch('/api/auth/logout', { method: 'POST' });
+                } catch {}
+                router.push('/admin/login');
+              }}
+              title="Sign Out of Admin"
+              className="p-1.5 text-white/50 hover:text-[#B35638] transition-colors cursor-pointer"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </aside>

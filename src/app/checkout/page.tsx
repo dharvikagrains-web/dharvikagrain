@@ -8,7 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { initialAddresses } from '@/data/addresses';
 import { availableCoupons } from '@/data/coupons';
 import { SavedAddress } from '@/types';
-import { supabase } from '@/supabaseClient';
+import { supabase } from '@/lib/supabase/client';
 import {
   ShieldCheck,
   Truck,

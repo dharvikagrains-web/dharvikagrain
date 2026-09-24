@@ -54,6 +54,43 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cart, isInitialized]);
 
+  // Sync with server cart for authenticated customer on mount
+  useEffect(() => {
+    async function syncWithServer() {
+      try {
+        const res = await fetch('/api/cart');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.cart && Array.isArray(data.cart.items)) {
+            const mappedItems: CartItem[] = data.cart.items.map((it: any) => ({
+              id: it.id,
+              productId: it.productId,
+              slug: it.slug,
+              name: it.name,
+              localName: it.localName || '',
+              category: 'millets' as any,
+              image: it.image,
+              selectedWeight: it.selectedWeight,
+              price: it.unitPrice, // Authoritative price from server
+              mrp: it.mrp,
+              quantity: it.quantity,
+            }));
+            setCart(mappedItems);
+            try {
+              localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(mappedItems));
+            } catch {}
+          }
+        }
+      } catch (err) {
+        // Fallback to local storage if offline or not logged in
+      }
+    }
+
+    if (isInitialized) {
+      syncWithServer();
+    }
+  }, [isInitialized]);
+
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
@@ -95,15 +132,59 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
 
     setIsCartOpen(true);
+
+    // Sync addition to server for authenticated customer
+    fetch('/api/cart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: product.id,
+        selectedWeight: size,
+        quantity,
+      }),
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.success && data.cart?.items) {
+          setCart(
+            data.cart.items.map((it: any) => ({
+              id: it.id,
+              productId: it.productId,
+              slug: it.slug,
+              name: it.name,
+              localName: it.localName || '',
+              category: 'millets' as any,
+              image: it.image,
+              selectedWeight: it.selectedWeight,
+              price: it.unitPrice,
+              mrp: it.mrp,
+              quantity: it.quantity,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
   };
 
   const removeFromCart = (productId: string, selectedWeight: string) => {
+    const targetItem = cart.find(
+      (item) => item.productId === productId && item.selectedWeight === selectedWeight
+    );
+
     setCart((prev) =>
       prev.filter((item) => !(item.productId === productId && item.selectedWeight === selectedWeight))
     );
+
+    if (targetItem?.id) {
+      fetch(`/api/cart?itemId=${targetItem.id}`, { method: 'DELETE' }).catch(() => {});
+    }
   };
 
   const updateQuantity = (productId: string, selectedWeight: string, delta: number) => {
+    const targetItem = cart.find(
+      (item) => item.productId === productId && item.selectedWeight === selectedWeight
+    );
+
     setCart((prev) =>
       prev
         .map((item) => {
@@ -115,9 +196,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         })
         .filter(Boolean) as CartItem[]
     );
+
+    fetch('/api/cart', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        itemId: targetItem?.id,
+        productId,
+        selectedWeight,
+        action: delta > 0 ? 'INCREASE' : 'DECREASE',
+        delta: Math.abs(delta),
+      }),
+    }).catch(() => {});
   };
 
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    fetch('/api/cart?clearAll=true', { method: 'DELETE' }).catch(() => {});
+  };
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 

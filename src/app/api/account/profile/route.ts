@@ -1,72 +1,84 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCurrentUser } from '@/lib/auth/session';
+import { getAuthenticatedProfile } from '@/lib/auth/session';
 import { db } from '@/lib/db';
 
 export async function GET() {
   try {
-    const user = await getCurrentUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const profile = await getAuthenticatedProfile();
+    if (!profile) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required' }, { status: 401 });
     }
 
     return NextResponse.json({
       success: true,
       profile: {
-        id: user.id,
-        fullName: user.fullName,
-        email: user.email,
-        mobile: user.mobile,
-        role: user.role,
+        id: profile.id,
+        fullName: profile.fullName,
+        email: profile.email,
+        phone: profile.phone,
+        avatarUrl: profile.avatarUrl,
+        role: profile.role,
+        createdAt: profile.createdAt,
+        updatedAt: profile.updatedAt,
       },
     });
-  } catch {
+  } catch (err) {
+    console.error('API profile GET error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
 export async function PUT(req: NextRequest) {
   try {
-    const user = await getCurrentUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const profile = await getAuthenticatedProfile();
+    if (!profile) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required' }, { status: 401 });
     }
 
     const body = await req.json();
-    const { fullName, email, mobile } = body;
+    const { fullName, email, mobile, phone, avatarUrl, role: targetRole } = body;
 
-    const emailChanged = email && email.toLowerCase() !== user.email.toLowerCase();
-    const mobileChanged = mobile && mobile.replace(/\D/g, '') !== user.mobile.replace(/\D/g, '');
+    // Defense-in-depth: Prevent role escalation by Customers or unauthorized roles
+    if (targetRole && targetRole !== profile.role && profile.role === 'CUSTOMER') {
+      return NextResponse.json(
+        { error: 'Forbidden: Customers cannot change their own role or escalate privileges' },
+        { status: 403 }
+      );
+    }
 
-    const updatedUser = db.upsertUser({
-      fullName: fullName || user.fullName,
-      email: emailChanged ? email.toLowerCase() : user.email,
-      mobile: mobileChanged ? mobile : user.mobile,
-    });
+    const cleanPhone = phone || mobile;
+    const updateResult = db.updateProfile(
+      profile.id,
+      {
+        fullName,
+        email,
+        phone: cleanPhone,
+        avatarUrl,
+        ...(profile.role === 'OWNER' && targetRole ? { role: targetRole } : {}),
+      },
+      { id: profile.id, role: profile.role }
+    );
+
+    if (!updateResult.success || !updateResult.profile) {
+      return NextResponse.json({ error: updateResult.error || 'Failed to update profile' }, { status: 400 });
+    }
 
     db.addAuditLog(
-      user.email,
-      user.role,
+      profile.email,
+      profile.role,
       'PROFILE_UPDATED',
       'USER',
-      user.id,
-      `User updated profile details. Email changed: ${emailChanged}, Mobile changed: ${mobileChanged}`
+      profile.id,
+      `User ${profile.fullName} updated profile details.`
     );
 
     return NextResponse.json({
       success: true,
-      requiresReverification: emailChanged || mobileChanged,
-      message:
-        emailChanged || mobileChanged
-          ? 'Contact information updated. Please verify your new credentials on next sign in.'
-          : 'Profile updated successfully.',
-      profile: {
-        id: updatedUser.id,
-        fullName: updatedUser.fullName,
-        email: updatedUser.email,
-        mobile: updatedUser.mobile,
-      },
+      message: 'Profile updated successfully.',
+      profile: updateResult.profile,
     });
   } catch {
     return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
   }
 }
+

@@ -60,6 +60,7 @@ export interface Product {
 }
 
 export interface CartItem {
+  id?: string;
   productId: string;
   slug: string;
   name: string;

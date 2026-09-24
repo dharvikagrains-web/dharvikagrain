@@ -21,18 +21,37 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 
+import { supabase } from '@/lib/supabase/client';
+
 export default function AccountHubPage() {
   const router = useRouter();
   const { wishlist } = useWishlist();
-  const [userName, setUserName] = useState('Pavan');
-  const [fullName, setFullName] = useState('Pavan Geesala');
+  const [userName, setUserName] = useState('Member');
+  const [fullName, setFullName] = useState('Dharvika Member');
   const [mobile, setMobile] = useState('+91 98765 43210');
-  const [email, setEmail] = useState('pavangeesala81@gmail.com');
+  const [email, setEmail] = useState('');
   const [dietary, setDietary] = useState('Gluten-Free & High Fiber');
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
     async function checkAuth() {
+      // 1. Check Supabase session first
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const userMeta = session.user.user_metadata || {};
+          const displayName = userMeta.full_name || session.user.email?.split('@')[0] || 'Member';
+          setUserName(displayName.split(' ')[0]);
+          setFullName(displayName);
+          setEmail(session.user.email || '');
+          if (userMeta.mobile) setMobile(userMeta.mobile);
+          return;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      // 2. Check server session cookie API
       try {
         const res = await fetch('/api/auth/me');
         if (res.ok) {
@@ -49,6 +68,7 @@ export default function AccountHubPage() {
         console.error(err);
       }
 
+      // 3. Check client storage fallback
       if (typeof window !== 'undefined') {
         const stored = localStorage.getItem('dharvika_user');
         if (stored) {
@@ -72,6 +92,9 @@ export default function AccountHubPage() {
 
   const handleLogout = async () => {
     try {
+      await supabase.auth.signOut();
+    } catch {}
+    try {
       await fetch('/api/auth/logout', { method: 'POST' });
     } catch {}
 
@@ -79,7 +102,7 @@ export default function AccountHubPage() {
       localStorage.removeItem('dharvika_user');
       sessionStorage.removeItem('auth_identifier');
     }
-    router.push('/signin');
+    router.push('/login');
   };
 
   const handleSaveProfile = (e: React.FormEvent) => {

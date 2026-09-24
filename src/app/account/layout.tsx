@@ -20,7 +20,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         if (!session) {
           if (mounted) {
             setHasSession(false);
-            router.push('/login');
+            router.push('/login?redirect=/account');
           }
         } else {
           if (mounted) {
@@ -30,7 +30,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
       } catch {
         if (mounted) {
           setHasSession(false);
-          router.push('/login');
+          router.push('/login?redirect=/account');
         }
       }
     }
@@ -42,7 +42,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session && mounted) {
         setHasSession(false);
-        router.push('/login');
+        router.push('/login?redirect=/account');
       } else if (session && mounted) {
         setHasSession(true);
       }

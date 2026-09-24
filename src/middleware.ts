@@ -5,6 +5,7 @@ const AUTH_COOKIE_NAME = 'dharvika_session';
 const AUTH_SECRET = process.env.AUTH_SECRET || 'dharvika_luxury_grains_super_secret_key_2026';
 
 const ADMIN_ROLES = [
+  'OWNER',
   'SUPER_ADMIN',
   'ADMIN',
   'OPERATIONS',

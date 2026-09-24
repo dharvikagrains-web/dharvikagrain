@@ -170,7 +170,7 @@ export default function CartPage() {
                     <div className="flex items-center border border-[#E7DED4] bg-[#FAF7F2]">
                       <button
                         type="button"
-                        onClick={() => updateQuantity(item.productId, item.selectedWeight, item.quantity - 1)}
+                        onClick={() => updateQuantity(item.productId, item.selectedWeight, -1)}
                         className="p-2 text-[#6B5B52] hover:text-[#241611] hover:bg-white transition-colors"
                         aria-label="Decrease quantity"
                       >
@@ -181,7 +181,7 @@ export default function CartPage() {
                       </span>
                       <button
                         type="button"
-                        onClick={() => updateQuantity(item.productId, item.selectedWeight, item.quantity + 1)}
+                        onClick={() => updateQuantity(item.productId, item.selectedWeight, 1)}
                         className="p-2 text-[#6B5B52] hover:text-[#241611] hover:bg-white transition-colors"
                         aria-label="Increase quantity"
                       >

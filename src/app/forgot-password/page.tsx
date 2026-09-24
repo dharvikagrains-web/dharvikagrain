@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { brandConfig } from '@/data/brandConfig';
 import { ArrowRight, RefreshCw, CheckCircle2, Mail, ArrowLeft } from 'lucide-react';
-import { supabase } from '@/supabaseClient';
+import { supabase } from '@/lib/supabase/client';
 
 function ForgotPasswordContent() {
   const [email, setEmail] = useState('');
