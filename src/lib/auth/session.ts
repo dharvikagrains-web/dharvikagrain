@@ -166,13 +166,43 @@ export async function getCurrentUser(): Promise<User | null> {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
-    if (!token) return null;
+    if (token) {
+      const payload = verifySession(token);
+      if (payload) {
+        const user = db.getUserById(payload.userId) || db.getUserByEmail(payload.email);
+        if (user) return user;
+      }
+    }
 
-    const payload = verifySession(token);
-    if (!payload) return null;
+    // Fallback: Check Supabase SSR session
+    try {
+      const { createClient } = await import('@/lib/supabase/server');
+      const supabase = await createClient();
+      const {
+        data: { user: sbUser },
+      } = await supabase.auth.getUser();
 
-    const user = db.getUserById(payload.userId) || db.getUserByEmail(payload.email);
-    return user || null;
+      if (sbUser) {
+        const email = (sbUser.email || '').trim().toLowerCase();
+        const existing = db.getUserById(sbUser.id) || (email ? db.getUserByEmail(email) : null);
+        if (existing) return existing;
+
+        const meta = sbUser.user_metadata || {};
+        const fullName =
+          meta.full_name || meta.name || (email ? email.split('@')[0] : 'Customer');
+        const mobile = meta.phone || sbUser.phone || '';
+        const role = (meta.role as UserRole) || 'CUSTOMER';
+
+        return db.upsertUser({
+          email,
+          mobile,
+          fullName,
+          role,
+        });
+      }
+    } catch {}
+
+    return null;
   } catch {
     return null;
   }

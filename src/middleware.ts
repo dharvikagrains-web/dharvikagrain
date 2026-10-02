@@ -122,10 +122,15 @@ export async function middleware(request: NextRequest) {
     }
 
     if (!payload) {
-      // Unauthenticated customer attempting to checkout -> redirect to signin with return URL
-      const signinUrl = new URL('/signin', request.url);
-      signinUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(signinUrl);
+      const hasSupabaseCookie = request.cookies.getAll().some(
+        (c) => c.name.startsWith('sb-') && c.name.includes('-auth-token')
+      );
+      if (!hasSupabaseCookie) {
+        // Unauthenticated customer attempting to checkout -> redirect to signin with return URL
+        const signinUrl = new URL('/signin', request.url);
+        signinUrl.searchParams.set('redirect', pathname);
+        return NextResponse.redirect(signinUrl);
+      }
     }
   }
 
