@@ -31,9 +31,68 @@ function SignInContent() {
 
   useEffect(() => {
     if (urlError) {
-      setError(urlError);
+      // If hash contains an access token, ignore urlError because auth actually succeeded
+      const hasHashToken =
+        typeof window !== 'undefined' && window.location.hash.includes('access_token');
+      if (!hasHashToken) {
+        setError(urlError);
+      }
     }
   }, [urlError]);
+
+  // Handle OAuth hash token resolution and auto-redirect
+  useEffect(() => {
+    let isMounted = true;
+    const hasHashToken =
+      typeof window !== 'undefined' && window.location.hash.includes('access_token');
+
+    async function checkOAuthSession() {
+      try {
+        if (hasHashToken) {
+          setError(null);
+        }
+
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (session && isMounted) {
+          setError(null);
+          try {
+            await fetch('/api/auth/sync-session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ user: session.user }),
+            });
+          } catch {}
+          router.replace(redirectParam);
+        }
+      } catch {}
+    }
+
+    checkOAuthSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session && isMounted) {
+        setError(null);
+        try {
+          await fetch('/api/auth/sync-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user: session.user }),
+          });
+        } catch {}
+        router.replace(redirectParam);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
+  }, [redirectParam, router]);
 
   const handleGoogleLogin = async () => {
     setError(null);
