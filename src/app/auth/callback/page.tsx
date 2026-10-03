@@ -116,7 +116,7 @@ function CallbackContent() {
         await fetch('/api/auth/sync-session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user }),
+          body: JSON.stringify({ user, destination }),
         });
       } catch (e) {
         console.warn('[CALLBACK] Server sync warning:', e);

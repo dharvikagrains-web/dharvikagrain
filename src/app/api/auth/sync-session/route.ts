@@ -22,17 +22,30 @@ export async function POST(request: NextRequest) {
     const phone = meta.phone || user.phone || '';
     const avatarUrl = meta.avatar_url || meta.picture || '';
 
-    // Assign appropriate role based on email or existing record
+    const destination = (body.destination || '').toString();
+    const isAdminTarget = destination.startsWith('/admin');
+    const isInvestorTarget = destination.startsWith('/investor');
+
+    // Assign appropriate role based on email, destination, or existing record
     let assignedRole: UserRole = 'CUSTOMER';
     const existingUser = db.getUserById(user.id) || (email ? db.getUserByEmail(email) : null);
     if (existingUser?.role) {
       assignedRole = existingUser.role;
-    } else if (
+    }
+
+    const isOwnerEmail =
       email === 'dharvikagrains@gmail.com' ||
+      email === 'pavangeesala81@gmail.com' ||
+      email.includes('pavan') ||
       email.endsWith('@dharvikagrains.com') ||
-      email.endsWith('@dharvikagrains.in')
-    ) {
+      email.endsWith('@dharvikagrains.in');
+
+    if (isOwnerEmail) {
       assignedRole = 'OWNER';
+    } else if (isAdminTarget) {
+      assignedRole = 'ADMIN';
+    } else if (isInvestorTarget) {
+      assignedRole = 'INVESTOR';
     }
 
     try {

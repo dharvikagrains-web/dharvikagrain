@@ -17,6 +17,26 @@ export default function AdminLoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    let mounted = true;
+    async function checkCurrentAdminSession() {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          const role = data.user?.role;
+          if (data.authenticated && ['ADMIN', 'SUPER_ADMIN', 'OWNER', 'OPERATIONS'].includes(role)) {
+            if (mounted) router.replace('/admin');
+          }
+        }
+      } catch {}
+    }
+    checkCurrentAdminSession();
+    return () => {
+      mounted = false;
+    };
+  }, [router]);
+
   const handleGoogleLogin = async () => {
     setError(null);
     setGoogleLoading(true);
