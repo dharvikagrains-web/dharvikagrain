@@ -70,21 +70,25 @@ export default function HomePage() {
     {
       ...products.find((p) => p.id === 'millet-korralu')!,
       badge: 'Promotion',
+      studioImage: '/images/products/studio/foxtail-millet.jpg',
       refHeadline: 'Unpolished Foxtail Millet for daily nourishment.',
     },
     {
       ...products.find((p) => p.id === 'spice-turmeric')!,
       badge: 'New',
+      studioImage: '/images/products/studio/salem-turmeric.jpg',
       refHeadline: 'Single-origin Salem turmeric for healing cooking.',
     },
     {
       ...products.find((p) => p.id === 'millet-samalu')!,
       badge: 'Customer favorite',
+      studioImage: '/images/products/studio/little-millet.jpg',
       refHeadline: 'Little Millet grains for light, wholesome meals.',
     },
     {
       ...products.find((p) => p.id === 'spice-red-chilli')!,
       badge: 'New',
+      studioImage: '/images/products/studio/guntur-chilli.jpg',
       refHeadline: 'Stemless Guntur red chilli powder for rich flavour.',
     },
   ].filter(Boolean);
@@ -211,7 +215,7 @@ export default function HomePage() {
         {/* 4 Cards Grid / Carousel */}
         <div
           ref={carouselRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 overflow-x-auto sm:overflow-visible pb-4 sm:pb-0 scroll-smooth snap-x snap-mandatory"
+          className="flex lg:grid lg:grid-cols-4 gap-4 sm:gap-5 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 scroll-smooth snap-x snap-mandatory"
         >
           {bestsellerProducts.map((product) => {
             const currentWeightSize =
@@ -225,7 +229,7 @@ export default function HomePage() {
             return (
               <div
                 key={product.id}
-                className="snap-start group relative bg-[#EDE9E1]/80 hover:bg-[#E7E2D8] transition-all duration-300 rounded-[24px] sm:rounded-[28px] p-5 flex flex-col justify-between border border-[#E3DDD1] shadow-2xs hover:shadow-md"
+                className="snap-start min-w-[260px] sm:min-w-[280px] lg:min-w-0 flex-1 flex-shrink-0 lg:flex-shrink group relative bg-[#EDE9E1]/80 hover:bg-[#E7E2D8] transition-all duration-300 rounded-[24px] sm:rounded-[28px] p-5 flex flex-col justify-between border border-[#E3DDD1] shadow-2xs hover:shadow-md"
               >
                 {/* Top Badge & Wishlist Button */}
                 <div className="flex items-center justify-between z-10">
@@ -250,17 +254,19 @@ export default function HomePage() {
                   </button>
                 </div>
 
-                {/* Product Image Stage */}
+                {/* Product Image Stage - Large, Prominent, and Clear */}
                 <Link
                   href={`/products/${product.slug}`}
-                  className="relative aspect-square w-full my-3 flex items-center justify-center group-hover:scale-[1.03] transition-transform duration-500"
+                  className="relative aspect-square w-full my-3 flex items-center justify-center group-hover:scale-[1.03] transition-transform duration-300"
                 >
-                  <div className="relative w-44 h-44 sm:w-48 sm:h-48 rounded-2xl overflow-hidden shadow-xs">
+                  <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-xs border border-[#DDD5C7]/60">
                     <Image
-                      src={product.images[0]}
+                      src={product.studioImage || product.images[0]}
                       alt={product.name}
                       fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       className="object-cover"
+                      priority
                     />
                   </div>
                 </Link>
