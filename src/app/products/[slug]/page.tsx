@@ -823,27 +823,27 @@ export default function ProductDetailPage({
               <ArrowRight className="w-3.5 h-3.5" />
             </NextLink>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="grid grid-cols-2 gap-3 sm:gap-5">
             {relatedRecipes.map((r) => (
               <NextLink
                 key={r.id}
                 href={`/recipes/${r.slug}`}
-                className="group flex flex-col sm:flex-row rounded-[10px] bg-white border border-[#E2D9CE] p-3 overflow-hidden hover:border-[#1A382B]/40 transition-all shadow-2xs"
+                className="group flex flex-col sm:flex-row rounded-[10px] sm:rounded-[12px] bg-white border border-[#E2D9CE] p-2.5 sm:p-3 overflow-hidden hover:border-[#1A382B]/40 transition-all shadow-2xs justify-between"
               >
-                <div className="relative w-full sm:w-40 h-40 rounded-[6px] overflow-hidden bg-[#FAF7F2] flex-shrink-0">
+                <div className="relative w-full aspect-[16/10] sm:aspect-auto sm:w-40 sm:h-40 rounded-[6px] overflow-hidden bg-[#FAF7F2] flex-shrink-0">
                   <Image src={r.image} alt={r.title} fill className="object-cover card-image-zoom" />
                 </div>
-                <div className="p-3.5 flex-1 flex flex-col justify-between">
+                <div className="pt-2 sm:pt-0 sm:p-3.5 flex-1 flex flex-col justify-between">
                   <div>
-                    <span className="text-[10px] uppercase font-data font-semibold text-[#9E462A]">
+                    <span className="text-[9px] sm:text-[10px] uppercase font-data font-semibold text-[#9E462A]">
                       {r.category}
                     </span>
-                    <h3 className="text-[15px] font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors mt-1 leading-snug">
+                    <h3 className="text-[13px] sm:text-[15px] font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors mt-0.5 leading-snug line-clamp-1 sm:line-clamp-2">
                       {r.title}
                     </h3>
-                    <p className="text-[12px] text-[#685950] mt-1 line-clamp-2 leading-relaxed">{r.description}</p>
+                    <p className="text-[11px] sm:text-[12px] text-[#685950] mt-0.5 line-clamp-2 leading-relaxed">{r.description}</p>
                   </div>
-                  <div className="text-[11px] text-[#8C7A70] flex items-center gap-2 mt-3 pt-2 border-t border-[#F0EAE1] font-data">
+                  <div className="text-[10px] sm:text-[11px] text-[#8C7A70] flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 pt-2 border-t border-[#F0EAE1] font-data">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3 text-[#1A382B]" /> {r.cookTime}
                     </span>

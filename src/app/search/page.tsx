@@ -217,15 +217,15 @@ export default function SearchPage() {
                     <span>Products ({results.products.length})</span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                     {results.products.map((p) => (
                       <Link
                         key={p.id}
                         href={`/products/${p.slug}`}
-                        className="bg-white border border-[#E7DED4] p-4 flex flex-col justify-between group hover:border-[#C5A059] transition-all"
+                        className="bg-white border border-[#E2D9CE] rounded-[10px] sm:rounded-[12px] p-2.5 sm:p-4 flex flex-col justify-between group hover:border-[#1A382B]/40 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
                       >
                         <div>
-                          <div className="relative aspect-square bg-[#FAF7F2] overflow-hidden mb-3">
+                          <div className="relative aspect-square bg-[#FAF7F2] rounded-[6px] sm:rounded-[8px] overflow-hidden mb-2 sm:mb-3">
                             <Image
                               src={p.images[0]}
                               alt={p.name}
@@ -233,17 +233,19 @@ export default function SearchPage() {
                               className="object-cover group-hover:scale-105 transition-transform"
                             />
                           </div>
-                          <span className="text-[10px] tracking-widest uppercase font-semibold text-[#C5A059]">
-                            {p.category}
+                          <span className="text-[9px] sm:text-[10px] font-data tracking-wider uppercase font-semibold text-[#9E462A] block">
+                            {p.category === 'millets' ? 'Chiru Dhanyalu' : 'Pure Spice'}
                           </span>
-                          <h3 className="text-sm font-serif font-bold text-[#241611] group-hover:text-[#0D3522] transition-colors line-clamp-1">
+                          <h3 className="text-[13px] sm:text-base font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors line-clamp-1 mt-0.5">
                             {p.name}
                           </h3>
-                          <p className="text-[11px] text-[#6B5B52] italic line-clamp-1">{p.localName}</p>
+                          {p.localName && (
+                            <p className="text-[10px] sm:text-[11px] font-telugu text-[#685950] truncate mt-0.5">{p.localName}</p>
+                          )}
                         </div>
-                        <div className="mt-4 pt-3 border-t border-[#E7DED4] flex items-center justify-between">
-                          <span className="text-sm font-bold text-[#0D3522]">₹{p.weights[0].price}</span>
-                          <span className="text-[11px] text-[#C5A059] font-semibold group-hover:underline">
+                        <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-[#F0EAE1] flex items-center justify-between">
+                          <span className="text-[13px] sm:text-sm font-bold text-[#1A382B] font-data">₹{p.weights[0].price}</span>
+                          <span className="text-[10px] sm:text-[11px] text-[#1A382B] font-semibold group-hover:underline">
                             View &rarr;
                           </span>
                         </div>
@@ -256,19 +258,19 @@ export default function SearchPage() {
               {/* Matched Recipes */}
               {(activeFilter === 'all' || activeFilter === 'recipes') && results.recipes.length > 0 && (
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-[#0D3522]">
+                  <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-[#1A382B]">
                     <ChefHat className="w-4 h-4 text-[#C5A059]" />
                     <span>Recipes ({results.recipes.length})</span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6">
                     {results.recipes.map((r) => (
                       <Link
                         key={r.id}
                         href={`/recipes/${r.slug}`}
-                        className="bg-white border border-[#E7DED4] p-4 flex flex-col justify-between group hover:border-[#C5A059] transition-all"
+                        className="bg-white border border-[#E2D9CE] rounded-[10px] sm:rounded-[12px] p-2.5 sm:p-4 flex flex-col justify-between group hover:border-[#1A382B]/40 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)]"
                       >
-                        <div className="relative aspect-video bg-[#FAF7F2] overflow-hidden mb-3">
+                        <div className="relative aspect-video bg-[#FAF7F2] rounded-[6px] overflow-hidden mb-2 sm:mb-3">
                           <Image
                             src={r.image}
                             alt={r.title}
@@ -277,13 +279,13 @@ export default function SearchPage() {
                           />
                         </div>
                         <div>
-                          <span className="text-[10px] tracking-widest text-[#B35638] uppercase font-semibold">
+                          <span className="text-[9px] sm:text-[10px] font-data tracking-wider text-[#9E462A] uppercase font-semibold block">
                             {r.category} • {r.cookTime}
                           </span>
-                          <h3 className="text-sm font-serif font-bold text-[#241611] group-hover:text-[#0D3522] transition-colors mt-1">
+                          <h3 className="text-[13px] sm:text-sm font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors mt-0.5 line-clamp-1 sm:line-clamp-2">
                             {r.title}
                           </h3>
-                          <p className="text-xs text-[#6B5B52] line-clamp-2 mt-1">{r.description}</p>
+                          <p className="text-[11px] sm:text-xs text-[#685950] line-clamp-2 mt-0.5">{r.description}</p>
                         </div>
                       </Link>
                     ))}
@@ -294,25 +296,25 @@ export default function SearchPage() {
               {/* Matched Articles */}
               {(activeFilter === 'all' || activeFilter === 'articles') && results.articles.length > 0 && (
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-[#0D3522]">
+                  <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-[#1A382B]">
                     <BookOpen className="w-4 h-4 text-[#C5A059]" />
                     <span>Kitchen Journal ({results.articles.length})</span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-6">
                     {results.articles.map((a) => (
                       <Link
                         key={a.id}
                         href={`/journal/${a.slug}`}
-                        className="bg-white border border-[#E7DED4] p-5 space-y-2 group hover:border-[#C5A059] transition-all"
+                        className="bg-white border border-[#E2D9CE] rounded-[10px] sm:rounded-[12px] p-3 sm:p-5 space-y-1.5 sm:space-y-2 group hover:border-[#1A382B]/40 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)]"
                       >
-                        <span className="text-[10px] tracking-widest uppercase font-semibold text-[#C5A059]">
+                        <span className="text-[9px] sm:text-[10px] font-data tracking-wider uppercase font-semibold text-[#9E462A] block">
                           {a.category} • {a.readTime}
                         </span>
-                        <h3 className="text-base font-serif font-bold text-[#241611] group-hover:text-[#0D3522] transition-colors">
+                        <h3 className="text-[13px] sm:text-base font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors line-clamp-1 sm:line-clamp-2">
                           {a.title}
                         </h3>
-                        <p className="text-xs text-[#6B5B52] line-clamp-2">{a.excerpt}</p>
+                        <p className="text-[11px] sm:text-xs text-[#685950] line-clamp-2">{a.excerpt}</p>
                       </Link>
                     ))}
                   </div>

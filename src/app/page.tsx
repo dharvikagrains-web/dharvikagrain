@@ -233,44 +233,44 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* 6 Millets Cultural Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* 6 Millets Cultural Grid (2-columns side-by-side on mobile) */}
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {heritageMillets.map((millet) => (
               <div
                 key={millet.english}
-                className="bg-white rounded-[10px] p-5 border border-[#E2D9CE] hover:border-[#1A382B]/40 transition-all flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.03)]"
+                className="bg-white rounded-[10px] p-3 sm:p-5 border border-[#E2D9CE] hover:border-[#1A382B]/40 transition-all flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.03)]"
               >
                 <div>
-                  <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="flex items-start justify-between gap-1.5 mb-2">
                     <div>
-                      <span className="font-telugu text-[19px] sm:text-[21px] text-[#9E462A] font-semibold block leading-tight">
+                      <span className="font-telugu text-[15px] sm:text-[21px] text-[#9E462A] font-semibold block leading-tight truncate">
                         {millet.telugu}
                       </span>
-                      <h3 className="text-[16px] font-semibold text-[#221814] mt-0.5">
+                      <h3 className="text-[13px] sm:text-[16px] font-semibold text-[#221814] mt-0.5 truncate">
                         {millet.english}
                       </h3>
                     </div>
-                    <span className="text-[10px] font-data uppercase tracking-wider px-2 py-0.5 rounded-[4px] bg-[#FAF7F2] text-[#685950] border border-[#E2D9CE]">
+                    <span className="text-[9px] sm:text-[10px] font-data uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded-[4px] bg-[#FAF7F2] text-[#685950] border border-[#E2D9CE] shrink-0">
                       {millet.tag}
                     </span>
                   </div>
 
-                  <p className="text-[13px] text-[#685950] leading-relaxed mt-2">
+                  <p className="text-[11px] sm:text-[13px] text-[#685950] leading-relaxed mt-1 sm:mt-2 line-clamp-2 sm:line-clamp-3">
                     {millet.benefits}
                   </p>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-[#F0EAE1] flex items-center justify-between">
+                <div className="pt-2.5 sm:pt-4 mt-2.5 sm:mt-4 border-t border-[#F0EAE1] flex items-center justify-between text-[11px] sm:text-[13px]">
                   <Link
                     href={`/products/${millet.slug}`}
-                    className="text-[13px] font-semibold text-[#1A382B] hover:text-[#9E462A] flex items-center gap-1 transition-colors"
+                    className="font-semibold text-[#1A382B] hover:text-[#9E462A] flex items-center gap-1 transition-colors"
                   >
-                    <span>View Grain</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Grain</span>
+                    <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   </Link>
                   <Link
                     href="/recipes"
-                    className="text-[12px] text-[#8C7A70] hover:text-[#221814]"
+                    className="text-[11px] sm:text-[12px] text-[#8C7A70] hover:text-[#221814]"
                   >
                     Recipes &rarr;
                   </Link>
@@ -419,11 +419,12 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Explore Categories (2-columns side-by-side on mobile) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           {/* Card 1: Millets */}
           <Link
             href="/millets"
-            className="group relative aspect-[4/5] rounded-[12px] overflow-hidden border border-[#E2D9CE] flex flex-col justify-end p-5 text-white"
+            className="group relative aspect-[4/5] rounded-[10px] sm:rounded-[12px] overflow-hidden border border-[#E2D9CE] flex flex-col justify-end p-3.5 sm:p-5 text-white"
           >
             <Image
               src="/images/showcase/cat-millets.jpg"
@@ -432,20 +433,20 @@ export default function HomePage() {
               className="object-cover card-image-zoom"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#140F0A]/90 via-[#140F0A]/35 to-transparent" />
-            <div className="relative z-10 space-y-1.5">
-              <span className="text-[11px] font-data uppercase tracking-wider text-[#E8DFD3] block">
+            <div className="relative z-10 space-y-1">
+              <span className="text-[10px] sm:text-[11px] font-data uppercase tracking-wider text-[#E8DFD3] block">
                 Chiru Dhanyalu
               </span>
-              <h3 className="text-lg font-serif font-semibold text-white">
+              <h3 className="text-[15px] sm:text-lg font-serif font-semibold text-white">
                 Unpolished Millets
               </h3>
-              <p className="text-[12px] text-[#D8CCC0] line-clamp-2">
+              <p className="text-[11px] sm:text-[12px] text-[#D8CCC0] line-clamp-2">
                 Foxtail, Little, Kodo, Barnyard, Finger & Sorghum grains.
               </p>
-              <div className="pt-2">
-                <span className="text-[12px] font-semibold text-[#86EFAC] group-hover:underline flex items-center gap-1">
-                  <span>Explore Millets</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+              <div className="pt-1 sm:pt-2">
+                <span className="text-[11px] sm:text-[12px] font-semibold text-[#86EFAC] group-hover:underline flex items-center gap-1">
+                  <span>Explore</span>
+                  <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </span>
               </div>
             </div>
@@ -454,7 +455,7 @@ export default function HomePage() {
           {/* Card 2: Spices */}
           <Link
             href="/spices"
-            className="group relative aspect-[4/5] rounded-[12px] overflow-hidden border border-[#E2D9CE] flex flex-col justify-end p-5 text-white"
+            className="group relative aspect-[4/5] rounded-[10px] sm:rounded-[12px] overflow-hidden border border-[#E2D9CE] flex flex-col justify-end p-3.5 sm:p-5 text-white"
           >
             <Image
               src="/images/showcase/cat-spices.jpg"
@@ -463,20 +464,20 @@ export default function HomePage() {
               className="object-cover card-image-zoom"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#140F0A]/90 via-[#140F0A]/35 to-transparent" />
-            <div className="relative z-10 space-y-1.5">
-              <span className="text-[11px] font-data uppercase tracking-wider text-[#E8DFD3] block">
+            <div className="relative z-10 space-y-1">
+              <span className="text-[10px] sm:text-[11px] font-data uppercase tracking-wider text-[#E8DFD3] block">
                 Pure Masala
               </span>
-              <h3 className="text-lg font-serif font-semibold text-white">
+              <h3 className="text-[15px] sm:text-lg font-serif font-semibold text-white">
                 Single-Origin Spices
               </h3>
-              <p className="text-[12px] text-[#D8CCC0] line-clamp-2">
+              <p className="text-[11px] sm:text-[12px] text-[#D8CCC0] line-clamp-2">
                 Salem Lakadong turmeric, Guntur chilli, and roasted spice blends.
               </p>
-              <div className="pt-2">
-                <span className="text-[12px] font-semibold text-[#86EFAC] group-hover:underline flex items-center gap-1">
-                  <span>Explore Spices</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+              <div className="pt-1 sm:pt-2">
+                <span className="text-[11px] sm:text-[12px] font-semibold text-[#86EFAC] group-hover:underline flex items-center gap-1">
+                  <span>Explore</span>
+                  <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </span>
               </div>
             </div>
@@ -485,7 +486,7 @@ export default function HomePage() {
           {/* Card 3: Oils */}
           <Link
             href="/shop?category=oils"
-            className="group relative aspect-[4/5] rounded-[12px] overflow-hidden border border-[#E2D9CE] flex flex-col justify-end p-5 text-white"
+            className="group relative aspect-[4/5] rounded-[10px] sm:rounded-[12px] overflow-hidden border border-[#E2D9CE] flex flex-col justify-end p-3.5 sm:p-5 text-white"
           >
             <Image
               src="/images/showcase/cat-oils.jpg"
@@ -494,20 +495,20 @@ export default function HomePage() {
               className="object-cover card-image-zoom"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#140F0A]/90 via-[#140F0A]/35 to-transparent" />
-            <div className="relative z-10 space-y-1.5">
-              <span className="text-[11px] font-data uppercase tracking-wider text-[#E8DFD3] block">
+            <div className="relative z-10 space-y-1">
+              <span className="text-[10px] sm:text-[11px] font-data uppercase tracking-wider text-[#E8DFD3] block">
                 Wood Pressed
               </span>
-              <h3 className="text-lg font-serif font-semibold text-white">
+              <h3 className="text-[15px] sm:text-lg font-serif font-semibold text-white">
                 Traditional Oils
               </h3>
-              <p className="text-[12px] text-[#D8CCC0] line-clamp-2">
+              <p className="text-[11px] sm:text-[12px] text-[#D8CCC0] line-clamp-2">
                 Cold-pressed below 45°C without chemical solvent extraction.
               </p>
-              <div className="pt-2">
-                <span className="text-[12px] font-semibold text-[#86EFAC] group-hover:underline flex items-center gap-1">
-                  <span>Explore Oils</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+              <div className="pt-1 sm:pt-2">
+                <span className="text-[11px] sm:text-[12px] font-semibold text-[#86EFAC] group-hover:underline flex items-center gap-1">
+                  <span>Explore</span>
+                  <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </span>
               </div>
             </div>
@@ -516,7 +517,7 @@ export default function HomePage() {
           {/* Card 4: Flours & Rava */}
           <Link
             href="/shop?category=flours"
-            className="group relative aspect-[4/5] rounded-[12px] overflow-hidden border border-[#E2D9CE] flex flex-col justify-end p-5 text-white"
+            className="group relative aspect-[4/5] rounded-[10px] sm:rounded-[12px] overflow-hidden border border-[#E2D9CE] flex flex-col justify-end p-3.5 sm:p-5 text-white"
           >
             <Image
               src="/images/showcase/cat-flours.jpg"
@@ -525,20 +526,20 @@ export default function HomePage() {
               className="object-cover card-image-zoom"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#140F0A]/90 via-[#140F0A]/35 to-transparent" />
-            <div className="relative z-10 space-y-1.5">
-              <span className="text-[11px] font-data uppercase tracking-wider text-[#E8DFD3] block">
+            <div className="relative z-10 space-y-1">
+              <span className="text-[10px] sm:text-[11px] font-data uppercase tracking-wider text-[#E8DFD3] block">
                 Stone Ground
               </span>
-              <h3 className="text-lg font-serif font-semibold text-white">
+              <h3 className="text-[15px] sm:text-lg font-serif font-semibold text-white">
                 Millet Flours & Rava
               </h3>
-              <p className="text-[12px] text-[#D8CCC0] line-clamp-2">
+              <p className="text-[11px] sm:text-[12px] text-[#D8CCC0] line-clamp-2">
                 Freshly milled coarse and fine flours for rotis, dosas, and upma.
               </p>
-              <div className="pt-2">
-                <span className="text-[12px] font-semibold text-[#86EFAC] group-hover:underline flex items-center gap-1">
-                  <span>Explore Flours</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+              <div className="pt-1 sm:pt-2">
+                <span className="text-[11px] sm:text-[12px] font-semibold text-[#86EFAC] group-hover:underline flex items-center gap-1">
+                  <span>Explore</span>
+                  <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </span>
               </div>
             </div>
@@ -608,79 +609,86 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {/* Recipe Cards (2-columns side-by-side on mobile) */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-5">
           <Link
             href="/recipes/foxtail-millet-upma"
-            className="group bg-white rounded-[10px] overflow-hidden border border-[#E2D9CE] hover:border-[#1A382B]/40 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)]"
+            className="group bg-white rounded-[10px] sm:rounded-[12px] overflow-hidden border border-[#E2D9CE] hover:border-[#1A382B]/40 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex flex-col justify-between"
           >
-            <div className="relative aspect-[16/10] bg-[#FAF7F2]">
-              <Image
-                src="/images/recipes/foxtail-millet-upma.jpg"
-                alt="Foxtail millet upma with mustard seeds and curry leaves"
-                fill
-                className="object-cover card-image-zoom"
-              />
-            </div>
-            <div className="p-4 space-y-1">
-              <span className="text-[11px] font-data text-[#9E462A] font-semibold uppercase">
-                Breakfast · 20 mins
-              </span>
-              <h3 className="text-[16px] font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors">
-                Fluffy Korralu Upma
-              </h3>
-              <p className="text-[12px] text-[#685950] line-clamp-2">
-                A nutrient-dense morning breakfast prepared with seasonal vegetables, ginger, and curry leaves.
-              </p>
+            <div>
+              <div className="relative aspect-[16/10] bg-[#FAF7F2]">
+                <Image
+                  src="/images/recipes/foxtail-millet-upma.jpg"
+                  alt="Foxtail millet upma with mustard seeds and curry leaves"
+                  fill
+                  className="object-cover card-image-zoom"
+                />
+              </div>
+              <div className="p-2.5 sm:p-4 space-y-0.5 sm:space-y-1">
+                <span className="text-[10px] sm:text-[11px] font-data text-[#9E462A] font-semibold uppercase">
+                  Breakfast · 20 mins
+                </span>
+                <h3 className="text-[13px] sm:text-[16px] font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors leading-snug line-clamp-1 sm:line-clamp-2">
+                  Fluffy Korralu Upma
+                </h3>
+                <p className="text-[11px] sm:text-[12px] text-[#685950] line-clamp-2 mt-0.5">
+                  A nutrient-dense morning breakfast prepared with seasonal vegetables, ginger, and curry leaves.
+                </p>
+              </div>
             </div>
           </Link>
 
           <Link
             href="/recipes/crisp-little-millet-dosa"
-            className="group bg-white rounded-[10px] overflow-hidden border border-[#E2D9CE] hover:border-[#1A382B]/40 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)]"
+            className="group bg-white rounded-[10px] sm:rounded-[12px] overflow-hidden border border-[#E2D9CE] hover:border-[#1A382B]/40 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex flex-col justify-between"
           >
-            <div className="relative aspect-[16/10] bg-[#FAF7F2]">
-              <Image
-                src="/images/showcase/kitchen-mid-banner.jpg"
-                alt="Crisp little millet dosa with coconut chutney"
-                fill
-                className="object-cover card-image-zoom"
-              />
-            </div>
-            <div className="p-4 space-y-1">
-              <span className="text-[11px] font-data text-[#9E462A] font-semibold uppercase">
-                Traditional · Fermented
-              </span>
-              <h3 className="text-[16px] font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors">
-                Golden Samalu Dosa
-              </h3>
-              <p className="text-[12px] text-[#685950] line-clamp-2">
-                Crisp, golden dosas made with a 3:1 ratio of Little Millet and Urad Dal.
-              </p>
+            <div>
+              <div className="relative aspect-[16/10] bg-[#FAF7F2]">
+                <Image
+                  src="/images/showcase/kitchen-mid-banner.jpg"
+                  alt="Crisp little millet dosa with coconut chutney"
+                  fill
+                  className="object-cover card-image-zoom"
+                />
+              </div>
+              <div className="p-2.5 sm:p-4 space-y-0.5 sm:space-y-1">
+                <span className="text-[10px] sm:text-[11px] font-data text-[#9E462A] font-semibold uppercase">
+                  Traditional · Fermented
+                </span>
+                <h3 className="text-[13px] sm:text-[16px] font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors leading-snug line-clamp-1 sm:line-clamp-2">
+                  Golden Samalu Dosa
+                </h3>
+                <p className="text-[11px] sm:text-[12px] text-[#685950] line-clamp-2 mt-0.5">
+                  Crisp, golden dosas made with a 3:1 ratio of Little Millet and Urad Dal.
+                </p>
+              </div>
             </div>
           </Link>
 
           <Link
             href="/recipes/kodo-millet-ven-pongal"
-            className="group bg-white rounded-[10px] overflow-hidden border border-[#E2D9CE] hover:border-[#1A382B]/40 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)]"
+            className="group bg-white rounded-[10px] sm:rounded-[12px] overflow-hidden border border-[#E2D9CE] hover:border-[#1A382B]/40 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex flex-col justify-between col-span-2 sm:col-span-1"
           >
-            <div className="relative aspect-[16/10] bg-[#FAF7F2]">
-              <Image
-                src="/images/showcase/hero-kitchen.jpg"
-                alt="Comforting kodo millet ven pongal"
-                fill
-                className="object-cover card-image-zoom"
-              />
-            </div>
-            <div className="p-4 space-y-1">
-              <span className="text-[11px] font-data text-[#9E462A] font-semibold uppercase">
-                Comfort Food · 25 mins
-              </span>
-              <h3 className="text-[16px] font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors">
-                Arikelu Ven Pongal
-              </h3>
-              <p className="text-[12px] text-[#685950] line-clamp-2">
-                Soothing South Indian temple-style pongal tempered with crushed black pepper, cumin, and cashews.
-              </p>
+            <div>
+              <div className="relative aspect-[16/10] sm:aspect-[16/10] max-h-40 sm:max-h-none bg-[#FAF7F2]">
+                <Image
+                  src="/images/showcase/hero-kitchen.jpg"
+                  alt="Comforting kodo millet ven pongal"
+                  fill
+                  className="object-cover card-image-zoom"
+                />
+              </div>
+              <div className="p-2.5 sm:p-4 space-y-0.5 sm:space-y-1">
+                <span className="text-[10px] sm:text-[11px] font-data text-[#9E462A] font-semibold uppercase">
+                  Comfort Food · 25 mins
+                </span>
+                <h3 className="text-[13px] sm:text-[16px] font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors leading-snug line-clamp-1 sm:line-clamp-2">
+                  Arikelu Ven Pongal
+                </h3>
+                <p className="text-[11px] sm:text-[12px] text-[#685950] line-clamp-2 mt-0.5">
+                  Soothing South Indian temple-style pongal tempered with crushed black pepper, cumin, and cashews.
+                </p>
+              </div>
             </div>
           </Link>
         </div>

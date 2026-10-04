@@ -231,28 +231,28 @@ export default function AboutPage() {
                 The Dharvika seal reflects our deep reverence for traditional Indian agriculture. The sculpted golden stalk represents the resilient spikelets of native millets; the vibrant emerald leaf honors rain-fed vitality and chemical-free cultivation; and the central sun disc evokes solar curing.
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div className="p-3.5 rounded-[6px] bg-[#FAF7F2] border border-[#E2D9CE] space-y-1">
-                  <h4 className="text-[12px] font-semibold uppercase tracking-wider text-[#1A382B] font-data">1. Tradition</h4>
-                  <p className="text-[12px] text-[#685950]">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3 pt-2">
+                <div className="p-2.5 sm:p-3.5 rounded-[6px] bg-[#FAF7F2] border border-[#E2D9CE] space-y-0.5 sm:space-y-1">
+                  <h4 className="text-[11px] sm:text-[12px] font-semibold uppercase tracking-wider text-[#1A382B] font-data">1. Tradition</h4>
+                  <p className="text-[11px] sm:text-[12px] text-[#685950] line-clamp-3">
                     Preserving indigenous seed varieties and heritage kitchen practices.
                   </p>
                 </div>
-                <div className="p-3.5 rounded-[6px] bg-[#FAF7F2] border border-[#E2D9CE] space-y-1">
-                  <h4 className="text-[12px] font-semibold uppercase tracking-wider text-[#1A382B] font-data">2. Purity</h4>
-                  <p className="text-[12px] text-[#685950]">
-                    Zero artificial polishing, zero synthetic dyes, and low-temperature stone grinding.
+                <div className="p-2.5 sm:p-3.5 rounded-[6px] bg-[#FAF7F2] border border-[#E2D9CE] space-y-0.5 sm:space-y-1">
+                  <h4 className="text-[11px] sm:text-[12px] font-semibold uppercase tracking-wider text-[#1A382B] font-data">2. Purity</h4>
+                  <p className="text-[11px] sm:text-[12px] text-[#685950] line-clamp-3">
+                    Zero artificial polishing, zero synthetic dyes, and stone grinding.
                   </p>
                 </div>
-                <div className="p-3.5 rounded-[6px] bg-[#FAF7F2] border border-[#E2D9CE] space-y-1">
-                  <h4 className="text-[12px] font-semibold uppercase tracking-wider text-[#1A382B] font-data">3. People</h4>
-                  <p className="text-[12px] text-[#685950]">
-                    Fair farmgate procurement empowering smallholder dryland farmer clusters.
+                <div className="p-2.5 sm:p-3.5 rounded-[6px] bg-[#FAF7F2] border border-[#E2D9CE] space-y-0.5 sm:space-y-1">
+                  <h4 className="text-[11px] sm:text-[12px] font-semibold uppercase tracking-wider text-[#1A382B] font-data">3. People</h4>
+                  <p className="text-[11px] sm:text-[12px] text-[#685950] line-clamp-3">
+                    Fair farmgate procurement empowering dryland farmer clusters.
                   </p>
                 </div>
-                <div className="p-3.5 rounded-[6px] bg-[#FAF7F2] border border-[#E2D9CE] space-y-1">
-                  <h4 className="text-[12px] font-semibold uppercase tracking-wider text-[#1A382B] font-data">4. Planet</h4>
-                  <p className="text-[12px] text-[#685950]">
+                <div className="p-2.5 sm:p-3.5 rounded-[6px] bg-[#FAF7F2] border border-[#E2D9CE] space-y-0.5 sm:space-y-1">
+                  <h4 className="text-[11px] sm:text-[12px] font-semibold uppercase tracking-wider text-[#1A382B] font-data">4. Planet</h4>
+                  <p className="text-[11px] sm:text-[12px] text-[#685950] line-clamp-3">
                     Drought-resilient crops requiring zero synthetic flood irrigation.
                   </p>
                 </div>

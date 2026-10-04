@@ -132,33 +132,33 @@ export default function MilletsPage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {culinaryGuide.map((item) => (
               <div
                 key={item.name}
-                className="rounded-[10px] bg-white border border-[#E2D9CE] p-5 flex flex-col justify-between hover:border-[#1A382B]/40 transition-colors shadow-2xs"
+                className="rounded-[10px] bg-white border border-[#E2D9CE] p-3 sm:p-5 flex flex-col justify-between hover:border-[#1A382B]/40 transition-colors shadow-2xs"
               >
                 <div>
-                  <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="flex items-start justify-between gap-1.5 mb-1.5 sm:mb-2">
                     <div>
-                      <span className="font-telugu text-[17px] text-[#9E462A] font-semibold block leading-tight">
+                      <span className="font-telugu text-[14px] sm:text-[17px] text-[#9E462A] font-semibold block leading-tight truncate">
                         {item.telugu}
                       </span>
-                      <h4 className="text-[15px] font-semibold text-[#221814] mt-0.5">
+                      <h4 className="text-[13px] sm:text-[15px] font-semibold text-[#221814] mt-0.5 truncate">
                         {item.name}
                       </h4>
                     </div>
-                    <span className="text-[10px] font-data font-medium px-2 py-0.5 rounded-[4px] bg-[#FAF7F2] text-[#1A382B] border border-[#E2D9CE] shrink-0">
+                    <span className="text-[9px] sm:text-[10px] font-data font-medium px-1.5 sm:px-2 py-0.5 rounded-[4px] bg-[#FAF7F2] text-[#1A382B] border border-[#E2D9CE] shrink-0">
                       {item.cooking}
                     </span>
                   </div>
 
-                  <p className="text-[12px] text-[#685950] leading-relaxed mt-2">
+                  <p className="text-[11px] sm:text-[12px] text-[#685950] leading-relaxed mt-1 sm:mt-2 line-clamp-2">
                     {item.desc}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-[#F0EAE1] flex items-center justify-between text-[11px] font-data text-[#8C7A70]">
+                <div className="mt-2.5 sm:mt-4 pt-2 sm:pt-3 border-t border-[#F0EAE1] flex items-center justify-between text-[10px] sm:text-[11px] font-data text-[#8C7A70]">
                   <span>Water: <strong className="text-[#221814]">{item.ratio}</strong></span>
                   <span>Cooks: <strong className="text-[#221814]">{item.time}</strong></span>
                 </div>

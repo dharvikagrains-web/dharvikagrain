@@ -53,25 +53,25 @@ export default function WishlistPage() {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {wishlistProducts.map((product) => {
             const defaultWeight = product.weights[0];
             return (
               <div
                 key={product.id}
-                className="bg-white border border-[#E7DED4] p-4 flex flex-col justify-between group hover:border-[#C5A059] transition-all relative"
+                className="bg-white border border-[#E2D9CE] rounded-[10px] sm:rounded-[12px] p-2.5 sm:p-4 flex flex-col justify-between group hover:border-[#1A382B]/40 transition-all relative shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
               >
                 <button
                   type="button"
                   onClick={() => removeFromWishlist(product.id)}
-                  className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-white/90 text-[#6B5B52] hover:text-[#B35638] shadow-xs hover:bg-white transition-colors"
+                  className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 w-6 h-6 sm:w-7 sm:h-7 rounded-[4px] sm:rounded-[6px] bg-white/90 border border-[#E2D9CE] text-[#685950] hover:text-[#9E462A] hover:border-[#9E462A] shadow-xs flex items-center justify-center transition-colors"
                   aria-label={`Remove ${product.name} from wishlist`}
                 >
-                  <Trash2 className="w-4 h-4 stroke-[1.5]" />
+                  <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[1.5]" />
                 </button>
 
                 <div>
-                  <Link href={`/products/${product.slug}`} className="block relative aspect-square bg-[#FAF7F2] overflow-hidden mb-3">
+                  <Link href={`/products/${product.slug}`} className="block relative aspect-square bg-[#FAF7F2] rounded-[6px] sm:rounded-[8px] overflow-hidden mb-2 sm:mb-3">
                     <Image
                       src={product.images[0]}
                       alt={product.name}
@@ -80,38 +80,42 @@ export default function WishlistPage() {
                     />
                   </Link>
 
-                  <span className="text-[10px] tracking-widest uppercase font-semibold text-[#C5A059] block">
-                    {product.category}
+                  <span className="text-[9px] sm:text-[10px] font-data tracking-wider uppercase font-semibold text-[#9E462A] block">
+                    {product.category === 'millets' ? 'Chiru Dhanyalu' : 'Pure Spice'}
                   </span>
                   <Link href={`/products/${product.slug}`}>
-                    <h3 className="text-base font-serif font-semibold text-[#241611] group-hover:text-[#0D3522] transition-colors line-clamp-1">
+                    <h3 className="text-[13px] sm:text-base font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors line-clamp-1 mt-0.5">
                       {product.name}
                     </h3>
                   </Link>
-                  <p className="text-[11px] text-[#6B5B52] italic line-clamp-1">
-                    {product.localName}
-                  </p>
+                  {product.localName && (
+                    <p className="text-[10px] sm:text-[11px] font-telugu text-[#685950] truncate mt-0.5">
+                      {product.localName}
+                    </p>
+                  )}
 
-                  <div className="mt-3 flex items-baseline space-x-2">
-                    <span className="text-base font-bold text-[#0D3522]">
+                  <div className="mt-2 sm:mt-3 flex items-baseline space-x-1.5 flex-wrap">
+                    <span className="text-[14px] sm:text-base font-bold text-[#1A382B] font-data">
                       ₹{defaultWeight.price}
                     </span>
-                    <span className="text-xs text-[#8C7A70] line-through">
-                      ₹{defaultWeight.mrp}
-                    </span>
-                    <span className="text-[11px] text-[#6B5B52]">
+                    {defaultWeight.mrp > defaultWeight.price && (
+                      <span className="text-[10px] sm:text-xs text-[#8C7A70] line-through font-data">
+                        ₹{defaultWeight.mrp}
+                      </span>
+                    )}
+                    <span className="text-[10px] sm:text-[11px] text-[#685950] font-data">
                       ({defaultWeight.size})
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-[#E7DED4] flex items-center space-x-2">
+                <div className="mt-3 sm:mt-4 pt-2.5 sm:pt-3 border-t border-[#F0EAE1]">
                   <button
                     type="button"
                     onClick={() => addToCart(product, defaultWeight.size, 1)}
-                    className="w-full py-2.5 bg-[#0D3522] hover:bg-[#134B31] text-white text-xs uppercase tracking-widest font-semibold transition-colors flex items-center justify-center space-x-2"
+                    className="w-full py-1.5 sm:py-2.5 rounded-[6px] bg-[#1A382B] hover:bg-[#132B21] text-white text-[11px] sm:text-xs font-semibold transition-colors flex items-center justify-center space-x-1.5 shadow-2xs"
                   >
-                    <ShoppingBag className="w-3.5 h-3.5" />
+                    <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     <span>Add to Cart</span>
                   </button>
                 </div>

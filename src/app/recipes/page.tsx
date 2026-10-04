@@ -184,13 +184,13 @@ export default function RecipesIndexPage() {
         ))}
       </div>
 
-      {/* Recipe Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {/* Recipe Cards Grid (2-columns side-by-side on mobile) */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
         {filteredRecipes.map((recipe) => (
           <Link
             key={recipe.id}
             href={`/recipes/${recipe.slug}`}
-            className="group rounded-[10px] bg-white border border-[#E2D9CE] p-3 sm:p-4 hover:border-[#1A382B]/40 hover:shadow-sm transition-all flex flex-col justify-between"
+            className="group rounded-[10px] sm:rounded-[12px] bg-white border border-[#E2D9CE] p-2.5 sm:p-4 hover:border-[#1A382B]/40 hover:shadow-sm transition-all flex flex-col justify-between"
           >
             <div>
               {/* Inner Image Stage */}
@@ -201,35 +201,35 @@ export default function RecipesIndexPage() {
                   fill
                   className="object-cover card-image-zoom"
                 />
-                <span className="absolute top-2.5 left-2.5 rounded-[4px] bg-white/95 px-2.5 py-0.5 text-[10px] font-data font-semibold text-[#1A382B] uppercase tracking-wider border border-[#E2D9CE] shadow-2xs">
+                <span className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 rounded-[4px] bg-white/95 px-1.5 sm:px-2.5 py-0.5 text-[9px] sm:text-[10px] font-data font-semibold text-[#1A382B] uppercase tracking-wider border border-[#E2D9CE] shadow-2xs">
                   {recipe.category}
                 </span>
               </div>
 
               {/* Recipe Info */}
-              <div className="pt-3 pb-1 space-y-1">
+              <div className="pt-2 sm:pt-3 pb-1 space-y-0.5 sm:space-y-1">
                 {recipe.localName && (
-                  <p className="font-telugu text-[12px] text-[#9E462A] font-medium">
+                  <p className="font-telugu text-[10px] sm:text-[12px] text-[#9E462A] font-medium truncate">
                     {recipe.localName}
                   </p>
                 )}
-                <h3 className="text-[16px] font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors leading-snug font-dmsans">
+                <h3 className="text-[13px] sm:text-[16px] font-semibold text-[#221814] group-hover:text-[#1A382B] transition-colors leading-snug font-dmsans line-clamp-1 sm:line-clamp-2">
                   {recipe.title}
                 </h3>
-                <p className="text-[12px] text-[#685950] line-clamp-2 leading-relaxed mt-1">
+                <p className="text-[11px] sm:text-[12px] text-[#685950] line-clamp-2 leading-relaxed mt-0.5">
                   {recipe.description}
                 </p>
               </div>
             </div>
 
             {/* Bottom Meta */}
-            <div className="pt-3 mt-3 border-t border-[#F0EAE1] flex items-center justify-between text-[11px] font-data text-[#8C7A70]">
+            <div className="pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-[#F0EAE1] flex items-center justify-between text-[10px] sm:text-[11px] font-data text-[#8C7A70]">
               <span className="flex items-center gap-1 text-[#221814]">
-                <Clock className="w-3.5 h-3.5 text-[#1A382B]" /> {recipe.cookTime}
+                <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#1A382B]" /> {recipe.cookTime}
               </span>
-              <span>Serves {recipe.servings}</span>
+              <span className="hidden xs:inline">Serves {recipe.servings}</span>
               <span className="text-[#1A382B] font-semibold group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-                <span>Recipe</span>
+                <span>View</span>
                 <ArrowRight className="w-3 h-3" />
               </span>
             </div>
