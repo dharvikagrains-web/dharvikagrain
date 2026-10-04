@@ -41,111 +41,113 @@ export default async function RecipeDetailPage({
   const linkedProduct = products.find((p) => p.slug === recipe.productSlug);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
       <div>
         <Link
           href="/recipes"
-          className="inline-flex items-center text-xs text-[#6B5B52] hover:text-[#241611] mb-6"
+          className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#EDE9E1] border border-[#D5CDBD] text-xs font-semibold text-[#0D3522] hover:bg-[#0D3522] hover:text-white transition-all mb-6 shadow-2xs"
         >
-          <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Back to All Recipes
+          <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> Back to All Recipes
         </Link>
 
-        <span className="text-xs uppercase tracking-widest font-bold text-[#B35638] block mb-2">
-          {recipe.category}
+        <span className="inline-block px-3 py-0.5 rounded-full bg-[#EDE9E1] border border-[#D5CDBD] text-[11px] font-semibold text-[#0D3522] uppercase tracking-wider mb-2">
+          ✦ {recipe.category}
         </span>
-        <h1 className="text-3xl sm:text-5xl font-serif font-semibold text-[#241611] leading-tight">
+        <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#241611] leading-tight">
           {recipe.title}
         </h1>
         {recipe.localName && (
-          <p className="text-base text-[#6B5B52] font-medium mt-1">{recipe.localName}</p>
+          <p className="text-base font-semibold text-[#0D3522] mt-1">{recipe.localName}</p>
         )}
-        <p className="text-xs sm:text-sm text-[#7A6B62] mt-3 leading-relaxed">
+        <p className="text-xs sm:text-sm text-[#6B5B52] mt-3 leading-relaxed">
           {recipe.description}
         </p>
 
         {/* Recipe Meta Pill Strip */}
-        <div className="flex flex-wrap items-center gap-6 py-4 mt-4 border-y border-[#E7DED4] text-xs text-[#6B5B52]">
+        <div className="flex flex-wrap items-center justify-between gap-4 p-4 mt-6 rounded-[24px] bg-[#EDE9E1] border border-[#D5CDBD] text-xs text-[#6B5B52] shadow-2xs">
           <div>
-            <span className="text-[#8C7A70] block text-[10px] uppercase">Prep Time</span>
-            <strong className="text-[#241611]">{recipe.prepTime}</strong>
+            <span className="text-[#8C7A70] block text-[10px] uppercase font-semibold">Prep Time</span>
+            <strong className="text-[#241611] font-serif text-sm">{recipe.prepTime}</strong>
           </div>
-          <div className="h-6 w-px bg-[#E7DED4]" />
+          <div className="h-6 w-px bg-[#D5CDBD]" />
           <div>
-            <span className="text-[#8C7A70] block text-[10px] uppercase">Cook Time</span>
-            <strong className="text-[#241611]">{recipe.cookTime}</strong>
+            <span className="text-[#8C7A70] block text-[10px] uppercase font-semibold">Cook Time</span>
+            <strong className="text-[#0D3522] font-serif text-sm">{recipe.cookTime}</strong>
           </div>
-          <div className="h-6 w-px bg-[#E7DED4]" />
+          <div className="h-6 w-px bg-[#D5CDBD]" />
           <div>
-            <span className="text-[#8C7A70] block text-[10px] uppercase">Servings</span>
-            <strong className="text-[#241611]">{recipe.servings}</strong>
+            <span className="text-[#8C7A70] block text-[10px] uppercase font-semibold">Servings</span>
+            <strong className="text-[#241611] font-serif text-sm">{recipe.servings}</strong>
           </div>
-          <div className="h-6 w-px bg-[#E7DED4]" />
+          <div className="h-6 w-px bg-[#D5CDBD]" />
           <div>
-            <span className="text-[#8C7A70] block text-[10px] uppercase">Difficulty</span>
-            <strong className="text-[#B35638]">{recipe.difficulty}</strong>
+            <span className="text-[#8C7A70] block text-[10px] uppercase font-semibold">Difficulty</span>
+            <strong className="text-[#C4924A] font-semibold text-xs">{recipe.difficulty}</strong>
           </div>
         </div>
       </div>
 
-      {/* Main Recipe Image */}
-      <div className="relative aspect-16/9 w-full bg-[#F5EFEB] border border-[#E7DED4] overflow-hidden">
-        <Image src={recipe.image} alt={recipe.title} fill priority className="object-cover" />
+      {/* Main Recipe Image Stage */}
+      <div className="relative aspect-16/9 w-full rounded-[28px] sm:rounded-[36px] bg-[#EDE9E1] border border-[#D5CDBD] p-3 sm:p-4 overflow-hidden shadow-xs">
+        <div className="relative w-full h-full rounded-[20px] sm:rounded-[28px] overflow-hidden">
+          <Image src={recipe.image} alt={recipe.title} fill priority className="object-cover" />
+        </div>
       </div>
 
       {/* Linked Product Banner */}
       {linkedProduct && (
-        <div className="bg-[#F5EFEB] border border-[#E7DED4] p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="rounded-[28px] bg-[#EDE9E1] border border-[#D5CDBD] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 shadow-xs">
           <div className="space-y-1">
-            <span className="text-[10px] uppercase tracking-wider font-bold text-[#B35638]">
-              Cook with the authentic harvest
+            <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/80 border border-[#D5CDBD] text-[10px] uppercase tracking-wider font-semibold text-[#0D3522]">
+              ✦ Recommended Harvest
             </span>
-            <h3 className="text-sm sm:text-base font-semibold text-[#241611]">
+            <h3 className="text-lg font-serif font-bold text-[#241611] mt-1">
               {linkedProduct.name} ({linkedProduct.localName})
             </h3>
-            <p className="text-xs text-[#6B5B52]">{linkedProduct.shortDescription}</p>
+            <p className="text-xs text-[#6B5B52] max-w-lg">{linkedProduct.shortDescription}</p>
           </div>
           <Link
             href={`/products/${linkedProduct.slug}`}
-            className="px-5 py-2.5 bg-[#241611] hover:bg-[#B35638] text-white text-xs uppercase tracking-wider font-semibold transition-colors whitespace-nowrap"
+            className="px-6 py-3 rounded-full bg-[#0D3522] hover:bg-[#072417] text-white text-xs uppercase tracking-wider font-semibold transition-all shadow-sm whitespace-nowrap self-start sm:self-auto"
           >
-            Order Millet / Spices
+            Order Provisions →
           </Link>
         </div>
       )}
 
       {/* Ingredients & Instructions Columns */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
         {/* Ingredients */}
-        <div className="md:col-span-5 space-y-4">
-          <h2 className="text-lg font-serif font-semibold text-[#241611] pb-2 border-b border-[#E7DED4]">
+        <div className="md:col-span-5 rounded-[28px] bg-[#EDE9E1] border border-[#D5CDBD] p-6 sm:p-8 space-y-4 shadow-xs self-start">
+          <h2 className="text-xl font-serif font-bold text-[#241611] pb-3 border-b border-[#D5CDBD]">
             Ingredients
           </h2>
-          <ul className="space-y-2 text-xs sm:text-sm text-[#6B5B52]">
+          <ul className="space-y-2.5 text-xs sm:text-sm text-[#6B5B52]">
             {recipe.ingredients.map((item, idx) => (
-              <li key={idx} className="flex items-start space-x-2">
-                <span className="text-[#B35638] mt-1">•</span>
-                <span>{item}</span>
+              <li key={idx} className="flex items-start space-x-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0D3522] mt-2 flex-shrink-0" />
+                <span className="leading-relaxed">{item}</span>
               </li>
             ))}
           </ul>
 
           {recipe.pairingTips && (
-            <div className="p-4 bg-[#FAF7F2] border border-[#E7DED4] text-xs space-y-1 mt-6">
-              <strong className="text-[#241611] block">Serving Suggestion:</strong>
-              <p className="text-[#6B5B52]">{recipe.pairingTips}</p>
+            <div className="p-4 rounded-[20px] bg-white/80 border border-[#D5CDBD] text-xs space-y-1 mt-6">
+              <strong className="text-[#0D3522] block font-serif">Serving Suggestion:</strong>
+              <p className="text-[#6B5B52] leading-relaxed">{recipe.pairingTips}</p>
             </div>
           )}
         </div>
 
         {/* Instructions */}
-        <div className="md:col-span-7 space-y-4">
-          <h2 className="text-lg font-serif font-semibold text-[#241611] pb-2 border-b border-[#E7DED4]">
+        <div className="md:col-span-7 rounded-[28px] bg-white/80 border border-[#D5CDBD] p-6 sm:p-8 space-y-6 shadow-xs">
+          <h2 className="text-xl font-serif font-bold text-[#241611] pb-3 border-b border-[#D5CDBD]">
             Step-by-Step Instructions
           </h2>
-          <ol className="space-y-4 text-xs sm:text-sm text-[#241611]">
+          <ol className="space-y-5 text-xs sm:text-sm text-[#241611]">
             {recipe.instructions.map((step, idx) => (
-              <li key={idx} className="flex items-start space-x-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#FAF7F2] border border-[#E7DED4] text-xs font-bold text-[#B35638] flex items-center justify-center mt-0.5">
+              <li key={idx} className="flex items-start space-x-3.5">
+                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[#0D3522] text-white text-xs font-bold flex items-center justify-center shadow-2xs">
                   {idx + 1}
                 </span>
                 <span className="text-[#6B5B52] leading-relaxed pt-0.5">{step}</span>

@@ -105,19 +105,21 @@ export default function ProductDetailPage({
 
       {/* Main Product Hero Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-          {/* Left: Product Image Gallery */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+          {/* Left: Product Image Gallery Stage */}
           <div className="lg:col-span-6 space-y-4">
-            <div className="relative aspect-square w-full bg-[#F5EFEB] border border-[#E7DED4] overflow-hidden">
-              <Image
-                src={product.images[activeImageIndex] || product.images[0]}
-                alt={product.name}
-                fill
-                priority
-                className="object-cover transition-all duration-300"
-              />
+            <div className="relative aspect-square w-full rounded-[28px] sm:rounded-[36px] bg-[#EDE9E1] border border-[#D5CDBD] p-3 sm:p-5 overflow-hidden shadow-xs flex items-center justify-center">
+              <div className="relative w-full h-full rounded-[22px] sm:rounded-[28px] overflow-hidden bg-white/70">
+                <Image
+                  src={product.images[activeImageIndex] || product.images[0]}
+                  alt={product.name}
+                  fill
+                  priority
+                  className="object-cover transition-all duration-300"
+                />
+              </div>
               {discount > 0 && (
-                <span className="absolute top-4 left-4 bg-[#B35638] text-white text-xs font-bold uppercase tracking-wider px-3 py-1">
+                <span className="absolute top-6 left-6 rounded-full bg-[#B35638] text-white text-[11px] font-bold uppercase tracking-wider px-3.5 py-1 shadow-sm">
                   {discount}% OFF
                 </span>
               )}
@@ -131,10 +133,10 @@ export default function ProductDetailPage({
                     key={idx}
                     type="button"
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`relative w-20 h-20 bg-[#F5EFEB] border transition-all ${
+                    className={`relative w-20 h-20 rounded-[18px] overflow-hidden bg-[#EDE9E1] border transition-all ${
                       activeImageIndex === idx
-                        ? 'border-[#241611] ring-1 ring-[#241611]'
-                        : 'border-[#E7DED4] opacity-70 hover:opacity-100'
+                        ? 'border-[#0D3522] ring-2 ring-[#0D3522]/30 scale-102'
+                        : 'border-[#D5CDBD] opacity-70 hover:opacity-100'
                     }`}
                   >
                     <Image src={img} alt={`View ${idx + 1}`} fill className="object-cover" />
@@ -148,32 +150,34 @@ export default function ProductDetailPage({
           <div className="lg:col-span-6 flex flex-col justify-between space-y-6">
             <div>
               {/* Category & Origin label */}
-              <div className="flex items-center justify-between text-xs mb-1.5">
-                <span className="uppercase tracking-widest font-semibold text-[#B35638]">
-                  {product.category === 'millets' ? 'Chiru Dhanyalu' : 'Pure Single-Origin Spice'}
+              <div className="flex items-center justify-between text-xs mb-3">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#EDE9E1] border border-[#D5CDBD] text-[11px] font-semibold text-[#0D3522] uppercase tracking-wider">
+                  ✦ {product.category === 'millets' ? 'Chiru Dhanyalu' : 'Pure Single-Origin Spice'}
                 </span>
                 <button
                   onClick={() => toggleWishlist(product.id)}
-                  className={`flex items-center space-x-1 text-xs transition-colors ${
-                    inWishlist ? 'text-[#B35638] font-semibold' : 'text-[#6B5B52] hover:text-[#241611]'
+                  className={`flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs transition-colors border ${
+                    inWishlist
+                      ? 'border-[#B35638]/40 bg-[#FAF7F2] text-[#B35638] font-semibold'
+                      : 'border-[#D5CDBD] bg-white/70 text-[#6B5B52] hover:text-[#241611]'
                   }`}
                 >
-                  <Heart className={`w-4 h-4 ${inWishlist ? 'fill-current' : ''}`} />
-                  <span>{inWishlist ? 'Saved to Wishlist' : 'Save to Wishlist'}</span>
+                  <Heart className={`w-3.5 h-3.5 ${inWishlist ? 'fill-current' : ''}`} />
+                  <span>{inWishlist ? 'Saved' : 'Wishlist'}</span>
                 </button>
               </div>
 
               {/* Title & Local Name */}
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-semibold text-[#241611] leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-[#241611] leading-tight">
                 {product.name}
               </h1>
-              <p className="text-sm sm:text-base text-[#6B5B52] font-medium mt-1">
+              <p className="text-sm sm:text-base text-[#0D3522] font-semibold mt-1">
                 {product.localName}
               </p>
 
               {/* Star Rating & Reviews Link */}
-              <div className="flex items-center space-x-2 mt-2">
-                <div className="flex text-[#C5A059] text-xs tracking-wider">
+              <div className="flex items-center space-x-2 mt-3">
+                <div className="flex text-[#C4924A] text-xs tracking-wider">
                   {'★★★★★'}
                 </div>
                 <span className="text-xs font-bold text-[#0D3522]">4.9</span>
@@ -188,13 +192,13 @@ export default function ProductDetailPage({
               </div>
 
               {/* Tagline / Short description */}
-              <p className="text-xs sm:text-sm text-[#7A6B62] mt-3 leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#6B5B52] mt-3.5 leading-relaxed">
                 {product.tagline}
               </p>
 
               {/* Price Row */}
-              <div className="mt-5 pt-4 border-t border-[#E7DED4] flex items-baseline space-x-3 flex-wrap gap-y-2">
-                <span className="text-3xl font-bold text-[#241611]">
+              <div className="mt-5 p-4 rounded-[22px] bg-[#EDE9E1]/70 border border-[#D5CDBD] flex items-baseline space-x-3 flex-wrap gap-y-2">
+                <span className="text-3xl sm:text-4xl font-serif font-bold text-[#0D3522]">
                   {formatCurrency(currentWeightOpt.price)}
                 </span>
                 {currentWeightOpt.mrp > currentWeightOpt.price && (
@@ -203,15 +207,15 @@ export default function ProductDetailPage({
                   </span>
                 )}
                 {discount > 0 && (
-                  <span className="text-[11px] font-bold bg-[#EBF7EE] text-[#0D3522] px-2 py-0.5 border border-[#0D3522]/20">
+                  <span className="text-[11px] font-bold bg-[#EBF7EE] text-[#0D3522] px-2.5 py-0.5 rounded-full border border-[#0D3522]/20">
                     {discount}% OFF
                   </span>
                 )}
-                <span className="text-xs text-[#8C7A70]">Inclusive of all taxes</span>
+                <span className="text-xs text-[#8C7A70] ml-auto">Inclusive of all taxes</span>
               </div>
 
               {/* Pack Size / Weight Selector */}
-              <div className="mt-6 space-y-2">
+              <div className="mt-6 space-y-2.5">
                 <div className="flex justify-between text-xs">
                   <span className="font-semibold text-[#241611] uppercase tracking-wider">
                     Select Pack Size:
@@ -224,10 +228,10 @@ export default function ProductDetailPage({
                       key={w.size}
                       type="button"
                       onClick={() => setSelectedWeightSize(w.size)}
-                      className={`flex-1 py-3 px-4 border text-xs uppercase tracking-wider font-semibold transition-all text-center ${
+                      className={`flex-1 py-3 px-4 rounded-[20px] border text-xs uppercase tracking-wider font-semibold transition-all text-center ${
                         selectedWeightSize === w.size
-                          ? 'border-[#241611] bg-[#241611] text-white shadow-xs'
-                          : 'border-[#E7DED4] bg-white text-[#241611] hover:border-[#241611]'
+                          ? 'border-[#0D3522] bg-[#0D3522] text-white shadow-xs'
+                          : 'border-[#D5CDBD] bg-white text-[#241611] hover:border-[#0D3522]'
                       }`}
                     >
                       <span>{w.size}</span>
@@ -244,52 +248,52 @@ export default function ProductDetailPage({
                 <span className="text-xs font-semibold text-[#241611] uppercase tracking-wider">
                   Quantity:
                 </span>
-                <div className="flex items-center border border-[#E7DED4] bg-white">
+                <div className="flex items-center rounded-full border border-[#D5CDBD] bg-white p-1 shadow-2xs">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="p-2.5 text-[#6B5B52] hover:text-[#241611] transition-colors"
+                    className="p-1.5 rounded-full text-[#6B5B52] hover:bg-[#EDE9E1] hover:text-[#241611] transition-colors"
                     aria-label="Decrease quantity"
                   >
-                    <Minus className="w-4 h-4" />
+                    <Minus className="w-3.5 h-3.5" />
                   </button>
                   <span className="px-4 text-xs font-bold text-[#241611] min-w-[32px] text-center">
                     {quantity}
                   </span>
                   <button
                     onClick={() => setQuantity((q) => q + 1)}
-                    className="p-2.5 text-[#6B5B52] hover:text-[#241611] transition-colors"
+                    className="p-1.5 rounded-full text-[#6B5B52] hover:bg-[#EDE9E1] hover:text-[#241611] transition-colors"
                     aria-label="Increase quantity"
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
 
               {/* Primary Actions */}
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <button
                   type="button"
                   onClick={handleAddToCart}
-                  className={`py-4 px-6 text-xs uppercase tracking-widest font-semibold transition-colors flex items-center justify-center space-x-2 border ${
+                  className={`py-4 px-6 rounded-full text-xs uppercase tracking-widest font-semibold transition-all flex items-center justify-center space-x-2 shadow-sm ${
                     addedAnimation
-                      ? 'bg-[#274135] border-[#274135] text-white'
-                      : 'bg-[#241611] border-[#241611] text-white hover:bg-[#B35638] hover:border-[#B35638]'
+                      ? 'bg-[#274135] text-white'
+                      : 'bg-[#0D3522] hover:bg-[#072417] text-white'
                   }`}
                 >
                   {addedAnimation ? (
                     <>
                       <Check className="w-4 h-4 stroke-[2.5]" />
-                      <span>Added to Cart</span>
+                      <span>Added to Basket</span>
                     </>
                   ) : (
-                    <span>Add to Cart</span>
+                    <span>+ Add to Cart</span>
                   )}
                 </button>
 
                 <button
                   type="button"
                   onClick={handleBuyNow}
-                  className="py-4 px-6 bg-[#B35638] hover:bg-[#9E462A] text-white text-xs uppercase tracking-widest font-semibold transition-colors flex items-center justify-center space-x-1"
+                  className="py-4 px-6 rounded-full bg-[#C4924A] hover:bg-[#b07f37] text-white text-xs uppercase tracking-widest font-semibold transition-all flex items-center justify-center space-x-1.5 shadow-sm"
                 >
                   <span>Buy Now</span>
                   <ArrowRight className="w-4 h-4" />
@@ -298,13 +302,13 @@ export default function ProductDetailPage({
             </div>
 
             {/* Micro Trust Indicators */}
-            <div className="pt-6 border-t border-[#E7DED4] grid grid-cols-2 gap-4 text-xs text-[#6B5B52]">
-              <div className="flex items-start space-x-2">
-                <ShieldCheck className="w-4 h-4 text-[#B35638] flex-shrink-0 mt-0.5" />
+            <div className="pt-6 border-t border-[#D5CDBD] grid grid-cols-2 gap-4 text-xs text-[#6B5B52]">
+              <div className="flex items-start space-x-2.5">
+                <ShieldCheck className="w-4 h-4 text-[#0D3522] flex-shrink-0 mt-0.5" />
                 <span>100% Unpolished & Zero Additives</span>
               </div>
-              <div className="flex items-start space-x-2">
-                <Truck className="w-4 h-4 text-[#B35638] flex-shrink-0 mt-0.5" />
+              <div className="flex items-start space-x-2.5">
+                <Truck className="w-4 h-4 text-[#0D3522] flex-shrink-0 mt-0.5" />
                 <span>Free delivery on orders above ₹500</span>
               </div>
             </div>
@@ -315,74 +319,34 @@ export default function ProductDetailPage({
       {/* ==========================================
           DETAILED TABS & QUALITY INFORMATION
           ========================================== */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-        <div className="border border-[#E7DED4] bg-white">
-          {/* Tab Navigation Header */}
-          <div className="flex border-b border-[#E7DED4] overflow-x-auto">
-            <button
-              onClick={() => setActiveTab('story')}
-              className={`py-4 px-6 text-xs uppercase tracking-wider font-semibold whitespace-nowrap border-b-2 transition-colors ${
-                activeTab === 'story'
-                  ? 'border-[#B35638] text-[#B35638] bg-[#FAF7F2]'
-                  : 'border-transparent text-[#6B5B52] hover:text-[#241611]'
-              }`}
-            >
-              Product Story & Origin
-            </button>
-            <button
-              onClick={() => setActiveTab('cooking')}
-              className={`py-4 px-6 text-xs uppercase tracking-wider font-semibold whitespace-nowrap border-b-2 transition-colors ${
-                activeTab === 'cooking'
-                  ? 'border-[#B35638] text-[#B35638] bg-[#FAF7F2]'
-                  : 'border-transparent text-[#6B5B52] hover:text-[#241611]'
-              }`}
-            >
-              Cooking & Culinary Uses
-            </button>
-            <button
-              onClick={() => setActiveTab('quality')}
-              className={`py-4 px-6 text-xs uppercase tracking-wider font-semibold whitespace-nowrap border-b-2 transition-colors ${
-                activeTab === 'quality'
-                  ? 'border-[#B35638] text-[#B35638] bg-[#FAF7F2]'
-                  : 'border-transparent text-[#6B5B52] hover:text-[#241611]'
-              }`}
-            >
-              Processing & Purity Checks
-            </button>
-            <button
-              onClick={() => setActiveTab('nutrition')}
-              className={`py-4 px-6 text-xs uppercase tracking-wider font-semibold whitespace-nowrap border-b-2 transition-colors ${
-                activeTab === 'nutrition'
-                  ? 'border-[#B35638] text-[#B35638] bg-[#FAF7F2]'
-                  : 'border-transparent text-[#6B5B52] hover:text-[#241611]'
-              }`}
-            >
-              Nutrition & Ingredients
-            </button>
-            <button
-              onClick={() => setActiveTab('batch')}
-              className={`py-4 px-6 text-xs uppercase tracking-wider font-semibold whitespace-nowrap border-b-2 transition-colors ${
-                activeTab === 'batch'
-                  ? 'border-[#B35638] text-[#B35638] bg-[#FAF7F2]'
-                  : 'border-transparent text-[#6B5B52] hover:text-[#241611]'
-              }`}
-            >
-              Batch & Packaging Details
-            </button>
-            <button
-              onClick={() => setActiveTab('reviews')}
-              className={`py-4 px-6 text-xs uppercase tracking-wider font-semibold whitespace-nowrap border-b-2 transition-colors ${
-                activeTab === 'reviews'
-                  ? 'border-[#B35638] text-[#B35638] bg-[#FAF7F2]'
-                  : 'border-transparent text-[#6B5B52] hover:text-[#241611]'
-              }`}
-            >
-              Verified Reviews (24)
-            </button>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16">
+        <div className="rounded-[28px] sm:rounded-[36px] border border-[#D5CDBD] bg-[#EDE9E1] overflow-hidden shadow-xs">
+          {/* Tab Navigation Header with Pill Buttons */}
+          <div className="flex border-b border-[#D5CDBD] p-3 sm:p-4 overflow-x-auto no-scrollbar gap-2">
+            {[
+              { id: 'story', label: '✦ Story & Origin' },
+              { id: 'cooking', label: '✦ Culinary Uses' },
+              { id: 'quality', label: '✦ Purity Checks' },
+              { id: 'nutrition', label: '✦ Nutrition' },
+              { id: 'batch', label: '✦ Batch Traceability' },
+              { id: 'reviews', label: '✦ Reviews (24)' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`py-2.5 px-5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-[#0D3522] text-white shadow-xs'
+                    : 'bg-white/80 text-[#6B5B52] hover:bg-white hover:text-[#241611] border border-[#D5CDBD]'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
 
           {/* Tab Content Panes */}
-          <div className="p-6 sm:p-10 text-xs sm:text-sm text-[#241611] leading-relaxed">
+          <div className="p-6 sm:p-10 text-xs sm:text-sm text-[#241611] leading-relaxed bg-[#FAF7F2]">
             {/* Story Tab */}
             {activeTab === 'story' && (
               <div className="space-y-6 max-w-3xl">
@@ -874,15 +838,20 @@ export default function ProductDetailPage({
       {/* Related Recipes Section */}
       {relatedRecipes.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-          <div className="flex items-center justify-between mb-6 border-b border-[#E7DED4] pb-3">
-            <h2 className="text-xl font-serif font-semibold text-[#241611]">
-              Recommended Recipes Using This Harvest
-            </h2>
+          <div className="flex items-center justify-between mb-8 border-b border-[#D5CDBD] pb-4">
+            <div>
+              <span className="text-xs uppercase tracking-widest font-semibold text-[#0D3522]">
+                ✦ Farm to Table
+              </span>
+              <h2 className="text-2xl font-serif font-bold text-[#241611] mt-1">
+                Recommended Recipes Using This Harvest
+              </h2>
+            </div>
             <NextLink
               href="/recipes"
-              className="text-xs font-semibold uppercase tracking-wider text-[#B35638] hover:underline"
+              className="text-xs font-semibold text-[#0D3522] hover:underline flex items-center"
             >
-              All Recipes →
+              All Recipes <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </NextLink>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -890,24 +859,24 @@ export default function ProductDetailPage({
               <NextLink
                 key={r.id}
                 href={`/recipes/${r.slug}`}
-                className="group flex flex-col sm:flex-row bg-white border border-[#E7DED4] overflow-hidden hover:border-[#B35638] transition-colors"
+                className="group flex flex-col sm:flex-row rounded-[24px] bg-[#EDE9E1] border border-[#D5CDBD] p-3 overflow-hidden hover:shadow-md transition-all"
               >
-                <div className="relative w-full sm:w-40 h-40 bg-[#F5EFEB] flex-shrink-0">
-                  <Image src={r.image} alt={r.title} fill className="object-cover" />
+                <div className="relative w-full sm:w-44 h-44 rounded-[18px] overflow-hidden bg-white/70 flex-shrink-0">
+                  <Image src={r.image} alt={r.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <div className="p-4 flex-1 flex flex-col justify-between">
                   <div>
-                    <span className="text-[10px] uppercase tracking-wider font-semibold text-[#B35638]">
+                    <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/80 border border-[#D5CDBD] text-[10px] uppercase tracking-wider font-semibold text-[#0D3522]">
                       {r.category}
                     </span>
-                    <h3 className="text-sm font-semibold text-[#241611] group-hover:text-[#B35638] transition-colors mt-0.5">
+                    <h3 className="text-base font-serif font-bold text-[#241611] group-hover:text-[#0D3522] transition-colors mt-2 leading-snug">
                       {r.title}
                     </h3>
-                    <p className="text-xs text-[#6B5B52] mt-1 line-clamp-2">{r.description}</p>
+                    <p className="text-xs text-[#6B5B52] mt-1.5 line-clamp-2 leading-relaxed">{r.description}</p>
                   </div>
-                  <div className="text-[11px] text-[#8C7A70] flex items-center space-x-3 mt-3">
+                  <div className="text-[11px] text-[#8C7A70] flex items-center space-x-3 mt-4 pt-3 border-t border-[#D5CDBD]/60">
                     <span className="flex items-center">
-                      <Clock className="w-3 h-3 mr-1" /> {r.cookTime}
+                      <Clock className="w-3.5 h-3.5 mr-1 text-[#0D3522]" /> {r.cookTime}
                     </span>
                     <span>•</span>
                     <span>{r.difficulty}</span>
@@ -922,9 +891,14 @@ export default function ProductDetailPage({
       {/* Related Products Section */}
       {relatedProducts.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-          <h2 className="text-xl font-serif font-semibold text-[#241611] mb-6 border-b border-[#E7DED4] pb-3">
-            Pair With Traditional Grains & Spices
-          </h2>
+          <div className="mb-8 border-b border-[#D5CDBD] pb-4">
+            <span className="text-xs uppercase tracking-widest font-semibold text-[#0D3522]">
+              ✦ Perfect Pairings
+            </span>
+            <h2 className="text-2xl font-serif font-bold text-[#241611] mt-1">
+              Pair With Traditional Grains & Spices
+            </h2>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {relatedProducts.map((p) => (
               <ProductCard key={p.id} product={p} />
@@ -936,11 +910,11 @@ export default function ProductDetailPage({
       {/* ==========================================
           STICKY MOBILE ADD TO CART BAR
           ========================================== */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-white/95 backdrop-blur-md border-t border-[#E7DED4] p-3 shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-[#FAF7F2]/95 backdrop-blur-md border-t border-[#D5CDBD] p-3.5 shadow-lg rounded-t-[24px]">
         <div className="flex items-center justify-between gap-3 max-w-md mx-auto">
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-[#241611] truncate">{product.name}</p>
-            <p className="text-xs font-bold text-[#B35638]">
+            <p className="text-xs font-serif font-bold text-[#241611] truncate">{product.name}</p>
+            <p className="text-xs font-bold text-[#0D3522]">
               {formatCurrency(currentWeightOpt.price)}{' '}
               <span className="text-[10px] text-[#6B5B52] font-normal">/ {currentWeightOpt.size}</span>
             </p>
@@ -948,9 +922,9 @@ export default function ProductDetailPage({
           <button
             type="button"
             onClick={handleAddToCart}
-            className="px-6 py-3 bg-[#B35638] text-white text-xs uppercase tracking-wider font-semibold hover:bg-[#9E462A] transition-colors whitespace-nowrap"
+            className="px-6 py-2.5 rounded-full bg-[#0D3522] hover:bg-[#072417] text-white text-xs uppercase tracking-wider font-semibold shadow-sm transition-all whitespace-nowrap"
           >
-            Add to Cart
+            + Add to Cart
           </button>
         </div>
       </div>

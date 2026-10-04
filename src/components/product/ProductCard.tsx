@@ -13,6 +13,14 @@ interface ProductCardProps {
   product: Product;
 }
 
+const studioImageMap: Record<string, string> = {
+  'millet-korralu': '/images/products/studio/foxtail-millet.jpg',
+  'spice-turmeric': '/images/products/studio/salem-turmeric.jpg',
+  'millet-samalu': '/images/products/studio/little-millet.jpg',
+  'spice-red-chilli': '/images/products/studio/guntur-chilli.jpg',
+  'millet-arikelu': '/images/products/studio/kodo-millet.jpg',
+};
+
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -23,13 +31,14 @@ export function ProductCard({ product }: ProductCardProps) {
     product.weights.find((w) => w.size === selectedWeightSize) || product.weights[0];
   const discount = calculateDiscount(currentWeightOpt.price, currentWeightOpt.mrp);
   const inWishlist = isInWishlist(product.id);
+  const displayImage = studioImageMap[product.id] || product.images[0];
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     addToCart(product, selectedWeightSize, 1);
     setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 1500);
+    setTimeout(() => setIsAdded(false), 1400);
   };
 
   const handleWishlistClick = (e: React.MouseEvent) => {
@@ -39,135 +48,128 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group relative bg-white border border-[#E7DED4] hover:border-[#B35638] transition-all duration-300 flex flex-col h-full">
-      {/* Badges & Wishlist Overlay */}
-      <div className="absolute top-3 left-3 z-10 flex flex-col gap-1">
-        {product.bestseller && (
-          <span className="bg-[#241611] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1">
-            Bestseller
-          </span>
-        )}
-        {discount > 0 && (
-          <span className="bg-[#B35638] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5">
-            {discount}% OFF
-          </span>
-        )}
+    <div className="group relative bg-[#EDE9E1]/80 hover:bg-[#E7E2D8] transition-all duration-300 rounded-[24px] sm:rounded-[28px] p-5 flex flex-col justify-between border border-[#E3DDD1] shadow-2xs hover:shadow-md h-full">
+      {/* Top Pill Badge & Wishlist Button */}
+      <div className="flex items-center justify-between z-10">
+        <span className="text-[10px] uppercase tracking-wider font-medium px-2.5 py-0.5 rounded-full border border-[#D0C7B9] bg-white/80 text-[#6B5B52]">
+          {product.bestseller
+            ? 'Bestseller'
+            : discount > 0
+            ? `${discount}% OFF`
+            : product.category === 'millets'
+            ? 'Chiru Dhanyalu'
+            : 'Pure Spice'}
+        </span>
+
+        <button
+          type="button"
+          onClick={handleWishlistClick}
+          className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
+            inWishlist
+              ? 'bg-[#B35638] text-white'
+              : 'bg-white/80 text-[#8C7A70] hover:text-[#B35638]'
+          }`}
+          aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <Heart className="w-3.5 h-3.5 fill-current stroke-[1.5]" />
+        </button>
       </div>
 
-      <button
-        onClick={handleWishlistClick}
-        className={`absolute top-3 right-3 z-10 p-2 rounded-full backdrop-blur-xs transition-colors ${
-          inWishlist
-            ? 'bg-[#B35638] text-white'
-            : 'bg-white/80 text-[#6B5B52] hover:text-[#B35638] hover:bg-white'
-        }`}
-        aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-      >
-        <Heart className="w-4 h-4 fill-current stroke-[1.5]" />
-      </button>
-
-      {/* Product Image Gallery Preview */}
+      {/* Product Image Stage - Large, Prominent & Crystal Clear */}
       <Link
         href={`/products/${product.slug}`}
-        className="relative aspect-square w-full bg-[#F5EFEB] overflow-hidden block"
+        className="relative aspect-square w-full my-3 flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-300"
       >
-        <Image
-          src={product.images[0]}
-          alt={product.name}
-          fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className="object-cover card-image-zoom transition-all duration-500 group-hover:scale-105"
-        />
-        {product.images[1] && (
+        <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-xs border border-[#DDD5C7]/60">
           <Image
-            src={product.images[1]}
-            alt={`${product.name} alternate view`}
+            src={displayImage}
+            alt={product.name}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-opacity duration-500 opacity-0 group-hover:opacity-100 absolute inset-0"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover"
+            priority={product.bestseller}
           />
-        )}
+        </div>
       </Link>
 
       {/* Card Content */}
-      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
-        <div>
-          {/* Category Tag */}
-          <span className="text-[10px] uppercase font-semibold tracking-widest text-[#B35638] block mb-1">
-            {product.category === 'millets'
-              ? 'Chiru Dhanyalu'
-              : product.category === 'spices'
-              ? 'Pure Spice'
-              : 'Signature Masala'}
+      <div className="space-y-3">
+        {/* Dynamic Weight / Pack Size Selector Dots */}
+        <div className="flex items-center gap-1.5 pt-1">
+          {product.weights.map((w, idx) => (
+            <button
+              key={w.size}
+              type="button"
+              onClick={() => setSelectedWeightSize(w.size)}
+              title={`Select ${w.size}`}
+              className={`w-3.5 h-3.5 rounded-full transition-all ${
+                selectedWeightSize === w.size
+                  ? 'ring-2 ring-offset-2 ring-[#0D3522] scale-110'
+                  : 'opacity-60 hover:opacity-100'
+              } ${
+                idx === 0
+                  ? 'bg-[#76A89B]'
+                  : idx === 1
+                  ? 'bg-[#E39D55]'
+                  : 'bg-[#B57A58]'
+              }`}
+              aria-label={`Select pack size ${w.size}`}
+            />
+          ))}
+          <span className="text-[10px] text-[#7A6B62] uppercase tracking-wider ml-1">
+            {selectedWeightSize}
           </span>
-
-          {/* Product Titles */}
-          <Link href={`/products/${product.slug}`} className="block group-hover:text-[#B35638] transition-colors">
-            <h3 className="text-sm sm:text-base font-semibold text-[#241611] leading-snug">
-              {product.name}
-            </h3>
-            <p className="text-xs text-[#6B5B52] font-medium mt-0.5">{product.localName}</p>
-          </Link>
-
-          {/* Short description */}
-          <p className="text-xs text-[#7A6B62] mt-2 line-clamp-2 leading-relaxed hidden sm:block">
-            {product.shortDescription}
-          </p>
         </div>
 
-        {/* Dynamic Weight / Pack Size Selector */}
-        <div className="mt-4 pt-3 border-t border-[#F0E8DF]">
-          <div className="flex items-center gap-1.5 mb-3">
-            {product.weights.map((w) => (
-              <button
-                key={w.size}
-                type="button"
-                onClick={() => setSelectedWeightSize(w.size)}
-                className={`text-[11px] px-2.5 py-1 border transition-all font-medium ${
-                  selectedWeightSize === w.size
-                    ? 'border-[#241611] bg-[#241611] text-white'
-                    : 'border-[#E7DED4] bg-white text-[#6B5B52] hover:border-[#241611]'
-                }`}
-              >
-                {w.size}
-              </button>
-            ))}
-          </div>
+        {/* Product Titles */}
+        <Link href={`/products/${product.slug}`} className="block group-hover:text-[#0D3522] transition-colors">
+          <h3 className="text-xs sm:text-sm font-semibold text-[#241611] leading-snug line-clamp-1">
+            {product.name}
+          </h3>
+          <p className="text-[11px] text-[#7A6B62] font-medium mt-0.5 line-clamp-1">
+            {product.localName || product.tagline}
+          </p>
+        </Link>
 
-          {/* Price & Quick Add Button */}
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-baseline space-x-1.5">
-                <span className="text-base sm:text-lg font-bold text-[#241611]">
-                  {formatCurrency(currentWeightOpt.price)}
+        {/* Price & Green Pill + Cart Button */}
+        <div className="flex items-center justify-between pt-1">
+          <div>
+            <div className="flex items-baseline space-x-1.5">
+              <span className="text-sm sm:text-base font-bold text-[#241611]">
+                {formatCurrency(currentWeightOpt.price)}
+              </span>
+              {currentWeightOpt.mrp > currentWeightOpt.price && (
+                <span className="text-[11px] text-[#8C7A70] line-through">
+                  {formatCurrency(currentWeightOpt.mrp)}
                 </span>
-                {currentWeightOpt.mrp > currentWeightOpt.price && (
-                  <span className="text-xs text-[#9E8E84] line-through">
-                    {formatCurrency(currentWeightOpt.mrp)}
-                  </span>
-                )}
-              </div>
-              <span className="text-[10px] text-[#8C7A70] block">Inclusive of all taxes</span>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleQuickAdd}
-              disabled={isAdded || !currentWeightOpt.inStock}
-              className={`p-2.5 transition-colors duration-200 flex items-center justify-center rounded-none ${
-                isAdded
-                  ? 'bg-[#274135] text-white'
-                  : 'bg-[#FAF7F2] border border-[#241611] text-[#241611] hover:bg-[#241611] hover:text-white'
-              }`}
-              aria-label={`Quick add ${product.name} ${currentWeightOpt.size} to cart`}
-            >
-              {isAdded ? (
-                <Check className="w-4 h-4 stroke-[2]" />
-              ) : (
-                <Plus className="w-4 h-4 stroke-[2]" />
               )}
-            </button>
+            </div>
+            <span className="text-[9px] text-[#8C7A70] block">Taxes included</span>
           </div>
+
+          <button
+            type="button"
+            onClick={handleQuickAdd}
+            disabled={isAdded || !currentWeightOpt.inStock}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center space-x-1 transition-all duration-200 shadow-2xs ${
+              isAdded
+                ? 'bg-[#274135] text-white scale-95'
+                : 'bg-[#0D3522] hover:bg-[#082417] text-white hover:shadow-sm'
+            }`}
+            aria-label={`Add ${product.name} to cart`}
+          >
+            {isAdded ? (
+              <>
+                <Check className="w-3.5 h-3.5" />
+                <span>Added</span>
+              </>
+            ) : (
+              <>
+                <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>Cart</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>
