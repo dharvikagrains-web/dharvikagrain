@@ -146,12 +146,22 @@ export function Header({ onOpenSearch }: HeaderProps) {
           </nav>
 
           {/* Right Action Icons */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Search Trigger */}
+          <div className="flex items-center space-x-2 sm:space-x-3.5">
+            {/* Pill Search Bar (Desktop) & Icon (Mobile) */}
             <button
               type="button"
               onClick={onOpenSearch}
-              className="p-1.5 sm:p-2 text-[#241611] hover:text-[#B35638] transition-colors rounded-full focus:outline-none"
+              className="hidden md:flex items-center space-x-2.5 bg-[#FAF7F2] hover:bg-[#F2ECE3] border border-[#DDD4C7] rounded-full px-4 py-1.5 text-xs text-[#6B5B52] transition-all shadow-2xs group focus:outline-none focus:ring-2 focus:ring-[#0D3522]"
+              aria-label="Search catalogue, recipes, and journal"
+            >
+              <Search className="w-3.5 h-3.5 text-[#6B5B52] group-hover:text-[#0D3522] transition-colors" />
+              <span className="text-[12px] text-[#6B5B52] tracking-wide font-normal">Search Product...</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={onOpenSearch}
+              className="md:hidden p-1.5 text-[#241611] hover:text-[#0D3522] transition-colors rounded-full focus:outline-none"
               aria-label="Search catalogue, recipes, and journal"
             >
               <Search className="w-5 h-5 stroke-[1.5]" />
