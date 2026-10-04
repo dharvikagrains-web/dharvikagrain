@@ -1,11 +1,9 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import Link from 'next/link';
 import { products } from '@/data/products';
-import { ProductCategory } from '@/types';
 import { ProductCard } from '@/components/product/ProductCard';
-import { SlidersHorizontal, Search, RotateCcw, Sparkles, Filter, X } from 'lucide-react';
+import { Search, RotateCcw, Filter, X, CheckCircle2 } from 'lucide-react';
 
 export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -21,7 +19,7 @@ export default function ShopPage() {
     { id: 'all', label: 'All Provisions' },
     { id: 'millets', label: 'Millets (Chiru Dhanyalu)' },
     { id: 'spices', label: 'Pure Spices' },
-    { id: 'masalas', label: 'Signature Masalas' },
+    { id: 'masalas', label: 'Signature Blends' },
     { id: 'combos', label: 'Curated Combos' },
   ];
 
@@ -122,50 +120,45 @@ export default function ShopPage() {
     (searchQuery.trim() ? 1 : 0);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-      {/* Curved Linen Hero Banner */}
-      <div className="relative rounded-[28px] sm:rounded-[36px] bg-[#EDE9E1] border border-[#D5CDBD] p-8 sm:p-12 md:p-14 mb-8 sm:mb-10 overflow-hidden shadow-xs">
-        <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/80 border border-[#D5CDBD] text-[11px] font-semibold text-[#0D3522] uppercase tracking-wider mb-4">
-            <Sparkles className="w-3 h-3 text-[#C4924A]" />
-            <span>✦ The Complete Harvest</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-[#241611] leading-tight">
-            Pure Millets & <br className="hidden sm:inline" />
-            <span className="italic font-normal text-[#0D3522]">Single-Origin Spices</span>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+      {/* Editorial Header Banner */}
+      <div className="rounded-[12px] bg-[#F4EFEA] border border-[#E2D9CE] p-6 sm:p-10 lg:p-12">
+        <div className="max-w-2xl">
+          <span className="text-[12px] uppercase tracking-wider font-semibold text-[#9E462A] block font-data">
+            The Complete Harvest
+          </span>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-semibold text-[#221814] mt-1 leading-tight">
+            Unpolished Millets & <br className="hidden sm:inline" />
+            <span className="font-serif italic font-normal text-[#1A382B]">Single-Origin Spices</span>
           </h1>
-          <p className="text-xs sm:text-sm text-[#6B5B52] mt-3.5 leading-relaxed max-w-xl">
-            Authentic, 100% unpolished Indian millets and direct single-origin spices.
-            Harvested from traditional dryland farmer clusters with verifiable batch transparency.
+          <p className="text-sm text-[#685950] mt-3 leading-relaxed">
+            Naturally harvested from partner dryland clusters in Andhra Pradesh and Telangana. Unpolished, stone-picked, and cold-milled with honest lot traceability.
           </p>
 
-          <div className="mt-5 flex flex-wrap gap-2.5">
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/70 border border-[#D5CDBD] text-[11px] font-medium text-[#241611]">
-              🌾 100% Unpolished
+          <div className="mt-4 flex flex-wrap gap-2 text-[12px] text-[#685950]">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] bg-white border border-[#E2D9CE]">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#1A382B]" /> 100% Unpolished Bran
             </span>
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/70 border border-[#D5CDBD] text-[11px] font-medium text-[#241611]">
-              🌿 Zero Additives
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] bg-white border border-[#E2D9CE]">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#1A382B]" /> Chemical-Free Cleaning
             </span>
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/70 border border-[#D5CDBD] text-[11px] font-medium text-[#241611]">
-              🧪 Lab Tested Batches
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] bg-white border border-[#E2D9CE]">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#1A382B]" /> Direct Lot Traceability
             </span>
           </div>
         </div>
-
-        {/* Ambient glow decoration */}
-        <div className="absolute -right-16 -bottom-16 w-80 h-80 rounded-full bg-[#E2DACB]/60 blur-3xl pointer-events-none" />
       </div>
 
-      {/* Pill Category Tabs */}
-      <div className="flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar gap-2 sm:gap-3 mb-8 pb-2">
+      {/* Category Segmented Tabs */}
+      <div className="flex items-center overflow-x-auto no-scrollbar gap-2 pb-1">
         {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setSelectedCategory(cat.id)}
-            className={`flex-shrink-0 px-5 py-2.5 rounded-full text-xs font-semibold tracking-wide transition-all ${
+            className={`flex-shrink-0 px-4 py-2 rounded-[6px] text-[13px] font-medium transition-all ${
               selectedCategory === cat.id
-                ? 'bg-[#0D3522] text-white shadow-sm'
-                : 'bg-[#EDE9E1] text-[#6B5B52] hover:bg-[#E3DDD3] hover:text-[#241611] border border-[#D5CDBD]'
+                ? 'bg-[#1A382B] text-white shadow-2xs'
+                : 'bg-white text-[#685950] hover:text-[#221814] border border-[#E2D9CE]'
             }`}
           >
             {cat.label}
@@ -173,24 +166,24 @@ export default function ShopPage() {
         ))}
       </div>
 
-      {/* Floating Control & Filter Container */}
-      <div className="rounded-[28px] bg-[#EDE9E1]/80 backdrop-blur-sm border border-[#D5CDBD] p-4 sm:p-5 mb-8 shadow-xs space-y-4">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Pill Search bar */}
-          <div className="relative w-full md:w-88">
-            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[#8C7A70]" />
+      {/* Filter and Search Bar Container */}
+      <div className="rounded-[10px] bg-white border border-[#E2D9CE] p-4 sm:p-5 shadow-2xs space-y-4">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+          {/* Search bar */}
+          <div className="relative w-full md:w-80">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8C7A70]" />
             <input
               type="text"
-              placeholder="Search grains, spices, or health benefits..."
+              placeholder="Search grains, spices, recipes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-9 py-2.5 text-xs bg-white/90 rounded-full border border-[#D5CDBD] text-[#241611] placeholder:text-[#8C7A70] focus:outline-none focus:border-[#0D3522] shadow-2xs"
+              className="w-full pl-10 pr-8 py-2 text-[13px] bg-[#FAF7F2] rounded-[6px] border border-[#E2D9CE] text-[#221814] placeholder:text-[#8C7A70] focus:outline-none focus:border-[#1A382B]"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8C7A70] hover:text-[#241611]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8C7A70] hover:text-[#221814]"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -202,43 +195,43 @@ export default function ShopPage() {
             <button
               type="button"
               onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
-              className="md:hidden px-4 py-2.5 bg-white/90 rounded-full border border-[#D5CDBD] text-xs font-semibold text-[#241611] flex items-center space-x-2"
+              className="md:hidden px-3.5 py-2 bg-[#FAF7F2] rounded-[6px] border border-[#E2D9CE] text-[13px] font-medium text-[#221814] flex items-center gap-2"
             >
-              <Filter className="w-3.5 h-3.5 text-[#0D3522]" />
+              <Filter className="w-3.5 h-3.5 text-[#1A382B]" />
               <span>Filters {activeFiltersCount > 0 && `(${activeFiltersCount})`}</span>
             </button>
 
-            <div className="flex items-center space-x-2 text-xs">
-              <span className="text-[#6B5B52] hidden sm:inline font-medium">Sort by:</span>
+            <div className="flex items-center gap-2 text-[13px]">
+              <span className="text-[#685950] hidden sm:inline font-medium">Sort by:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-white/90 rounded-full border border-[#D5CDBD] px-4 py-2 text-xs text-[#241611] focus:outline-none font-semibold cursor-pointer shadow-2xs"
+                className="bg-[#FAF7F2] rounded-[6px] border border-[#E2D9CE] px-3 py-2 text-[13px] text-[#221814] focus:outline-none font-medium cursor-pointer"
               >
-                <option value="featured">Popular / Featured</option>
+                <option value="featured">Featured Harvest</option>
                 <option value="bestseller">Bestsellers First</option>
-                <option value="newest">New Harvest / Newest</option>
-                <option value="price-asc">Price: Low → High</option>
-                <option value="price-desc">Price: High → Low</option>
+                <option value="newest">New Harvest Arrivals</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
                 <option value="name">Product Name (A-Z)</option>
               </select>
             </div>
           </div>
         </div>
 
-        {/* Detailed Filters Row */}
-        <div className={`pt-4 border-t border-[#D5CDBD]/70 ${isMobileFilterOpen ? 'block' : 'hidden md:block'}`}>
-          <div className="flex flex-wrap items-center justify-between gap-4 text-xs">
+        {/* Detailed Filters Drawer / Row */}
+        <div className={`pt-3 border-t border-[#EDE6DC] ${isMobileFilterOpen ? 'block' : 'hidden md:block'}`}>
+          <div className="flex flex-wrap items-center justify-between gap-3 text-[12px]">
             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               {/* Dietary filter */}
-              <div className="flex items-center space-x-2">
-                <span className="text-[#6B5B52] font-medium">Dietary:</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[#685950] font-medium">Dietary:</span>
                 <select
                   value={selectedDietary}
                   onChange={(e) => setSelectedDietary(e.target.value)}
-                  className="bg-white/90 rounded-full border border-[#D5CDBD] px-3.5 py-1.5 text-xs text-[#241611] focus:outline-none font-medium cursor-pointer"
+                  className="bg-[#FAF7F2] rounded-[6px] border border-[#E2D9CE] px-2.5 py-1.5 text-[12px] text-[#221814] focus:outline-none"
                 >
-                  <option value="all">All Dietary Preferences</option>
+                  <option value="all">All Preferences</option>
                   {dietaryOptions.map((opt) => (
                     <option key={opt} value={opt}>
                       {opt}
@@ -248,12 +241,12 @@ export default function ShopPage() {
               </div>
 
               {/* Weight filter */}
-              <div className="flex items-center space-x-2">
-                <span className="text-[#6B5B52] font-medium">Size:</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[#685950] font-medium">Size:</span>
                 <select
                   value={selectedWeight}
                   onChange={(e) => setSelectedWeight(e.target.value)}
-                  className="bg-white/90 rounded-full border border-[#D5CDBD] px-3.5 py-1.5 text-xs text-[#241611] focus:outline-none font-medium cursor-pointer"
+                  className="bg-[#FAF7F2] rounded-[6px] border border-[#E2D9CE] px-2.5 py-1.5 text-[12px] text-[#221814] focus:outline-none"
                 >
                   <option value="all">All Pack Sizes</option>
                   <option value="500g">500g</option>
@@ -265,9 +258,9 @@ export default function ShopPage() {
               </div>
 
               {/* Max Price Range */}
-              <div className="flex items-center space-x-2 bg-white/70 px-3 py-1.5 rounded-full border border-[#D5CDBD]">
-                <span className="text-[#6B5B52] font-medium">Max:</span>
-                <span className="text-[#0D3522] font-bold">₹{maxPrice}</span>
+              <div className="flex items-center gap-2 bg-[#FAF7F2] px-2.5 py-1.5 rounded-[6px] border border-[#E2D9CE]">
+                <span className="text-[#685950] font-medium">Max:</span>
+                <span className="font-data text-[#1A382B] font-bold">₹{maxPrice}</span>
                 <input
                   type="range"
                   min="100"
@@ -275,19 +268,19 @@ export default function ShopPage() {
                   step="50"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(Number(e.target.value))}
-                  className="w-20 sm:w-28 accent-[#0D3522] cursor-pointer"
+                  className="w-20 sm:w-24 accent-[#1A382B] cursor-pointer"
                 />
               </div>
 
               {/* In stock toggle */}
-              <label className="flex items-center space-x-2 cursor-pointer bg-white/70 px-3 py-1.5 rounded-full border border-[#D5CDBD] text-[#6B5B52] hover:text-[#241611]">
+              <label className="flex items-center gap-2 cursor-pointer bg-[#FAF7F2] px-2.5 py-1.5 rounded-[6px] border border-[#E2D9CE] text-[#685950] hover:text-[#221814]">
                 <input
                   type="checkbox"
                   checked={inStockOnly}
                   onChange={(e) => setInStockOnly(e.target.checked)}
-                  className="accent-[#0D3522] rounded cursor-pointer"
+                  className="accent-[#1A382B] rounded cursor-pointer"
                 />
-                <span className="font-medium text-xs">In Stock Only</span>
+                <span className="font-medium">In Stock Only</span>
               </label>
             </div>
 
@@ -296,7 +289,7 @@ export default function ShopPage() {
               <button
                 type="button"
                 onClick={resetAllFilters}
-                className="px-3.5 py-1.5 rounded-full bg-white/80 border border-[#D5CDBD] text-[#B35638] hover:bg-[#B35638] hover:text-white flex items-center space-x-1.5 font-semibold text-xs transition-colors shadow-2xs"
+                className="px-3 py-1.5 rounded-[6px] bg-[#FAF7F2] border border-[#E2D9CE] text-[#9E462A] hover:bg-[#9E462A] hover:text-white flex items-center gap-1.5 font-medium text-[12px] transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset ({activeFiltersCount})</span>
@@ -307,36 +300,36 @@ export default function ShopPage() {
       </div>
 
       {/* Results Count Bar */}
-      <div className="flex items-center justify-between text-xs text-[#6B5B52] mb-6 px-1">
+      <div className="flex items-center justify-between text-[13px] text-[#685950] px-1">
         <p>
-          Showing <strong className="text-[#0D3522] font-bold">{filteredProducts.length}</strong> provisions
+          Showing <strong className="font-data text-[#1A382B] font-bold">{filteredProducts.length}</strong> items
           {selectedCategory !== 'all' && ` in ${categories.find((c) => c.id === selectedCategory)?.label}`}
         </p>
-        <span className="hidden sm:inline text-[#8C7A70] italic">
-          100% Verifiable Batches · Stone-Picked · Zero Preservatives
+        <span className="hidden sm:inline text-[#8C7A70] text-[12px] font-data">
+          Segregated Lots · Stone-Picked · Zero Chemical Bleach
         </span>
       </div>
 
       {/* Product Grid */}
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-20 rounded-[28px] bg-[#EDE9E1] border border-[#D5CDBD] p-8 max-w-md mx-auto shadow-xs">
-          <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-white/80 border border-[#D5CDBD] flex items-center justify-center text-[#8C7A70]">
-            <Search className="w-6 h-6 text-[#0D3522]" />
+        <div className="text-center py-16 rounded-[12px] bg-white border border-[#E2D9CE] p-8 max-w-md mx-auto">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-[6px] bg-[#FAF7F2] border border-[#E2D9CE] flex items-center justify-center text-[#8C7A70]">
+            <Search className="w-5 h-5 text-[#1A382B]" />
           </div>
-          <h3 className="text-xl font-serif font-bold text-[#241611]">No products match these filters</h3>
-          <p className="text-xs text-[#6B5B52] mt-2 leading-relaxed">
-            Try adjusting your price range, dietary preference, or search query to find our authentic provisions.
+          <h3 className="text-lg font-serif font-semibold text-[#221814]">No products match these filters</h3>
+          <p className="text-[13px] text-[#685950] mt-1.5 leading-relaxed">
+            Try adjusting your search term, dietary preferences, or pack size options.
           </p>
           <button
             type="button"
             onClick={resetAllFilters}
-            className="mt-6 px-7 py-3 rounded-full bg-[#0D3522] hover:bg-[#072417] text-white text-xs uppercase tracking-wider font-semibold shadow-sm transition-all"
+            className="mt-5 px-6 py-2.5 rounded-[6px] bg-[#1A382B] hover:bg-[#132B21] text-white text-[13px] font-semibold transition-colors"
           >
             Clear All Filters
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

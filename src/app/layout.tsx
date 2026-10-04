@@ -1,18 +1,41 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google';
+import { Cormorant_Garamond, DM_Sans, Inter, Noto_Serif_Telugu, Noto_Sans_Telugu } from 'next/font/google';
 import './globals.css';
 import { AppShell } from '@/components/layout/AppShell';
 import { brandConfig } from '@/data/brandConfig';
 
-const playfair = Playfair_Display({
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  variable: '--font-serif',
+  weight: ['500', '600', '700'],
+  variable: '--font-cormorant',
   display: 'swap',
 });
 
-const plusJakarta = Plus_Jakarta_Sans({
+const dmSans = DM_Sans({
   subsets: ['latin'],
-  variable: '--font-sans',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-dmsans',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const teluguSerif = Noto_Serif_Telugu({
+  subsets: ['telugu'],
+  weight: ['500', '600'],
+  variable: '--font-telugu-serif',
+  display: 'swap',
+});
+
+const teluguSans = Noto_Sans_Telugu({
+  subsets: ['telugu'],
+  weight: ['400', '500', '600'],
+  variable: '--font-telugu-sans',
   display: 'swap',
 });
 
@@ -52,8 +75,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${plusJakarta.variable} scroll-smooth`}>
-      <body className="min-h-screen bg-[#FAF7F2] text-[#241611] selection:bg-[#B35638] selection:text-white">
+    <html
+      lang="en"
+      className={`${cormorant.variable} ${dmSans.variable} ${inter.variable} ${teluguSerif.variable} ${teluguSans.variable} scroll-smooth`}
+    >
+      <body className="min-h-screen bg-[#FAF7F2] text-[#221814] selection:bg-[#9E462A] selection:text-white">
         <AppShell>{children}</AppShell>
       </body>
     </html>

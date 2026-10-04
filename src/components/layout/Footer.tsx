@@ -19,42 +19,42 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-[#150F0B] text-[#E8DFD5] border-t border-[#38241C] pt-16 pb-12">
+    <footer className="bg-[#18120E] text-[#E8DFD5] border-t border-[#2E2019] pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Trust Badges Strip */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-12 mb-12 border-b border-[#38241C]/80">
-          <div className="flex items-start space-x-3">
-            <ShieldCheck className="w-6 h-6 text-[#C4924A] flex-shrink-0 mt-0.5" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-12 mb-12 border-b border-[#2E2019]">
+          <div className="flex items-start gap-3">
+            <ShieldCheck className="w-5 h-5 text-[#86EFAC] flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-semibold text-white tracking-wide">Unpolished & Pure</h4>
-              <p className="text-xs text-[#A8988E] mt-0.5 leading-relaxed">
+              <h4 className="text-[14px] font-semibold text-white tracking-wide">100% Unpolished & Pure</h4>
+              <p className="text-[12px] text-[#A8988E] mt-0.5 leading-relaxed">
                 Zero chemical polishes, artificial dyes, or fumigants.
               </p>
             </div>
           </div>
-          <div className="flex items-start space-x-3">
-            <Truck className="w-6 h-6 text-[#C4924A] flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3">
+            <Truck className="w-5 h-5 text-[#86EFAC] flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-semibold text-white tracking-wide">Free Shipping &gt; ₹500</h4>
-              <p className="text-xs text-[#A8988E] mt-0.5 leading-relaxed">
+              <h4 className="text-[14px] font-semibold text-white tracking-wide">Free Shipping &gt; ₹500</h4>
+              <p className="text-[12px] text-[#A8988E] mt-0.5 leading-relaxed">
                 Pan-India prompt dispatch in fresh moisture-barrier packs.
               </p>
             </div>
           </div>
-          <div className="flex items-start space-x-3">
-            <Sparkles className="w-6 h-6 text-[#C4924A] flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3">
+            <Sparkles className="w-5 h-5 text-[#86EFAC] flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-semibold text-white tracking-wide">Cold-Ground Milling</h4>
-              <p className="text-xs text-[#A8988E] mt-0.5 leading-relaxed">
+              <h4 className="text-[14px] font-semibold text-white tracking-wide">Cold-Ground Milling</h4>
+              <p className="text-[12px] text-[#A8988E] mt-0.5 leading-relaxed">
                 Low-temperature grinding retains volatile essential oils.
               </p>
             </div>
           </div>
-          <div className="flex items-start space-x-3">
-            <RefreshCw className="w-6 h-6 text-[#C4924A] flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3">
+            <RefreshCw className="w-5 h-5 text-[#86EFAC] flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-sm font-semibold text-white tracking-wide">Traceable Batches</h4>
-              <p className="text-xs text-[#A8988E] mt-0.5 leading-relaxed">
+              <h4 className="text-[14px] font-semibold text-white tracking-wide">Traceable Batches</h4>
+              <p className="text-[12px] text-[#A8988E] mt-0.5 leading-relaxed">
                 Every pack carries crop harvest and milling batch data.
               </p>
             </div>
@@ -65,57 +65,45 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12">
           {/* Brand Philosophy */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center space-x-3">
-              <div className="relative w-12 h-12 rounded-full bg-[#FAF7F2] p-0.5 border border-[#C5A059]/60 shadow-md overflow-hidden flex-shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="relative w-11 h-11 rounded-[8px] bg-white p-1 border border-[#3E2C22] shadow-sm overflow-hidden flex-shrink-0">
                 <Image
                   src={brandConfig.logoImage || '/images/brand/dharvika-emblem-transparent.png'}
                   alt="Dharvika Emblem"
-                  width={48}
-                  height={48}
+                  width={40}
+                  height={40}
                   className="w-full h-full object-contain"
                 />
               </div>
               <div>
-                <span className="text-2xl font-serif tracking-[0.12em] uppercase font-bold text-white block leading-tight">
+                <span className="text-xl font-serif tracking-[0.08em] uppercase font-semibold text-white block leading-tight">
                   Dharvika Grains
                 </span>
-                <span className="text-[10px] tracking-[0.25em] text-[#C5A059] uppercase font-semibold">
+                <span className="text-[10px] tracking-[0.2em] text-[#9E462A] uppercase font-semibold font-data">
                   {brandConfig.mission}
                 </span>
               </div>
             </div>
 
-            {/* Brand Pillars */}
-            <div className="pt-1 flex flex-wrap items-center gap-2 text-[10px] tracking-[0.2em] text-[#C5A059] uppercase font-semibold">
-              <span>Tradition</span>
-              <span>•</span>
-              <span>Purity</span>
-              <span>•</span>
-              <span>People</span>
-              <span>•</span>
-              <span>Planet</span>
-            </div>
-
-            <p className="text-xs tracking-wider text-[#E8DFD5] italic font-serif">
+            <p className="text-[13px] tracking-wide text-[#E8DFD3] italic font-serif">
               &ldquo;{brandConfig.tagline}&rdquo;
             </p>
 
-            <p className="text-xs leading-relaxed text-[#B8A89E] max-w-sm">
-              Rooted in the agricultural wisdom of the Deccan plateau. We bridge authentic rain-fed millets
-              and unadulterated spices with the convenience of modern Indian kitchens.
+            <p className="text-[13px] leading-relaxed text-[#B8A89E] max-w-sm">
+              Rooted in the agricultural heritage of the Deccan plateau. We bridge authentic rain-fed millets and unadulterated spices with the convenience of modern Indian kitchens.
             </p>
-            <div className="pt-2 text-xs text-[#8C7A70] space-y-1">
+            <div className="pt-2 text-[12px] text-[#8C7A70] space-y-1 font-data">
               <p>FSSAI Registration: <span className="text-[#B8A89E]">{brandConfig.fssaiNumber}</span></p>
               <p>Registered Facility: <span className="text-[#B8A89E]">{brandConfig.registeredOffice}</span></p>
             </div>
           </div>
 
-          {/* Column 2: The Catalogue */}
+          {/* Column 2: Catalogue */}
           <div>
-            <h3 className="text-xs font-semibold tracking-widest uppercase text-white mb-4">
-              Catalogue
+            <h3 className="text-[12px] font-semibold tracking-wider uppercase text-white mb-4 font-data">
+              Store Catalogue
             </h3>
-            <ul className="space-y-2.5 text-xs text-[#B8A89E]">
+            <ul className="space-y-2.5 text-[13px] text-[#B8A89E]">
               <li>
                 <Link href="/shop" className="hover:text-white transition-colors">
                   Shop All Products
@@ -137,8 +125,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/shop?filter=bestsellers" className="hover:text-white transition-colors">
-                  Bestselling Grains
+                <Link href="/shop?category=oils" className="hover:text-white transition-colors">
+                  Cold-Pressed Oils
                 </Link>
               </li>
             </ul>
@@ -146,10 +134,10 @@ export function Footer() {
 
           {/* Column 3: Sourcing & Culture */}
           <div>
-            <h3 className="text-xs font-semibold tracking-widest uppercase text-white mb-4">
+            <h3 className="text-[12px] font-semibold tracking-wider uppercase text-white mb-4 font-data">
               Our Journey
             </h3>
-            <ul className="space-y-2.5 text-xs text-[#B8A89E]">
+            <ul className="space-y-2.5 text-[13px] text-[#B8A89E]">
               <li>
                 <Link href="/about" className="hover:text-white transition-colors">
                   Why We Started
@@ -183,16 +171,16 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Newsletter & Community */}
+          {/* Column 4: Newsletter & Support */}
           <div>
-            <h3 className="text-xs font-semibold tracking-widest uppercase text-white mb-4">
+            <h3 className="text-[12px] font-semibold tracking-wider uppercase text-white mb-4 font-data">
               Join Our Kitchen
             </h3>
-            <p className="text-xs text-[#B8A89E] mb-3 leading-relaxed">
-              Harvest updates, regional recipes, and honest notes on traditional food culture.
+            <p className="text-[12px] text-[#B8A89E] mb-3 leading-relaxed">
+              Harvest updates, regional millet recipes, and honest notes on traditional grain culture.
             </p>
             {subscribed ? (
-              <div className="flex items-center space-x-2 text-[#C4924A] text-xs py-2">
+              <div className="flex items-center gap-2 text-[#86EFAC] text-[12px] py-2">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Thank you for joining our journey.</span>
               </div>
@@ -205,11 +193,11 @@ export function Footer() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[#2A1A13] border border-[#4A342B] rounded-none py-2.5 px-3 text-xs text-white placeholder-[#8C7A70] focus:outline-none focus:border-[#C4924A]"
+                    className="w-full bg-[#241B16] border border-[#3E2C22] rounded-[6px] py-2 px-3 text-[13px] text-white placeholder-[#8C7A70] focus:outline-none focus:border-[#86EFAC]"
                   />
                   <button
                     type="submit"
-                    className="absolute right-1.5 top-1.5 bottom-1.5 px-2.5 bg-[#B35638] hover:bg-[#C96645] text-white text-xs font-medium transition-colors flex items-center justify-center"
+                    className="absolute right-1 top-1 bottom-1 px-3 bg-[#1A382B] hover:bg-[#132B21] text-white text-[12px] font-semibold rounded-[4px] transition-colors flex items-center justify-center"
                     aria-label="Subscribe to newsletter"
                   >
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -218,7 +206,7 @@ export function Footer() {
               </form>
             )}
 
-            <div className="mt-6 pt-4 border-t border-[#38241C] text-xs">
+            <div className="mt-6 pt-4 border-t border-[#2E2019] text-[12px]">
               <p className="text-white font-medium mb-1">Customer Care</p>
               <p className="text-[#8C7A70]">{brandConfig.supportEmail}</p>
               <p className="text-[#8C7A70]">{brandConfig.supportHours}</p>
@@ -227,9 +215,9 @@ export function Footer() {
         </div>
 
         {/* Bottom Legal Disclaimers & Copyright */}
-        <div className="pt-8 border-t border-[#38241C] flex flex-col md:flex-row items-center justify-between text-[11px] text-[#8C7A70] gap-4">
+        <div className="pt-8 border-t border-[#2E2019] flex flex-col md:flex-row items-center justify-between text-[11px] text-[#8C7A70] gap-4 font-data">
           <div>
-            © {new Date().getFullYear()} {brandConfig.brandName}. All rights reserved. Packaged in certified food-grade facilities in India.
+            © {new Date().getFullYear()} {brandConfig.brandName}. All rights reserved. Packaged in verified food-grade facilities in India.
           </div>
           <div className="flex flex-wrap items-center gap-4 text-[#A8988E]">
             <Link href="/privacy-policy" className="hover:text-white transition-colors">

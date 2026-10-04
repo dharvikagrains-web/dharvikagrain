@@ -7,7 +7,7 @@ import { Product } from '@/types';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { formatCurrency, calculateDiscount } from '@/lib/utils';
-import { Heart, Plus, Check } from 'lucide-react';
+import { Heart, Plus, Check, Star } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -21,6 +21,20 @@ const studioImageMap: Record<string, string> = {
   'millet-arikelu': '/images/products/studio/kodo-millet.jpg',
 };
 
+// Regional Telugu grain pairing for authentic cultural layer
+const teluguGrainMap: Record<string, string> = {
+  'millet-korralu': 'కొర్రలు · Foxtail',
+  'millet-samalu': 'సామలు · Little',
+  'millet-arikelu': 'అరికెలు · Kodo',
+  'millet-udalu': 'ఊదలు · Barnyard',
+  'millet-ragi': 'రాగులు · Finger',
+  'millet-jowar': 'జొన్నలు · Sorghum',
+  'spice-turmeric': 'పసుపు · Salem Curcumin',
+  'spice-red-chilli': 'మిరప · Guntur Teja',
+  'spice-coriander': 'ధనియాలు · Whole Seed',
+  'spice-cumin': 'జీలకర్ర · Unpolished',
+};
+
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -32,6 +46,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const discount = calculateDiscount(currentWeightOpt.price, currentWeightOpt.mrp);
   const inWishlist = isInWishlist(product.id);
   const displayImage = studioImageMap[product.id] || product.images[0];
+  const teluguLabel = teluguGrainMap[product.id] || product.localName || null;
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -48,130 +63,158 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group relative bg-[#EDE9E1]/80 hover:bg-[#E7E2D8] transition-all duration-300 rounded-[24px] sm:rounded-[28px] p-5 flex flex-col justify-between border border-[#E3DDD1] shadow-2xs hover:shadow-md h-full">
-      {/* Top Pill Badge & Wishlist Button */}
-      <div className="flex items-center justify-between z-10">
-        <span className="text-[10px] uppercase tracking-wider font-medium px-2.5 py-0.5 rounded-full border border-[#D0C7B9] bg-white/80 text-[#6B5B52]">
-          {product.bestseller
-            ? 'Bestseller'
-            : discount > 0
-            ? `${discount}% OFF`
-            : product.category === 'millets'
-            ? 'Chiru Dhanyalu'
-            : 'Pure Spice'}
-        </span>
+    <article className="group bg-white border border-[#E2D9CE] hover:border-[#1A382B]/40 rounded-[12px] overflow-hidden transition-all duration-300 flex flex-col justify-between h-full shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
+      {/* Visual Product Stage */}
+      <div className="relative bg-[#FAF7F2] p-4 border-b border-[#EDE6DC]">
+        {/* Top Badges & Wishlist Action */}
+        <div className="flex items-center justify-between gap-2 mb-2 z-10 relative">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {product.bestseller ? (
+              <span className="text-[11px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-[4px] bg-[#EBF2EE] text-[#1A382B] border border-[#D1E0D7]">
+                Bestseller
+              </span>
+            ) : discount > 0 ? (
+              <span className="text-[11px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-[4px] bg-[#FBEFEA] text-[#9E462A] border border-[#F0D5C9]">
+                {discount}% OFF
+              </span>
+            ) : (
+              <span className="text-[11px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-[4px] bg-white text-[#685950] border border-[#E2D9CE]">
+                {product.category === 'millets' ? 'Chiru Dhanyalu' : 'Pure Spice'}
+              </span>
+            )}
+          </div>
 
-        <button
-          type="button"
-          onClick={handleWishlistClick}
-          className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
-            inWishlist
-              ? 'bg-[#B35638] text-white'
-              : 'bg-white/80 text-[#8C7A70] hover:text-[#B35638]'
-          }`}
-          aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+          <button
+            type="button"
+            onClick={handleWishlistClick}
+            className={`w-7 h-7 rounded-[6px] border flex items-center justify-center transition-colors ${
+              inWishlist
+                ? 'bg-[#9E462A] border-[#9E462A] text-white'
+                : 'bg-white border-[#E2D9CE] text-[#685950] hover:text-[#9E462A] hover:border-[#9E462A]'
+            }`}
+            aria-label={inWishlist ? 'Remove from wishlist' : 'Save to wishlist'}
+          >
+            <Heart className="w-3.5 h-3.5 fill-current stroke-[1.5]" />
+          </button>
+        </div>
+
+        {/* Clean Square Product Image Frame */}
+        <Link
+          href={`/products/${product.slug}`}
+          className="relative block aspect-square w-full rounded-[8px] overflow-hidden bg-white"
         >
-          <Heart className="w-3.5 h-3.5 fill-current stroke-[1.5]" />
-        </button>
-      </div>
-
-      {/* Product Image Stage - Large, Prominent & Crystal Clear */}
-      <Link
-        href={`/products/${product.slug}`}
-        className="relative aspect-square w-full my-3 flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-300"
-      >
-        <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-xs border border-[#DDD5C7]/60">
           <Image
             src={displayImage}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-cover"
+            className="object-cover card-image-zoom"
             priority={product.bestseller}
           />
-        </div>
-      </Link>
-
-      {/* Card Content */}
-      <div className="space-y-3">
-        {/* Dynamic Weight / Pack Size Selector Dots */}
-        <div className="flex items-center gap-1.5 pt-1">
-          {product.weights.map((w, idx) => (
-            <button
-              key={w.size}
-              type="button"
-              onClick={() => setSelectedWeightSize(w.size)}
-              title={`Select ${w.size}`}
-              className={`w-3.5 h-3.5 rounded-full transition-all ${
-                selectedWeightSize === w.size
-                  ? 'ring-2 ring-offset-2 ring-[#0D3522] scale-110'
-                  : 'opacity-60 hover:opacity-100'
-              } ${
-                idx === 0
-                  ? 'bg-[#76A89B]'
-                  : idx === 1
-                  ? 'bg-[#E39D55]'
-                  : 'bg-[#B57A58]'
-              }`}
-              aria-label={`Select pack size ${w.size}`}
-            />
-          ))}
-          <span className="text-[10px] text-[#7A6B62] uppercase tracking-wider ml-1">
-            {selectedWeightSize}
-          </span>
-        </div>
-
-        {/* Product Titles */}
-        <Link href={`/products/${product.slug}`} className="block group-hover:text-[#0D3522] transition-colors">
-          <h3 className="text-xs sm:text-sm font-semibold text-[#241611] leading-snug line-clamp-1">
-            {product.name}
-          </h3>
-          <p className="text-[11px] text-[#7A6B62] font-medium mt-0.5 line-clamp-1">
-            {product.localName || product.tagline}
-          </p>
         </Link>
+      </div>
 
-        {/* Price & Green Pill + Cart Button */}
-        <div className="flex items-center justify-between pt-1">
+      {/* Card Content & Commerce Meta */}
+      <div className="p-4 flex flex-col flex-1 justify-between gap-3 bg-white">
+        <div>
+          {/* Subtle Regional Heritage Layer */}
+          {teluguLabel && (
+            <p className="font-telugu text-[12px] text-[#9E462A] font-medium leading-none mb-1">
+              {teluguLabel}
+            </p>
+          )}
+
+          {/* Product Name */}
+          <Link
+            href={`/products/${product.slug}`}
+            className="block font-dmsans text-[15px] sm:text-[16px] font-semibold text-[#221814] leading-snug line-clamp-1 group-hover:text-[#1A382B] transition-colors"
+          >
+            {product.name}
+          </Link>
+
+          {/* Short Descriptor */}
+          <p className="text-[12px] text-[#685950] line-clamp-1 mt-0.5">
+            {product.tagline || 'Direct harvest, traditionally stone-cleaned.'}
+          </p>
+
+          {/* Rating */}
+          <div className="flex items-center gap-1 mt-1.5">
+            <div className="flex items-center text-[#B8863A]">
+              <Star className="w-3 h-3 fill-current" />
+            </div>
+            <span className="font-data text-[12px] font-medium text-[#221814]">
+              {(product.rating ?? 4.9).toFixed(1)}
+            </span>
+            <span className="text-[11px] text-[#8C7A70]">
+              ({product.reviewCount || 34})
+            </span>
+          </div>
+        </div>
+
+        {/* Weight Selector Segmented Tabs */}
+        <div>
+          <div className="flex items-center gap-1.5">
+            {product.weights.map((w) => (
+              <button
+                key={w.size}
+                type="button"
+                onClick={() => setSelectedWeightSize(w.size)}
+                className={`px-2.5 py-1 text-[11px] font-medium rounded-[6px] border transition-all ${
+                  selectedWeightSize === w.size
+                    ? 'bg-[#1A382B] text-white border-[#1A382B]'
+                    : 'bg-[#FAF7F2] text-[#685950] border-[#E2D9CE] hover:border-[#1A382B]/50'
+                }`}
+                aria-label={`Select pack size ${w.size}`}
+              >
+                {w.size}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Price & Add to Cart Action */}
+        <div className="flex items-center justify-between pt-2 border-t border-[#F0EAE1]">
           <div>
-            <div className="flex items-baseline space-x-1.5">
-              <span className="text-sm sm:text-base font-bold text-[#241611]">
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-data font-bold text-[17px] sm:text-[19px] text-[#221814] tracking-tight">
                 {formatCurrency(currentWeightOpt.price)}
               </span>
               {currentWeightOpt.mrp > currentWeightOpt.price && (
-                <span className="text-[11px] text-[#8C7A70] line-through">
+                <span className="font-data text-[12px] text-[#8C7A70] line-through">
                   {formatCurrency(currentWeightOpt.mrp)}
                 </span>
               )}
             </div>
-            <span className="text-[9px] text-[#8C7A70] block">Taxes included</span>
+            <span className="font-data text-[10px] text-[#8C7A70] block leading-none mt-0.5">
+              Tax inclusive
+            </span>
           </div>
 
           <button
             type="button"
             onClick={handleQuickAdd}
             disabled={isAdded || !currentWeightOpt.inStock}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center space-x-1 transition-all duration-200 shadow-2xs ${
+            className={`px-3.5 py-2 rounded-[6px] text-[12px] font-semibold flex items-center gap-1.5 transition-all duration-200 ${
               isAdded
-                ? 'bg-[#274135] text-white scale-95'
-                : 'bg-[#0D3522] hover:bg-[#082417] text-white hover:shadow-sm'
+                ? 'bg-[#264A3B] text-white'
+                : 'bg-[#1A382B] hover:bg-[#132B21] text-white shadow-2xs'
             }`}
             aria-label={`Add ${product.name} to cart`}
           >
             {isAdded ? (
               <>
-                <Check className="w-3.5 h-3.5" />
+                <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span>Added</span>
               </>
             ) : (
               <>
                 <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span>Cart</span>
+                <span>Add</span>
               </>
             )}
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

@@ -12,42 +12,91 @@ export const metadata: Metadata = {
     'Discover authentic unpolished Indian millets: Korralu (Foxtail), Samalu (Little), Arikelu (Kodo), Udalu (Barnyard), Ragi (Finger), and Jowar (Sorghum). Direct from rain-fed drylands.',
 };
 
+const culinaryGuide = [
+  {
+    name: 'Korralu (Foxtail Millet)',
+    telugu: 'కొర్రలు',
+    cooking: 'Fluffy Rice Substitute',
+    ratio: '1 : 2.5 Water',
+    time: '20 mins',
+    desc: 'Best daily replacement for polished white rice. Cooks separate and light; pairs beautifully with dal, sambar, and tomato rasam.',
+  },
+  {
+    name: 'Samalu (Little Millet)',
+    telugu: 'సామలు',
+    cooking: 'Delicate & Soft',
+    ratio: '1 : 2.25 Water',
+    time: '15 mins',
+    desc: 'Smallest grain in the family. Ideal for soft fermented idlis, crispy dosas, and soothing lemon rice.',
+  },
+  {
+    name: 'Arikelu (Kodo Millet)',
+    telugu: 'అరికెలు',
+    cooking: 'High Satiety Staple',
+    ratio: '1 : 3 Water',
+    time: '25 mins',
+    desc: 'Deep earthy flavour with high natural fiber. Excellent for temple-style Ven Pongal and wholesome Bisi Bele Bath.',
+  },
+  {
+    name: 'Udalu (Barnyard Millet)',
+    telugu: 'ఊదలు',
+    cooking: 'Fast Cooking',
+    ratio: '1 : 2.5 Water',
+    time: '12 mins',
+    desc: 'Rapidly cooks into tender grains. Rich in iron, light on digestion, and an age-old fasting favorite.',
+  },
+  {
+    name: 'Ragi (Finger Millet)',
+    telugu: 'రాగులు',
+    cooking: 'Calcium Powerhouse',
+    ratio: 'Coarse / Fine Flour',
+    time: '10 mins',
+    desc: 'Champion of southern culinary heritage (344mg calcium/100g). Traditional base for Ragi Sankati / Mudde and malt.',
+  },
+  {
+    name: 'Jowar (White Sorghum)',
+    telugu: 'జొన్నలు',
+    cooking: 'Soft Hand-Patted Rotis',
+    ratio: 'Stone-Milled Flour',
+    time: '15 mins',
+    desc: 'Cooling, gluten-free dryland grain yielding soft, nutritious Jonna Rotte to enjoy with roasted brinjal curry.',
+  },
+];
+
 export default function MilletsPage() {
   const millets = products.filter((p) => p.category === 'millets');
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12 sm:space-y-16">
       {/* Category Hero Banner */}
-      <section className="relative rounded-[28px] sm:rounded-[36px] bg-[#EDE9E1] border border-[#D5CDBD] overflow-hidden shadow-xs">
+      <section className="relative rounded-[14px] bg-[#F4EFEA] border border-[#E2D9CE] overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
-          <div className="lg:col-span-7 p-8 sm:p-12 md:p-14 space-y-4">
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-white/80 border border-[#D5CDBD] text-[11px] font-semibold text-[#0D3522] uppercase tracking-wider">
-              <span>✦ Traditional Dryland Agriculture</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-[#241611] leading-tight">
+          <div className="lg:col-span-7 p-6 sm:p-10 lg:p-12 space-y-4">
+            <span className="text-[12px] uppercase tracking-wider font-semibold text-[#9E462A] block font-data">
+              Traditional Indian Agriculture
+            </span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-semibold text-[#221814] leading-tight">
               Chiru Dhanyalu <br />
-              <span className="italic font-normal text-[#0D3522]">Native Indian Millets</span>
+              <span className="font-serif italic font-normal text-[#1A382B]">Native Rain-Fed Millets</span>
             </h1>
-            <p className="text-xs sm:text-sm text-[#6B5B52] leading-relaxed max-w-xl">
-              &ldquo;Chiru Dhanyalu&rdquo; is the traditional Telugu honorific for small grains—the resilient,
-              rain-fed millets that nourished the Deccan plateau for thousands of years.
-              Our grains are 100% unpolished, stone-picked, and air-cleaned to preserve the nutrient-dense natural bran layer.
+            <p className="text-sm text-[#685950] leading-relaxed max-w-xl">
+              &ldquo;Chiru Dhanyalu&rdquo; is the traditional Telugu honorific for small grains—the resilient, rain-fed staples that sustained the Deccan plateau for generations. Our grains are 100% unpolished, stone-picked, and air-cleaned to protect the natural bran layer.
             </p>
 
-            <div className="pt-3 flex flex-wrap gap-2 text-xs">
-              <span className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-white/80 border border-[#D5CDBD] font-semibold text-[#0D3522]">
-                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-[#0D3522]" /> 100% Unpolished
+            <div className="pt-2 flex flex-wrap gap-2 text-[12px] text-[#685950]">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[4px] bg-white border border-[#E2D9CE]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#1A382B]" /> 100% Unpolished
               </span>
-              <span className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-white/80 border border-[#D5CDBD] font-semibold text-[#0D3522]">
-                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-[#0D3522]" /> Zero Chemical Fumigation
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[4px] bg-white border border-[#E2D9CE]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#1A382B]" /> Zero Chemical Fumigation
               </span>
-              <span className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-white/80 border border-[#D5CDBD] font-semibold text-[#0D3522]">
-                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-[#0D3522]" /> Direct Farmer Clusters
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[4px] bg-white border border-[#E2D9CE]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#1A382B]" /> Direct Farmer Clusters
               </span>
             </div>
           </div>
 
-          <div className="lg:col-span-5 relative h-64 sm:h-80 lg:h-full min-h-[320px] m-4 sm:m-6 rounded-[24px] overflow-hidden border border-[#D5CDBD]">
+          <div className="lg:col-span-5 relative h-64 sm:h-80 lg:h-full min-h-[300px] m-4 sm:m-6 rounded-[10px] overflow-hidden border border-[#E2D9CE]">
             <Image
               src="/images/showcase/cat-millets.jpg"
               alt="Authentic Chiru Dhanyalu grains display"
@@ -59,123 +108,87 @@ export default function MilletsPage() {
         </div>
       </section>
 
-      {/* Educational Grain Table / Quick Guide */}
+      {/* Culinary Cooking Matrix */}
       <section>
-        <div className="rounded-[28px] sm:rounded-[32px] bg-[#EDE9E1] border border-[#D5CDBD] p-6 sm:p-10 shadow-xs">
+        <div className="rounded-[14px] bg-[#F4EFEA] border border-[#E2D9CE] p-6 sm:p-10">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <span className="text-xs uppercase tracking-widest font-semibold text-[#0D3522]">
-                ✦ Culinary Guide
+              <span className="text-[12px] uppercase tracking-wider font-semibold text-[#9E462A] block font-data">
+                Kitchen Preparation
               </span>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#241611] mt-1">
+              <h2 className="text-2xl sm:text-3xl font-serif font-semibold text-[#221814] mt-1">
                 Quick Cooking & Texture Matrix
               </h2>
-              <p className="text-xs sm:text-sm text-[#6B5B52] mt-1.5">
-                How to select and prepare traditional millets for your family meals.
+              <p className="text-[13px] text-[#685950] mt-1">
+                Water ratios, cooking times, and culinary pairings for everyday meals.
               </p>
             </div>
             <Link
               href="/recipes"
-              className="inline-flex items-center px-5 py-2.5 rounded-full bg-white/90 border border-[#D5CDBD] text-xs font-semibold text-[#0D3522] hover:bg-[#0D3522] hover:text-white transition-all shadow-2xs self-start sm:self-auto"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[6px] bg-white border border-[#E2D9CE] text-[13px] font-semibold text-[#1A382B] hover:bg-[#1A382B] hover:text-white transition-all self-start sm:self-auto"
             >
-              <BookOpen className="w-3.5 h-3.5 mr-1.5" /> View Millet Recipes
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>View Tested Recipes</span>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-            <div className="rounded-[22px] bg-white/90 border border-[#D5CDBD] p-5 shadow-2xs hover:shadow-sm transition-shadow">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-serif font-bold text-[#241611]">Korralu (Foxtail)</h4>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#0D3522] border border-[#0D3522]/20">
-                  Fluffy Rice
-                </span>
-              </div>
-              <p className="text-xs text-[#6B5B52] leading-relaxed">
-                Best daily replacement for white rice. Perfect with dal, sambar, and rasam. Soak 30 mins.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {culinaryGuide.map((item) => (
+              <div
+                key={item.name}
+                className="rounded-[10px] bg-white border border-[#E2D9CE] p-5 flex flex-col justify-between hover:border-[#1A382B]/40 transition-colors shadow-2xs"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div>
+                      <span className="font-telugu text-[17px] text-[#9E462A] font-semibold block leading-tight">
+                        {item.telugu}
+                      </span>
+                      <h4 className="text-[15px] font-semibold text-[#221814] mt-0.5">
+                        {item.name}
+                      </h4>
+                    </div>
+                    <span className="text-[10px] font-data font-medium px-2 py-0.5 rounded-[4px] bg-[#FAF7F2] text-[#1A382B] border border-[#E2D9CE] shrink-0">
+                      {item.cooking}
+                    </span>
+                  </div>
 
-            <div className="rounded-[22px] bg-white/90 border border-[#D5CDBD] p-5 shadow-2xs hover:shadow-sm transition-shadow">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-serif font-bold text-[#241611]">Samalu (Little Millet)</h4>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#0D3522] border border-[#0D3522]/20">
-                  Soft & Delicate
-                </span>
-              </div>
-              <p className="text-xs text-[#6B5B52] leading-relaxed">
-                Delicate, melt-in-mouth grains. Ideal for comforting khichdi, idli/dosa, and curd rice.
-              </p>
-            </div>
+                  <p className="text-[12px] text-[#685950] leading-relaxed mt-2">
+                    {item.desc}
+                  </p>
+                </div>
 
-            <div className="rounded-[22px] bg-white/90 border border-[#D5CDBD] p-5 shadow-2xs hover:shadow-sm transition-shadow">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-serif font-bold text-[#241611]">Arikelu (Kodo Millet)</h4>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#0D3522] border border-[#0D3522]/20">
-                  High Satiety
-                </span>
+                <div className="mt-4 pt-3 border-t border-[#F0EAE1] flex items-center justify-between text-[11px] font-data text-[#8C7A70]">
+                  <span>Water: <strong className="text-[#221814]">{item.ratio}</strong></span>
+                  <span>Cooks: <strong className="text-[#221814]">{item.time}</strong></span>
+                </div>
               </div>
-              <p className="text-xs text-[#6B5B52] leading-relaxed">
-                Hearty grain with deep satisfaction. Excellent for traditional Pongal and Bisi Bele Bath.
-              </p>
-            </div>
-
-            <div className="rounded-[22px] bg-white/90 border border-[#D5CDBD] p-5 shadow-2xs hover:shadow-sm transition-shadow">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-serif font-bold text-[#241611]">Udalu (Barnyard)</h4>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#0D3522] border border-[#0D3522]/20">
-                  Light & Easy
-                </span>
-              </div>
-              <p className="text-xs text-[#6B5B52] leading-relaxed">
-                Rapidly cooks in 12 mins. Absorbs aromatics gracefully. Great for light pulaos and upmas.
-              </p>
-            </div>
-
-            <div className="rounded-[22px] bg-white/90 border border-[#D5CDBD] p-5 shadow-2xs hover:shadow-sm transition-shadow">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-serif font-bold text-[#241611]">Ragi (Finger Millet)</h4>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#0D3522] border border-[#0D3522]/20">
-                  Calcium Rich
-                </span>
-              </div>
-              <p className="text-xs text-[#6B5B52] leading-relaxed">
-                The legend of southern homes. Stone-mill for Ragi Mudde, crispy dosas, and breakfast malt.
-              </p>
-            </div>
-
-            <div className="rounded-[22px] bg-white/90 border border-[#D5CDBD] p-5 shadow-2xs hover:shadow-sm transition-shadow">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-serif font-bold text-[#241611]">Jowar (White Sorghum)</h4>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#0D3522] border border-[#0D3522]/20">
-                  Soft Rotis
-                </span>
-              </div>
-              <p className="text-xs text-[#6B5B52] leading-relaxed">
-                Cooling grain yielding soft, hand-patted Jonna Rotte (rotis) to enjoy with spicy curries.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Product Grid */}
       <section>
-        <div className="mb-8 flex items-center justify-between border-b border-[#D5CDBD] pb-4">
+        <div className="mb-6 flex items-center justify-between border-b border-[#E2D9CE] pb-4">
           <div>
-            <h2 className="text-2xl font-serif font-bold text-[#241611]">
+            <h2 className="text-2xl font-serif font-semibold text-[#221814]">
               All Chiru Dhanyalu ({millets.length} Varieties)
             </h2>
-            <p className="text-xs text-[#6B5B52] mt-0.5">Available in 500g and 1kg vacuum sealed packages</p>
+            <p className="text-[13px] text-[#685950] mt-0.5">
+              Available in 500g and 1kg aroma-barrier packaging
+            </p>
           </div>
           <Link
             href="/shop"
-            className="text-xs font-semibold text-[#0D3522] hover:underline flex items-center"
+            className="text-[13px] font-semibold text-[#1A382B] hover:text-[#9E462A] flex items-center gap-1"
           >
-            Explore All Provisions <ArrowRight className="w-3.5 h-3.5 ml-1" />
+            <span>All Staples</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           {millets.map((millet) => (
             <ProductCard key={millet.id} product={millet} />
           ))}
