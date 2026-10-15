@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -21,6 +21,8 @@ import {
   Phone,
 } from 'lucide-react';
 
+const emptySubscribe = () => () => {};
+
 interface HeaderProps {
   onOpenSearch: () => void;
 }
@@ -30,11 +32,11 @@ export function Header({ onOpenSearch }: HeaderProps) {
   const { cartCount, openCart } = useCart();
   const { wishlistCount } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
   // Lock body scroll while mobile drawer is open
   useEffect(() => {

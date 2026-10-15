@@ -9,14 +9,6 @@ import {
   ArrowRight,
   ShieldCheck,
   CheckCircle2,
-  Sparkles,
-  MapPin,
-  Calendar,
-  Layers,
-  Search,
-  Clock,
-  ChevronRight,
-  Heart,
   Award,
 } from 'lucide-react';
 
