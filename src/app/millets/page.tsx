@@ -132,33 +132,32 @@ export default function MilletsPage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
             {culinaryGuide.map((item) => (
               <div
                 key={item.name}
-                className="rounded-[10px] bg-white border border-[#E7D8B8] p-3 sm:p-5 flex flex-col justify-between hover:border-[#354C36]/40 transition-colors shadow-2xs"
+                className="rounded-[10px] bg-white border border-[#E7D8B8] p-4 sm:p-5 flex flex-col justify-between hover:border-[#354C36]/40 transition-colors shadow-2xs"
               >
                 <div>
-                  <div className="flex items-start justify-between gap-1.5 mb-1.5 sm:mb-2">
-                    <div>
-                      <span className="font-telugu text-[14px] sm:text-[17px] text-[#C47B4B] font-semibold block leading-tight truncate">
-                        {item.telugu}
-                      </span>
-                      <h4 className="text-[13px] sm:text-[15px] font-semibold text-[#292B25] mt-0.5 truncate">
-                        {item.name}
-                      </h4>
-                    </div>
-                    <span className="text-[9px] sm:text-[10px] font-data font-medium px-1.5 sm:px-2 py-0.5 rounded-[4px] bg-[#F8F4EA] text-[#354C36] border border-[#E7D8B8] shrink-0">
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <span className="font-telugu text-[16px] sm:text-[18px] text-[#C47B4B] font-semibold leading-tight">
+                      {item.telugu}
+                    </span>
+                    <span className="text-[9.5px] sm:text-[10px] font-data font-medium px-2 py-0.5 rounded-[4px] bg-[#F8F4EA] text-[#354C36] border border-[#E7D8B8] shrink-0 whitespace-nowrap">
                       {item.cooking}
                     </span>
                   </div>
 
-                  <p className="text-[11px] sm:text-[12px] text-[#5F6156] leading-relaxed mt-1 sm:mt-2 line-clamp-2">
+                  <h4 className="text-[14px] sm:text-[15px] font-semibold text-[#292B25] leading-snug">
+                    {item.name}
+                  </h4>
+
+                  <p className="text-[11.5px] sm:text-[12px] text-[#5F6156] leading-relaxed mt-1.5 line-clamp-2">
                     {item.desc}
                   </p>
                 </div>
 
-                <div className="mt-2.5 sm:mt-4 pt-2 sm:pt-3 border-t border-[#F0EAE1] flex items-center justify-between text-[10px] sm:text-[11px] font-data text-[#8C7A70]">
+                <div className="mt-3 sm:mt-4 pt-2.5 sm:pt-3 border-t border-[#F0EAE1] flex items-center justify-between text-[11px] font-data text-[#8C7A70]">
                   <span>Water: <strong className="text-[#292B25]">{item.ratio}</strong></span>
                   <span>Cooks: <strong className="text-[#292B25]">{item.time}</strong></span>
                 </div>
@@ -170,18 +169,18 @@ export default function MilletsPage() {
 
       {/* Product Grid */}
       <section>
-        <div className="mb-6 flex items-center justify-between border-b border-[#E7D8B8] pb-4">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#E7D8B8] pb-4 gap-2">
           <div>
-            <h2 className="text-2xl font-serif font-semibold text-[#292B25]">
+            <h2 className="text-xl sm:text-2xl font-serif font-semibold text-[#292B25]">
               All Chiru Dhanyalu ({millets.length} Varieties)
             </h2>
-            <p className="text-[13px] text-[#5F6156] mt-0.5">
+            <p className="text-[12px] sm:text-[13px] text-[#5F6156] mt-0.5">
               Available in 500g and 1kg aroma-barrier packaging
             </p>
           </div>
           <Link
             href="/shop"
-            className="text-[13px] font-semibold text-[#354C36] hover:text-[#C47B4B] flex items-center gap-1"
+            className="text-[13px] font-semibold text-[#354C36] hover:text-[#C47B4B] flex items-center gap-1 self-start sm:self-auto shrink-0 whitespace-nowrap"
           >
             <span>All Staples</span>
             <ArrowRight className="w-3.5 h-3.5" />

@@ -84,18 +84,18 @@ export default function SpicesPage() {
 
       {/* Product Grid */}
       <section>
-        <div className="mb-6 flex items-center justify-between border-b border-[#E7D8B8] pb-4">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#E7D8B8] pb-4 gap-2">
           <div>
-            <h2 className="text-2xl font-serif font-semibold text-[#292B25]">
+            <h2 className="text-xl sm:text-2xl font-serif font-semibold text-[#292B25]">
               Spices & Signature Blends ({spicesAndBlends.length} Varieties)
             </h2>
-            <p className="text-[13px] text-[#5F6156] mt-0.5">
+            <p className="text-[12px] sm:text-[13px] text-[#5F6156] mt-0.5">
               Aroma-sealed nitrogen-flushed packaging to retain natural fragrance
             </p>
           </div>
           <Link
             href="/shop"
-            className="text-[13px] font-semibold text-[#354C36] hover:text-[#C47B4B] flex items-center gap-1"
+            className="text-[13px] font-semibold text-[#354C36] hover:text-[#C47B4B] flex items-center gap-1 self-start sm:self-auto shrink-0 whitespace-nowrap"
           >
             <span>All Staples</span>
             <ArrowRight className="w-3.5 h-3.5" />
