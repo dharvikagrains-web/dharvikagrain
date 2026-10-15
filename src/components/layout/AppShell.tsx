@@ -7,6 +7,7 @@ import { Footer } from '@/components/layout/Footer';
 import { SearchOverlay } from '@/components/layout/SearchOverlay';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { SupportWidget } from '@/components/support/SupportWidget';
+import { CookieConsent } from '@/components/ui/CookieConsent';
 import { CartProvider } from '@/context/CartContext';
 import { WishlistProvider } from '@/context/WishlistContext';
 
@@ -30,6 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
             <CartDrawer />
             <SupportWidget />
+            <CookieConsent />
           </div>
         )}
       </WishlistProvider>

@@ -187,22 +187,29 @@ export function Footer() {
             ) : (
               <form onSubmit={handleSubscribe} className="space-y-2">
                 <div className="relative">
+                  <label htmlFor="footer-newsletter-email" className="sr-only">
+                    Email address for harvest newsletter
+                  </label>
                   <input
+                    id="footer-newsletter-email"
                     type="email"
                     required
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[#241B16] border border-[#3E2C22] rounded-[6px] py-2 px-3 text-[13px] text-white placeholder-[#8C7A70] focus:outline-none focus:border-[#86EFAC]"
+                    className="w-full bg-[#241B16] border border-[#3E2C22] rounded-[6px] py-2 px-3 text-[13px] text-white placeholder-[#8C7A70] focus:outline-none focus:border-[#86EFAC] focus:ring-1 focus:ring-[#86EFAC]"
                   />
                   <button
                     type="submit"
-                    className="absolute right-1 top-1 bottom-1 px-3 bg-[#1A382B] hover:bg-[#132B21] text-white text-[12px] font-semibold rounded-[4px] transition-colors flex items-center justify-center"
-                    aria-label="Subscribe to newsletter"
+                    className="absolute right-1 top-1 bottom-1 px-3 bg-[#1A382B] hover:bg-[#132B21] text-white text-[12px] font-semibold rounded-[4px] transition-colors flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#86EFAC]"
+                    aria-label="Subscribe to harvest newsletter"
                   >
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
+                <p className="text-[10px] text-[#8C7A70] leading-tight">
+                  By subscribing, you agree to receive harvest updates. Unsubscribe anytime per our Privacy Policy.
+                </p>
               </form>
             )}
 
@@ -219,13 +226,17 @@ export function Footer() {
           <div>
             © {new Date().getFullYear()} {brandConfig.brandName}. All rights reserved. Packaged in verified food-grade facilities in India.
           </div>
-          <div className="flex flex-wrap items-center gap-4 text-[#A8988E]">
+          <div className="flex flex-wrap items-center gap-3.5 text-[#A8988E]">
             <Link href="/privacy-policy" className="hover:text-white transition-colors">
               Privacy Policy
             </Link>
             <span>•</span>
             <Link href="/terms" className="hover:text-white transition-colors">
               Terms & Conditions
+            </Link>
+            <span>•</span>
+            <Link href="/cookie-policy" className="hover:text-white transition-colors">
+              Cookie Policy
             </Link>
             <span>•</span>
             <Link href="/shipping-policy" className="hover:text-white transition-colors">

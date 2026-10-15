@@ -175,22 +175,40 @@ export default function ProductDetailPage({
 
               {/* Star Rating & Review Anchor */}
               <div className="flex items-center gap-2 mt-2.5">
-                <div className="flex text-[#B8863A]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-current stroke-none" />
-                  ))}
-                </div>
-                <span className="font-data text-[12px] font-bold text-[#221814]">
-                  {(product.rating ?? 4.9).toFixed(1)}
-                </span>
-                <span className="text-[#8C7A70] text-[12px]">·</span>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('reviews')}
-                  className="text-[12px] text-[#685950] hover:text-[#1A382B] underline underline-offset-2"
-                >
-                  {product.reviewCount || 24} verified harvest reviews
-                </button>
+                {product.rating && product.reviewCount && product.reviewCount > 0 ? (
+                  <>
+                    <div className="flex text-[#B8863A]">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3.5 h-3.5 fill-current stroke-none" />
+                      ))}
+                    </div>
+                    <span className="font-data text-[12px] font-bold text-[#221814]">
+                      {product.rating.toFixed(1)}
+                    </span>
+                    <span className="text-[#8C7A70] text-[12px]">·</span>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('reviews')}
+                      className="text-[12px] text-[#685950] hover:text-[#1A382B] underline underline-offset-2"
+                    >
+                      {product.reviewCount} verified reviews
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-[11px] font-medium text-[#1A382B] bg-[#EBF2EE] px-2 py-0.5 rounded-[4px] font-data">
+                      ✦ Farm-Fresh Harvest
+                    </span>
+                    <span className="text-[#8C7A70] text-[12px]">·</span>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('reviews')}
+                      className="text-[12px] text-[#685950] hover:text-[#1A382B] underline underline-offset-2"
+                    >
+                      Be the first verified customer to review
+                    </button>
+                  </>
+                )}
               </div>
 
               {/* Product Short Description */}
@@ -333,7 +351,7 @@ export default function ProductDetailPage({
               { id: 'quality', label: 'Purity Checks' },
               { id: 'nutrition', label: 'Nutrition' },
               { id: 'batch', label: 'Batch Traceability' },
-              { id: 'reviews', label: `Reviews (${product.reviewCount || 24})` },
+              { id: 'reviews', label: product.reviewCount ? `Reviews (${product.reviewCount})` : 'Reviews' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -641,65 +659,59 @@ export default function ProductDetailPage({
               <div className="space-y-6 max-w-3xl">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-[#E2D9CE] gap-3">
                   <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-data text-2xl font-bold text-[#1A382B]">4.9</span>
-                      <div className="flex text-[#B8863A]">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-3.5 h-3.5 fill-current stroke-none" />
-                        ))}
+                    {product.rating && product.reviewCount && product.reviewCount > 0 ? (
+                      <div className="flex items-center gap-2">
+                        <span className="font-data text-2xl font-bold text-[#1A382B]">{product.rating.toFixed(1)}</span>
+                        <div className="flex text-[#B8863A]">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-3.5 h-3.5 fill-current stroke-none" />
+                          ))}
+                        </div>
+                        <span className="text-[12px] text-[#685950] font-data">
+                          ({product.reviewCount} verified ratings)
+                        </span>
                       </div>
-                    </div>
-                    <p className="text-[12px] text-[#685950] mt-0.5 font-data">
-                      Based on verified customer purchases
-                    </p>
+                    ) : (
+                      <div className="space-y-0.5">
+                        <h4 className="text-base font-semibold text-[#221814]">Verified Consumer Reviews</h4>
+                        <p className="text-[12px] text-[#685950] font-data">
+                          All reviews require an authenticated order ID. No fake testimonials.
+                        </p>
+                      </div>
+                    )}
                   </div>
                   <NextLink
                     href="/account/reviews"
-                    className="px-4 py-2 bg-[#1A382B] hover:bg-[#132B21] text-white text-[12px] font-semibold rounded-[4px] transition-colors"
+                    className="px-4 py-2 bg-[#1A382B] hover:bg-[#132B21] text-white text-[12px] font-semibold rounded-[4px] transition-colors inline-flex items-center gap-1.5"
                   >
-                    Write a Review
+                    <span>Submit Verified Review</span>
                   </NextLink>
                 </div>
 
-                <div className="space-y-4 divide-y divide-[#F0EAE1]">
-                  <div className="pt-4 first:pt-0 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-[#221814] text-[13px]">Saritha Reddy</span>
-                        <span className="text-[10px] bg-[#EBF2EE] text-[#1A382B] px-1.5 py-0.2 rounded-[2px] font-data font-medium">
-                          Verified Purchase
-                        </span>
-                      </div>
-                      <span className="text-[11px] text-[#8C7A70] font-data">September 2026</span>
-                    </div>
-                    <div className="text-[#B8863A] flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3 h-3 fill-current stroke-none" />
-                      ))}
-                    </div>
-                    <p className="text-[13px] text-[#4A3B32] leading-relaxed">
-                      "Completely stone-picked and remarkably clean. We cook this every morning without needing to sieve or wash multiple times. Fragrant and fluffy."
-                    </p>
+                {/* Transparency Note adhering to BIS IS 19000:2022 */}
+                <div className="p-3.5 bg-[#FAF7F2] rounded-[6px] border border-[#E2D9CE] text-xs text-[#5A4D45] space-y-1">
+                  <div className="flex items-center gap-1.5 font-semibold text-[#1A382B]">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>BIS IS 19000:2022 &amp; Zero Fake Reviews Compliance</span>
                   </div>
+                  <p className="leading-relaxed">
+                    Under the <em>Guidelines for Prevention and Regulation of Dark Patterns (2023)</em>, Dharvika Grains does not display auto-generated, incentivized, or fabricated reviews. Customers who have completed a verified dispatch delivery can submit their honest culinary feedback through their order dashboard.
+                  </p>
+                </div>
 
-                  <div className="pt-4 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-[#221814] text-[13px]">Dr. Ramesh Rao</span>
-                        <span className="text-[10px] bg-[#EBF2EE] text-[#1A382B] px-1.5 py-0.2 rounded-[2px] font-data font-medium">
-                          Verified Purchase
-                        </span>
-                      </div>
-                      <span className="text-[11px] text-[#8C7A70] font-data">August 2026</span>
-                    </div>
-                    <div className="text-[#B8863A] flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3 h-3 fill-current stroke-none" />
-                      ))}
-                    </div>
-                    <p className="text-[13px] text-[#4A3B32] leading-relaxed">
-                      "Authentic unpolished grain with natural bran layers intact. Truly low glycemic impact, excellent for balanced daily cooking."
+                <div className="space-y-4 divide-y divide-[#F0EAE1]">
+                  <div className="pt-4 first:pt-0 space-y-2">
+                    <p className="text-[13px] text-[#685950] italic leading-relaxed">
+                      Have you cooked with this harvest batch? Log in to your customer account to rate the aroma, cleanliness, and grain texture. Your review will be published with a &quot;Verified Buyer&quot; badge following automated order confirmation.
                     </p>
+                    <div className="pt-2">
+                      <NextLink
+                        href="/account/reviews"
+                        className="text-[12px] font-semibold text-[#1A382B] hover:text-[#9E462A] underline underline-offset-2"
+                      >
+                        Write your review via Order History &rarr;
+                      </NextLink>
+                    </div>
                   </div>
                 </div>
               </div>

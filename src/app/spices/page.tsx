@@ -31,7 +31,7 @@ export default function SpicesPage() {
               <span className="font-serif italic font-normal text-[#1A382B]">& Signature Blends</span>
             </h1>
             <p className="text-sm text-[#685950] leading-relaxed max-w-xl">
-              Indian cuisine lives and breathes through the vitality of its spices. Our single-origin spices are harvested at full maturity, sun-cured, and pulverized below 40°C in low-temperature stone mills to protect volatile aromatic oils, natural pigments, and medicinal curcumin.
+              Indian cuisine lives and breathes through the vitality of its spices. Our single-origin spices are harvested at full maturity, sun-cured, and pulverized below 40°C in low-temperature stone mills to protect volatile aromatic oils, natural pigments, and naturally occurring curcuminoids.
             </p>
 
             <div className="pt-2 flex flex-wrap gap-2 text-[12px] text-[#685950]">

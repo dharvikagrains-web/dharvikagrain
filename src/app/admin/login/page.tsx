@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
             if (mounted) router.replace('/admin');
           }
         }
-      } catch {}
+      } catch { }
     }
     checkCurrentAdminSession();
     return () => {

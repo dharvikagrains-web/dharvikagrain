@@ -353,16 +353,21 @@ export function Header({ onOpenSearch }: HeaderProps) {
                 </div>
                 <div className="space-y-1 text-[12px]">
                   <a
-                    href="mailto:care@dharvikagrains.in"
+                    href={`mailto:${brandConfig.supportEmail}`}
                     className="flex items-center gap-2 text-[#221814] hover:text-[#1A382B]"
                   >
                     <Mail className="w-3.5 h-3.5 text-[#1A382B]" />
-                    <span>care@dharvikagrains.in</span>
+                    <span>{brandConfig.supportEmail}</span>
                   </a>
-                  <p className="flex items-center gap-2 text-[#221814]">
-                    <Phone className="w-3.5 h-3.5 text-[#1A382B]" />
-                    <span>WhatsApp: +91 98765 43210</span>
-                  </p>
+                  <a
+                    href="https://wa.me/919494281818?text=Hi%20Dharvika%20Grains%2C%20I%20have%20an%20inquiry%20regarding%20pure%20millets%20and%20spices."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-[#221814] hover:text-[#1A382B] group"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-[#25D366] group-hover:scale-110 transition-transform" />
+                    <span>WhatsApp: <strong className="font-semibold text-[#1A382B]">{brandConfig.supportPhone}</strong></span>
+                  </a>
                 </div>
               </div>
             </div>

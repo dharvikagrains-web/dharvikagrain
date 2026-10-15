@@ -29,7 +29,7 @@ const heritageMillets = [
     english: 'Little Millet',
     slug: 'little-millet-samalu',
     benefits: 'Smallest grain, cooks in 12 minutes. Ideal for light idli & dosa.',
-    tag: 'Light Digestion',
+    tag: 'Easy Digest',
   },
   {
     telugu: 'అరికెలు',
@@ -50,7 +50,7 @@ const heritageMillets = [
     english: 'Finger Millet',
     slug: 'finger-millet-ragi',
     benefits: 'Highest natural plant-based calcium (344mg/100g). Perfect for mudde & porridge.',
-    tag: 'Calcium Rich',
+    tag: 'High Calcium',
   },
   {
     telugu: 'జొన్నలు',
@@ -117,6 +117,7 @@ export default function HomePage() {
               alt="Authentic Indian kitchen with traditional grains, earthenware, and spices"
               fill
               priority
+              loading="eager"
               className="object-cover object-center filter brightness-[0.88] contrast-[1.02]"
             />
             {/* Scrim Overlay for WCAG-compliant Contrast */}
@@ -219,48 +220,49 @@ export default function HomePage() {
       {/* =========================================================================
           SECTION 03 — EDITORIAL HERITAGE: ANCIENT GRAINS MATRIX (TELUGU & ENGLISH)
           ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#F4EFEA] rounded-[14px] p-6 sm:p-10 lg:p-12 border border-[#E2D9CE]">
-          <div className="max-w-2xl mb-8">
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="bg-[#F4EFEA] rounded-[14px] p-4 sm:p-10 lg:p-12 border border-[#E2D9CE]">
+          <div className="max-w-2xl mb-6 sm:mb-8">
             <span className="text-[12px] uppercase tracking-wider font-semibold text-[#9E462A] block font-data">
               Traditional Indian Agriculture
             </span>
-            <h2 className="text-3xl sm:text-4xl font-serif text-[#221814] mt-1 font-semibold">
+            <h2 className="text-2xl sm:text-4xl font-serif text-[#221814] mt-1 font-semibold leading-tight">
               Ancient grains. A modern way of living.
             </h2>
-            <p className="text-sm sm:text-base text-[#685950] mt-2 leading-relaxed">
+            <p className="text-xs sm:text-base text-[#685950] mt-1.5 sm:mt-2 leading-relaxed">
               For thousands of years, Deccan farmers cultivated hardy drought-resilient Chiru Dhanyalu. We honour these heritage grains by keeping them unpolished and unbleached.
             </p>
           </div>
 
           {/* 6 Millets Cultural Grid (2-columns side-by-side on mobile) */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
             {heritageMillets.map((millet) => (
               <div
                 key={millet.english}
                 className="bg-white rounded-[10px] p-3 sm:p-5 border border-[#E2D9CE] hover:border-[#1A382B]/40 transition-all flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.03)]"
               >
                 <div>
-                  <div className="flex items-start justify-between gap-1.5 mb-2">
-                    <div>
-                      <span className="font-telugu text-[15px] sm:text-[21px] text-[#9E462A] font-semibold block leading-tight truncate">
-                        {millet.telugu}
-                      </span>
-                      <h3 className="text-[13px] sm:text-[16px] font-semibold text-[#221814] mt-0.5 truncate">
-                        {millet.english}
-                      </h3>
-                    </div>
-                    <span className="text-[9px] sm:text-[10px] font-data uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded-[4px] bg-[#FAF7F2] text-[#685950] border border-[#E2D9CE] shrink-0">
+                  {/* Row 1: Telugu Name + Category Tag */}
+                  <div className="flex items-center justify-between gap-1 mb-1">
+                    <span className="font-telugu text-[15px] sm:text-[21px] text-[#9E462A] font-semibold leading-tight">
+                      {millet.telugu}
+                    </span>
+                    <span className="text-[8.5px] sm:text-[10px] font-data uppercase tracking-wider px-1.5 py-0.5 rounded-[4px] bg-[#FAF7F2] text-[#685950] border border-[#E2D9CE] shrink-0 font-medium">
                       {millet.tag}
                     </span>
                   </div>
 
-                  <p className="text-[11px] sm:text-[13px] text-[#685950] leading-relaxed mt-1 sm:mt-2 line-clamp-2 sm:line-clamp-3">
+                  {/* Row 2: English Name with 100% width */}
+                  <h3 className="text-[13px] sm:text-[16px] font-semibold text-[#221814] mb-1 leading-snug">
+                    {millet.english}
+                  </h3>
+
+                  <p className="text-[11px] sm:text-[13px] text-[#685950] leading-relaxed line-clamp-2 sm:line-clamp-3">
                     {millet.benefits}
                   </p>
                 </div>
 
-                <div className="pt-2.5 sm:pt-4 mt-2.5 sm:mt-4 border-t border-[#F0EAE1] flex items-center justify-between text-[11px] sm:text-[13px]">
+                <div className="pt-2 sm:pt-4 mt-2 sm:mt-4 border-t border-[#F0EAE1] flex items-center justify-between text-[11px] sm:text-[13px]">
                   <Link
                     href={`/products/${millet.slug}`}
                     className="font-semibold text-[#1A382B] hover:text-[#9E462A] flex items-center gap-1 transition-colors"
@@ -270,7 +272,7 @@ export default function HomePage() {
                   </Link>
                   <Link
                     href="/recipes"
-                    className="text-[11px] sm:text-[12px] text-[#8C7A70] hover:text-[#221814]"
+                    className="text-[10.5px] sm:text-[12px] text-[#8C7A70] hover:text-[#221814] font-medium"
                   >
                     Recipes &rarr;
                   </Link>

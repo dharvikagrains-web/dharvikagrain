@@ -137,17 +137,25 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.tagline || 'Direct harvest, traditionally stone-cleaned.'}
           </p>
 
-          {/* Rating */}
+          {/* Verified Rating or Fresh Harvest Indicator */}
           <div className="flex items-center gap-1 mt-1 sm:mt-1.5">
-            <div className="flex items-center text-[#B8863A]">
-              <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current" />
-            </div>
-            <span className="font-data text-[11px] sm:text-[12px] font-medium text-[#221814]">
-              {(product.rating ?? 4.9).toFixed(1)}
-            </span>
-            <span className="text-[10px] sm:text-[11px] text-[#8C7A70]">
-              ({product.reviewCount || 34})
-            </span>
+            {product.rating && product.reviewCount && product.reviewCount > 0 ? (
+              <>
+                <div className="flex items-center text-[#B8863A]">
+                  <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current" />
+                </div>
+                <span className="font-data text-[11px] sm:text-[12px] font-medium text-[#221814]">
+                  {product.rating.toFixed(1)}
+                </span>
+                <span className="text-[10px] sm:text-[11px] text-[#8C7A70]">
+                  ({product.reviewCount})
+                </span>
+              </>
+            ) : (
+              <span className="text-[10px] text-[#1A382B] bg-[#EBF2EE] px-1.5 py-0.5 rounded-[3px] font-data font-medium">
+                ✦ Fresh Harvest Batch
+              </span>
+            )}
           </div>
         </div>
 
