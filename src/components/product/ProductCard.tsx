@@ -63,22 +63,22 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <article className="group bg-white border border-[#E2D9CE] hover:border-[#1A382B]/40 rounded-[10px] sm:rounded-[12px] overflow-hidden transition-all duration-300 flex flex-col justify-between h-full shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
+    <article className="group bg-white border border-[#E7D8B8] hover:border-[#354C36]/50 rounded-[8px] sm:rounded-[10px] overflow-hidden transition-all duration-300 flex flex-col justify-between h-full shadow-[0_1px_3px_rgba(41,43,37,0.04)] hover:shadow-[0_6px_20px_rgba(41,43,37,0.06)]">
       {/* Visual Product Stage */}
-      <div className="relative bg-[#FAF7F2] p-2.5 sm:p-4 border-b border-[#EDE6DC]">
+      <div className="relative bg-[#FBF9F3] p-2.5 sm:p-4 border-b border-[#EBE1CF]">
         {/* Top Badges & Wishlist Action */}
         <div className="flex items-center justify-between gap-1.5 mb-2 z-10 relative">
           <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
             {product.bestseller ? (
-              <span className="text-[9px] sm:text-[11px] font-medium tracking-wide uppercase px-1.5 sm:px-2 py-0.5 rounded-[4px] bg-[#EBF2EE] text-[#1A382B] border border-[#D1E0D7]">
+              <span className="text-[9px] sm:text-[10.5px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-[4px] bg-[#E7D8B8]/50 text-[#243725] border border-[#D5C29B]">
                 Bestseller
               </span>
             ) : discount > 0 ? (
-              <span className="text-[9px] sm:text-[11px] font-medium tracking-wide uppercase px-1.5 sm:px-2 py-0.5 rounded-[4px] bg-[#FBEFEA] text-[#9E462A] border border-[#F0D5C9]">
+              <span className="text-[9px] sm:text-[10.5px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-[4px] bg-[#F7EBE1] text-[#C47B4B] border border-[#EACBB5]">
                 {discount}% OFF
               </span>
             ) : (
-              <span className="text-[9px] sm:text-[11px] font-medium tracking-wide uppercase px-1.5 sm:px-2 py-0.5 rounded-[4px] bg-white text-[#685950] border border-[#E2D9CE]">
+              <span className="text-[9px] sm:text-[10.5px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-[4px] bg-white text-[#5F6156] border border-[#E7D8B8]">
                 {product.category === 'millets' ? 'Chiru Dhanyalu' : 'Pure Spice'}
               </span>
             )}
@@ -87,10 +87,10 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             type="button"
             onClick={handleWishlistClick}
-            className={`w-6 h-6 sm:w-7 sm:h-7 rounded-[4px] sm:rounded-[6px] border flex items-center justify-center transition-colors shrink-0 ${
+            className={`w-6 h-6 sm:w-7 sm:h-7 rounded-[4px] sm:rounded-[6px] border flex items-center justify-center transition-colors shrink-0 cursor-pointer ${
               inWishlist
-                ? 'bg-[#9E462A] border-[#9E462A] text-white'
-                : 'bg-white border-[#E2D9CE] text-[#685950] hover:text-[#9E462A] hover:border-[#9E462A]'
+                ? 'bg-[#C47B4B] border-[#C47B4B] text-white'
+                : 'bg-white border-[#E7D8B8] text-[#5F6156] hover:text-[#C47B4B] hover:border-[#C47B4B]'
             }`}
             aria-label={inWishlist ? 'Remove from wishlist' : 'Save to wishlist'}
           >
@@ -101,7 +101,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Clean Square Product Image Frame */}
         <Link
           href={`/products/${product.slug}`}
-          className="relative block aspect-square w-full rounded-[6px] sm:rounded-[8px] overflow-hidden bg-white"
+          className="relative block aspect-square w-full rounded-[4px] sm:rounded-[6px] overflow-hidden bg-white"
         >
           <Image
             src={displayImage}
@@ -115,11 +115,11 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Card Content & Commerce Meta */}
-      <div className="p-2.5 sm:p-4 flex flex-col flex-1 justify-between gap-2.5 sm:gap-3 bg-white">
+      <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between gap-2.5 sm:gap-3 bg-white">
         <div>
           {/* Subtle Regional Heritage Layer */}
           {teluguLabel && (
-            <p className="font-telugu text-[10px] sm:text-[12px] text-[#9E462A] font-medium leading-none mb-1 truncate">
+            <p className="font-telugu text-[10px] sm:text-[11.5px] text-[#C47B4B] font-medium leading-none mb-1 truncate">
               {teluguLabel}
             </p>
           )}
@@ -127,13 +127,13 @@ export function ProductCard({ product }: ProductCardProps) {
           {/* Product Name */}
           <Link
             href={`/products/${product.slug}`}
-            className="block font-dmsans text-[13px] sm:text-[16px] font-semibold text-[#221814] leading-snug line-clamp-1 group-hover:text-[#1A382B] transition-colors"
+            className="block font-dmsans text-[13.5px] sm:text-[16px] font-semibold text-[#292B25] leading-snug line-clamp-1 group-hover:text-[#354C36] transition-colors"
           >
             {product.name}
           </Link>
 
           {/* Short Descriptor */}
-          <p className="text-[11px] sm:text-[12px] text-[#685950] line-clamp-1 mt-0.5">
+          <p className="text-[11px] sm:text-[12px] text-[#5F6156] line-clamp-1 mt-0.5">
             {product.tagline || 'Direct harvest, traditionally stone-cleaned.'}
           </p>
 
@@ -141,18 +141,18 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center gap-1 mt-1 sm:mt-1.5">
             {product.rating && product.reviewCount && product.reviewCount > 0 ? (
               <>
-                <div className="flex items-center text-[#B8863A]">
+                <div className="flex items-center text-[#C47B4B]">
                   <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current" />
                 </div>
-                <span className="font-data text-[11px] sm:text-[12px] font-medium text-[#221814]">
+                <span className="font-data text-[11px] sm:text-[12px] font-medium text-[#292B25]">
                   {product.rating.toFixed(1)}
                 </span>
-                <span className="text-[10px] sm:text-[11px] text-[#8C7A70]">
+                <span className="text-[10px] sm:text-[11px] text-[#8A8B80]">
                   ({product.reviewCount})
                 </span>
               </>
             ) : (
-              <span className="text-[10px] text-[#1A382B] bg-[#EBF2EE] px-1.5 py-0.5 rounded-[3px] font-data font-medium">
+              <span className="text-[9.5px] text-[#354C36] bg-[#E7D8B8]/40 px-1.5 py-0.5 rounded-[3px] font-data font-medium">
                 ✦ Fresh Harvest Batch
               </span>
             )}
@@ -167,10 +167,10 @@ export function ProductCard({ product }: ProductCardProps) {
                 key={w.size}
                 type="button"
                 onClick={() => setSelectedWeightSize(w.size)}
-                className={`px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-medium rounded-[4px] sm:rounded-[6px] border transition-all ${
+                className={`px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-medium rounded-[4px] border transition-all cursor-pointer ${
                   selectedWeightSize === w.size
-                    ? 'bg-[#1A382B] text-white border-[#1A382B]'
-                    : 'bg-[#FAF7F2] text-[#685950] border-[#E2D9CE] hover:border-[#1A382B]/50'
+                    ? 'bg-[#354C36] text-white border-[#354C36]'
+                    : 'bg-[#F8F4EA] text-[#5F6156] border-[#E7D8B8] hover:border-[#354C36]/50'
                 }`}
                 aria-label={`Select pack size ${w.size}`}
               >
@@ -181,19 +181,19 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Price & Add to Cart Action */}
-        <div className="flex items-center justify-between pt-2 border-t border-[#F0EAE1] gap-1.5">
+        <div className="flex items-center justify-between pt-2.5 border-t border-[#F1E8D6] gap-1.5">
           <div className="min-w-0">
             <div className="flex items-baseline gap-1 sm:gap-1.5 flex-wrap">
-              <span className="font-data font-bold text-[15px] sm:text-[19px] text-[#221814] tracking-tight">
+              <span className="font-data font-bold text-[15px] sm:text-[18px] text-[#292B25] tracking-tight">
                 {formatCurrency(currentWeightOpt.price)}
               </span>
               {currentWeightOpt.mrp > currentWeightOpt.price && (
-                <span className="font-data text-[10px] sm:text-[12px] text-[#8C7A70] line-through">
+                <span className="font-data text-[10px] sm:text-[11.5px] text-[#8A8B80] line-through">
                   {formatCurrency(currentWeightOpt.mrp)}
                 </span>
               )}
             </div>
-            <span className="font-data text-[9px] sm:text-[10px] text-[#8C7A70] block leading-none mt-0.5">
+            <span className="font-data text-[9px] sm:text-[10px] text-[#8A8B80] block leading-none mt-0.5">
               Tax inclusive
             </span>
           </div>
@@ -202,10 +202,10 @@ export function ProductCard({ product }: ProductCardProps) {
             type="button"
             onClick={handleQuickAdd}
             disabled={isAdded || !currentWeightOpt.inStock}
-            className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-[6px] text-[11px] sm:text-[12px] font-semibold flex items-center gap-1 transition-all duration-200 shrink-0 ${
+            className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-[5px] text-[11px] sm:text-[12px] font-semibold flex items-center gap-1 transition-all duration-200 shrink-0 cursor-pointer ${
               isAdded
-                ? 'bg-[#264A3B] text-white'
-                : 'bg-[#1A382B] hover:bg-[#132B21] text-white shadow-2xs'
+                ? 'bg-[#243725] text-white'
+                : 'bg-[#354C36] hover:bg-[#243725] text-white shadow-2xs'
             }`}
             aria-label={`Add ${product.name} to cart`}
           >

@@ -24,7 +24,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {children}
           </div>
         ) : (
-          <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#241611]">
+          <div className="min-h-screen flex flex-col bg-[#F8F4EA] text-[#292B25]">
             <Header onOpenSearch={() => setIsSearchOpen(true)} />
             <main className="flex-1">{children}</main>
             <Footer />

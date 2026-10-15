@@ -7,46 +7,51 @@
   --font-telugu: var(--font-telugu-serif), Georgia, serif;
   --font-telugu-sans: var(--font-telugu-sans), sans-serif;
 
-  --color-forest: #1A382B;
-  --color-forest-dark: #132B21;
-  --color-forest-light: #264A3B;
-  --color-terracotta: #9E462A;
-  --color-terracotta-dark: #853A22;
-  --color-terracotta-light: #B35638;
-  --color-ivory: #FAF7F2;
-  --color-oat: #F4EFEA;
-  --color-oat-deep: #ECE5DC;
-  --color-charcoal: #221814;
-  --color-bark: #685950;
-  --color-warm-border: #E2D9CE;
+  /* Premium Editorial Design Tokens */
+  --color-ivory: #F8F4EA;
+  --color-ivory-light: #FBF9F3;
+  --color-ivory-warm: #F3ECE0;
+  --color-heritage-green: #354C36;
+  --color-heritage-green-deep: #243725;
+  --color-heritage-green-dark: #1A281B;
+  --color-heritage-green-light: #4A654C;
+  --color-terracotta: #C47B4B;
+  --color-terracotta-deep: #A75E31;
+  --color-terracotta-light: #D9956A;
+  --color-grain: #E7D8B8;
+  --color-grain-light: #F1E7D1;
+  --color-grain-border: #E2D5B7;
+  --color-text-deep: #292B25;
+  --color-text-muted: #5F6156;
+  --color-text-subtle: #8A8B80;
 }
 
 @layer base {
   :root {
-    --bg-cream: #FAF7F2;
-    --bg-surface: #F4EFEA;
+    --bg-ivory: #F8F4EA;
+    --bg-surface: #F3ECE0;
     --bg-card: #FFFFFF;
-    --text-main: #221814;
-    --text-muted: #685950;
-    --border-warm: #E2D9CE;
-    --border-subtle: #EDE6DC;
-    --brand-forest: #1A382B;
-    --brand-forest-hover: #132B21;
-    --brand-terracotta: #9E462A;
-    --brand-terracotta-hover: #853A22;
-    --brand-gold: #B8863A;
-    --brand-dark: #1A120E;
+    --text-primary: #292B25;
+    --text-secondary: #5F6156;
+    --text-muted: #8A8B80;
+    --border-grain: #E2D5B7;
+    --border-subtle: #ECE4D3;
     
-    /* Strict Restrained Radius Tokens */
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
-    --radius-xl: 16px;
+    --brand-green: #354C36;
+    --brand-green-deep: #243725;
+    --brand-terracotta: #C47B4B;
+    --brand-terracotta-deep: #A75E31;
+    --brand-grain: #E7D8B8;
+
+    /* Restrained architectural radii */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
   }
 
   body {
-    background-color: var(--bg-cream);
-    color: var(--text-main);
+    background-color: var(--bg-ivory);
+    color: var(--text-primary);
     font-family: var(--font-dmsans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -64,7 +69,7 @@
   }
 }
 
-/* Explicit font utilities */
+/* Typography Utility Classes */
 .font-cormorant, .font-serif-editorial {
   font-family: var(--font-cormorant), Georgia, serif;
 }
@@ -74,7 +79,8 @@
 }
 
 .font-data, .font-inter {
-  font-family: var(--font-inter), monospace, sans-serif;
+  font-family: var(--font-inter), sans-serif;
+  font-feature-settings: "tnum" 1, "cv05" 1;
 }
 
 .font-telugu {
@@ -85,42 +91,48 @@
   font-family: var(--font-telugu-sans), sans-serif;
 }
 
-/* Custom subtle scrollbar */
+/* Subtle, high-end editorial scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAF7F2;
+  background: #F8F4EA;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D8CCC0;
-  border-radius: 4px;
+  background: #D8CEB8;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9E462A;
+  background: #C47B4B;
 }
 
 /* Accessible focus ring */
 :focus-visible {
-  outline: 2px solid #1A382B;
+  outline: 2px solid #354C36;
   outline-offset: 2px;
 }
 
-/* Subtle, restrained hover transitions (no bouncy gimmicks) */
+/* Controlled restrained hover transitions */
 .card-image-zoom {
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .group:hover .card-image-zoom {
-  transform: scale(1.03);
+  transform: scale(1.025);
 }
 
-/* High contrast numbers for prices and batch codes */
+/* Price & Tabular figures */
 .price-display {
   font-family: var(--font-inter), sans-serif;
   font-feature-settings: "tnum" 1, "cv05" 1;
+}
+
+/* Subtle grain texture overlay for editorial hero sections */
+.editorial-grain {
+  background-image: radial-gradient(rgba(41, 43, 37, 0.04) 1px, transparent 1px);
+  background-size: 16px 16px;
 }
