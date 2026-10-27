@@ -63,31 +63,28 @@ export default function CheckoutPage() {
         const res = await fetch('/api/auth/me');
         const data = await res.json();
 
-        if (!session && (!data.authenticated || !data.user)) {
-          router.push('/login?redirect=/checkout');
-          return;
-        }
+        if (data?.authenticated && data?.user) {
+          const user = data.user;
+          setCurrentUser(user);
+          if (user.mobile) {
+            const clean10 = user.mobile.replace(/\D/g, '').slice(-10);
+            setMobile(clean10);
+            setNewMobile(user.mobile);
+          }
+          if (user.email) setEmail(user.email);
+          if (user.fullName) setNewFullName(user.fullName);
 
-        const user = data.user;
-        setCurrentUser(user);
-        if (user.mobile) {
-          const clean10 = user.mobile.replace(/\D/g, '').slice(-10);
-          setMobile(clean10);
-          setNewMobile(user.mobile);
-        }
-        if (user.email) setEmail(user.email);
-        if (user.fullName) setNewFullName(user.fullName);
-
-        const addrRes = await fetch('/api/account/addresses');
-        if (addrRes.ok) {
-          const addrData = await addrRes.json();
-          if (addrData.addresses && addrData.addresses.length > 0) {
-            setAddresses(addrData.addresses);
-            setSelectedAddressId(addrData.addresses[0].id);
+          const addrRes = await fetch('/api/account/addresses');
+          if (addrRes.ok) {
+            const addrData = await addrRes.json();
+            if (addrData.addresses && addrData.addresses.length > 0) {
+              setAddresses(addrData.addresses);
+              setSelectedAddressId(addrData.addresses[0].id);
+            }
           }
         }
       } catch (e) {
-        console.error('Failed to verify customer authentication', e);
+        console.error('Customer checkout session check:', e);
       } finally {
         setAuthChecking(false);
       }
@@ -159,6 +156,11 @@ export default function CheckoutPage() {
       return;
     }
 
+    if (!mobile || mobile.replace(/\D/g, '').length < 10) {
+      alert('Please enter a valid 10-digit mobile number for order delivery tracking.');
+      return;
+    }
+
     const selectedAddr = addresses.find((a) => a.id === selectedAddressId) || addresses[0];
 
     if (typeof window !== 'undefined') {
@@ -184,7 +186,7 @@ export default function CheckoutPage() {
       <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-3 bg-[#FAF7F2]">
         <div className="w-8 h-8 border-2 border-[#1A382B] border-t-transparent rounded-full animate-spin" />
         <p className="text-[12px] text-[#685950] font-dmsans">
-          Verifying Customer Authentication...
+          Loading checkout...
         </p>
       </div>
     );
@@ -226,12 +228,19 @@ export default function CheckoutPage() {
                   Contact Information
                 </h2>
               </div>
-              {currentUser && (
+              {currentUser ? (
                 <Link
                   href="/signin?redirect=/checkout"
                   className="text-[11px] text-[#9E462A] font-semibold hover:underline"
                 >
                   Switch Account
+                </Link>
+              ) : (
+                <Link
+                  href="/signin?redirect=/checkout"
+                  className="text-[11px] text-[#1A382B] font-semibold hover:underline"
+                >
+                  Already have an account? Sign In
                 </Link>
               )}
             </div>

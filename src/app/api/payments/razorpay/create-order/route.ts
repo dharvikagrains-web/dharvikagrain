@@ -17,13 +17,21 @@ export async function POST(req: NextRequest) {
       paymentMethod = 'RAZORPAY',
     } = body;
 
-    // 0. Enforce mandatory customer authentication
-    const user = await getCurrentUser();
+    // 0. Support authenticated customer session or seamless guest customer profile
+    let user = await getCurrentUser();
     if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required. Please sign in or register to place your order.' },
-        { status: 401 }
-      );
+      if (!mobile && !email) {
+        return NextResponse.json(
+          { success: false, error: 'Mobile number or email is required to place your order.' },
+          { status: 400 }
+        );
+      }
+      user = db.upsertUser({
+        fullName: customerName || 'Customer',
+        email: (email || `guest_${(mobile || '').replace(/\D/g, '')}@dharvikagrains.in`).toLowerCase(),
+        mobile: mobile || '',
+        role: 'CUSTOMER',
+      });
     }
 
     if (!items || !Array.isArray(items) || items.length === 0) {

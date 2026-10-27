@@ -20,16 +20,19 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(WISHLIST_STORAGE_KEY);
-      if (saved) {
-        setWishlist(JSON.parse(saved));
+    const timer = setTimeout(() => {
+      try {
+        const saved = localStorage.getItem(WISHLIST_STORAGE_KEY);
+        if (saved) {
+          setWishlist(JSON.parse(saved));
+        }
+      } catch (e) {
+        console.error('Failed to read wishlist', e);
       }
-    } catch (e) {
-      console.error('Failed to read wishlist', e);
-    } finally {
       setIsInitialized(true);
-    }
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {

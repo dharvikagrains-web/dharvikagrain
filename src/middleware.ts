@@ -13,10 +13,18 @@ const ADMIN_ROLES = [
   'CUSTOMER_SUPPORT',
 ];
 
+interface MiddlewareSessionPayload {
+  userId: string;
+  email: string;
+  fullName: string;
+  role: string;
+  exp: number;
+}
+
 /**
  * Verify HMAC-SHA256 signature using Edge-compatible Web Crypto API
  */
-async function verifySessionToken(token: string): Promise<any | null> {
+async function verifySessionToken(token: string): Promise<MiddlewareSessionPayload | null> {
   try {
     const parts = token.split('.');
     if (parts.length !== 2) return null;
@@ -99,41 +107,13 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 2. Protect /investor paths
+  // 2. /investor paths
   if (pathname === '/investor' || pathname.startsWith('/investor/')) {
-    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
-    let payload = null;
-    if (token) {
-      payload = await verifySessionToken(token);
-    }
-
-    const hasInvestorAccess = payload && (payload.role === 'INVESTOR' || payload.role === 'SUPER_ADMIN');
-
-    // Note: client-side localStorage session also handles fast-access in /investor/page.tsx
+    // Allow through; page component and /investor/login authenticate data room passcodes
   }
 
-  // 3. Protect /checkout paths (e.g. /checkout, /checkout/payment)
-  const isCheckoutPath = pathname === '/checkout' || pathname.startsWith('/checkout/');
-  if (isCheckoutPath) {
-    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
-    let payload = null;
-    if (token) {
-      payload = await verifySessionToken(token);
-    }
-
-    if (!payload) {
-      const hasSupabaseCookie = request.cookies.getAll().some(
-        (c) => c.name.startsWith('sb-') && c.name.includes('-auth-token')
-      );
-      if (!hasSupabaseCookie) {
-        // Unauthenticated customer attempting to checkout -> redirect to signin with return URL
-        const signinUrl = new URL('/signin', request.url);
-        signinUrl.searchParams.set('redirect', pathname);
-        return NextResponse.redirect(signinUrl);
-      }
-    }
-  }
-
+  // 3. /checkout paths: Support seamless guest checkout and customer session auto-fill
+  // Guest customers are permitted to input address and place orders directly without forced login
   return NextResponse.next();
 }
 
@@ -141,7 +121,5 @@ export const config = {
   matcher: [
     '/admin/:path*',
     '/api/admin/:path*',
-    '/checkout',
-    '/checkout/:path*',
   ],
 };

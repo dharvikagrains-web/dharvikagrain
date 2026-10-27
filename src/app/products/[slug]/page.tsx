@@ -250,7 +250,7 @@ export default function ProductDetailPage({
                       key={w.size}
                       type="button"
                       onClick={() => setSelectedWeightSize(w.size)}
-                      className={`py-2.5 px-3 rounded-[6px] border text-[12px] font-medium transition-all text-center ${
+                      className={`min-h-[44px] py-2 px-3 rounded-[6px] border text-[12px] font-medium transition-all text-center flex flex-col items-center justify-center ${
                         selectedWeightSize === w.size
                           ? 'border-[#354C36] bg-[#354C36] text-white shadow-2xs'
                           : 'border-[#E7D8B8] bg-white text-[#292B25] hover:border-[#354C36]/50'
@@ -273,20 +273,20 @@ export default function ProductDetailPage({
                 <div className="flex items-center rounded-[6px] border border-[#E7D8B8] bg-white p-0.5">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="p-1.5 rounded-[4px] text-[#5F6156] hover:bg-[#F8F4EA] hover:text-[#292B25] transition-colors"
+                    className="min-w-[38px] min-h-[38px] flex items-center justify-center rounded-[4px] text-[#5F6156] hover:bg-[#F8F4EA] hover:text-[#292B25] transition-colors"
                     aria-label="Decrease quantity"
                   >
-                    <Minus className="w-3.5 h-3.5" />
+                    <Minus className="w-4 h-4" />
                   </button>
                   <span className="px-3.5 text-[13px] font-data font-semibold text-[#292B25] min-w-[32px] text-center">
                     {quantity}
                   </span>
                   <button
                     onClick={() => setQuantity((q) => q + 1)}
-                    className="p-1.5 rounded-[4px] text-[#5F6156] hover:bg-[#F8F4EA] hover:text-[#292B25] transition-colors"
+                    className="min-w-[38px] min-h-[38px] flex items-center justify-center rounded-[4px] text-[#5F6156] hover:bg-[#F8F4EA] hover:text-[#292B25] transition-colors"
                     aria-label="Increase quantity"
                   >
-                    <Plus className="w-3.5 h-3.5" />
+                    <Plus className="w-4 h-4" />
                   </button>
                 </div>
               </div>

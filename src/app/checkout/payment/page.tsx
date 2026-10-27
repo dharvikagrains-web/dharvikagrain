@@ -55,14 +55,11 @@ export default function PaymentGatewayPage() {
       try {
         const res = await fetch('/api/auth/me');
         const data = await res.json();
-        if (!data.authenticated || !data.user) {
-          router.push('/signin?redirect=/checkout');
-          return;
+        if (data?.authenticated && data?.user) {
+          setCurrentUser(data.user);
         }
-        setCurrentUser(data.user);
-      } catch {
-        router.push('/signin?redirect=/checkout');
-        return;
+      } catch (e) {
+        console.error('Session check in payment step:', e);
       } finally {
         setAuthChecking(false);
       }
