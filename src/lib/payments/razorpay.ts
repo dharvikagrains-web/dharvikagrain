@@ -75,32 +75,74 @@ export function verifyRazorpaySignature(params: {
   razorpayPaymentId: string;
   razorpaySignature: string;
 }): boolean {
-  const keySecret = process.env.RAZORPAY_KEY_SECRET || 'rzp_test_placeholder_secret';
+  const keySecret = process.env.RAZORPAY_KEY_SECRET;
+  const isPlaceholder = !keySecret || keySecret.trim() === '' || keySecret.includes('placeholder');
 
-  // In sandbox demo mode with placeholder keys, allow verified simulation signature
-  if (
-    keySecret.includes('placeholder') &&
-    (params.razorpaySignature.startsWith('sim_sig_') || params.razorpaySignature.length >= 10)
-  ) {
-    return true;
+  // In production environments, strictly fail closed if credentials are missing or placeholder
+  if (process.env.NODE_ENV === 'production') {
+    if (isPlaceholder) {
+      console.error(
+        '[SECURITY ALERT] Razorpay payment verification attempted in production with missing or placeholder RAZORPAY_KEY_SECRET.'
+      );
+      return false;
+    }
+  } else {
+    // Only in non-production local development/sandbox, allow explicit simulation signatures
+    // when secret is not configured
+    if (isPlaceholder) {
+      if (params.razorpaySignature && params.razorpaySignature.startsWith('sim_sig_')) {
+        return true;
+      }
+      return false;
+    }
   }
 
-  const generatedSignature = crypto
-    .createHmac('sha256', keySecret)
-    .update(`${params.razorpayOrderId}|${params.razorpayPaymentId}`)
-    .digest('hex');
+  if (!keySecret) {
+    return false;
+  }
 
-  return crypto.timingSafeEqual(
-    Buffer.from(generatedSignature, 'utf8'),
-    Buffer.from(params.razorpaySignature, 'utf8')
-  );
+  if (!params.razorpayOrderId || !params.razorpayPaymentId || !params.razorpaySignature) {
+    return false;
+  }
+
+  try {
+    const generatedSignature = crypto
+      .createHmac('sha256', keySecret)
+      .update(`${params.razorpayOrderId}|${params.razorpayPaymentId}`)
+      .digest('hex');
+
+    const generatedBuffer = Buffer.from(generatedSignature, 'utf8');
+    const signatureBuffer = Buffer.from(params.razorpaySignature, 'utf8');
+
+    if (generatedBuffer.length !== signatureBuffer.length) {
+      return false;
+    }
+
+    return crypto.timingSafeEqual(generatedBuffer, signatureBuffer);
+  } catch {
+    return false;
+  }
 }
 
 /**
  * Verifies webhook payload HMAC SHA-256 signature
  */
 export function verifyWebhookSignature(rawBody: string, signature: string): boolean {
-  const secret = process.env.RAZORPAY_WEBHOOK_SECRET || 'rzp_test_webhook_secret';
+  const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+  const isPlaceholder = !secret || secret.trim() === '' || secret.includes('placeholder');
+
+  if (process.env.NODE_ENV === 'production') {
+    if (isPlaceholder) {
+      console.error(
+        '[SECURITY ALERT] Razorpay webhook verification attempted in production with missing or placeholder RAZORPAY_WEBHOOK_SECRET.'
+      );
+      return false;
+    }
+  }
+
+  if (!secret || !signature || !rawBody) {
+    return false;
+  }
 
   try {
     const expectedSignature = crypto
@@ -108,10 +150,14 @@ export function verifyWebhookSignature(rawBody: string, signature: string): bool
       .update(rawBody)
       .digest('hex');
 
-    return crypto.timingSafeEqual(
-      Buffer.from(expectedSignature, 'utf8'),
-      Buffer.from(signature, 'utf8')
-    );
+    const expectedBuffer = Buffer.from(expectedSignature, 'utf8');
+    const signatureBuffer = Buffer.from(signature, 'utf8');
+
+    if (expectedBuffer.length !== signatureBuffer.length) {
+      return false;
+    }
+
+    return crypto.timingSafeEqual(expectedBuffer, signatureBuffer);
   } catch {
     return false;
   }

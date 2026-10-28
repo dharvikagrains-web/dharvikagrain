@@ -22,29 +22,26 @@ export async function POST(request: NextRequest) {
     const phone = meta.phone || user.phone || '';
     const avatarUrl = meta.avatar_url || meta.picture || '';
 
-    const destination = (body.destination || '').toString();
-    const isAdminTarget = destination.startsWith('/admin');
-    const isInvestorTarget = destination.startsWith('/investor');
+    // Server-side trusted administrative configuration
+    const configuredOwnerEmail = (process.env.OWNER_EMAIL || '').trim().toLowerCase();
+    const configuredAdminEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+    const configuredInvestorEmail = (process.env.INVESTOR_EMAIL || '').trim().toLowerCase();
 
-    // Assign appropriate role based on email, destination, or existing record
+    // Default to CUSTOMER. Never derive privileges from destination query, client body, or email substrings.
     let assignedRole: UserRole = 'CUSTOMER';
+
+    // Check trusted persistent record first
     const existingUser = db.getUserById(user.id) || (email ? db.getUserByEmail(email) : null);
     if (existingUser?.role) {
       assignedRole = existingUser.role;
     }
 
-    const isOwnerEmail =
-      email === 'dharvikagrains@gmail.com' ||
-      email === 'pavangeesala81@gmail.com' ||
-      email.includes('pavan') ||
-      email.endsWith('@dharvikagrains.com') ||
-      email.endsWith('@dharvikagrains.in');
-
-    if (isOwnerEmail) {
+    // Only grant elevated roles if email strictly equals server-configured administrative addresses
+    if (configuredOwnerEmail && email === configuredOwnerEmail) {
       assignedRole = 'OWNER';
-    } else if (isAdminTarget) {
+    } else if (configuredAdminEmail && email === configuredAdminEmail) {
       assignedRole = 'ADMIN';
-    } else if (isInvestorTarget) {
+    } else if (configuredInvestorEmail && email === configuredInvestorEmail) {
       assignedRole = 'INVESTOR';
     }
 

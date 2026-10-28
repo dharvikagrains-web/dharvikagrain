@@ -159,13 +159,28 @@ export function verifySession(token: string): SessionPayload | null {
   }
 }
 
+import type { NextRequest } from 'next/server';
+
 /**
- * Get current authenticated user from Next.js cookies
+ * Get current authenticated user from Next.js cookies or request headers
  */
-export async function getCurrentUser(): Promise<User | null> {
+export async function getCurrentUser(req?: NextRequest): Promise<User | null> {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+    let token: string | undefined;
+
+    // 1. Inspect request cookies if provided
+    if (req?.cookies) {
+      token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
+    }
+
+    // 2. Fall back to Next.js server cookieStore
+    if (!token) {
+      try {
+        const cookieStore = await cookies();
+        token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+      } catch {}
+    }
+
     if (token) {
       const payload = verifySession(token);
       if (payload) {

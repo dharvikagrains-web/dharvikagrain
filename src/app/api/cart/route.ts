@@ -1,6 +1,65 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, isAdmin, isOwner } from '@/lib/db';
-import { getAuthenticatedProfile } from '@/lib/auth/session';
+import { getAuthenticatedProfile, getCurrentUser, verifySession, AUTH_COOKIE_NAME } from '@/lib/auth/session';
+import { hasDatabaseUrl, prisma } from '@/lib/db/client';
+import { isValidUuid } from '@/lib/db/addresses';
+import {
+  CartError,
+  getAuthoritativeCart,
+  addCartItemAtomic,
+  updateCartItemQuantityAtomic,
+  changeCartItemQuantityDelta,
+  removeCartItemAtomic,
+  clearCartAtomic,
+  findCartItemId,
+} from '@/lib/db/cart';
+
+/**
+ * Resolves caller profile from either Supabase SSR session or direct request session cookie
+ */
+async function getCallerProfile(req: NextRequest) {
+  let caller = await getAuthenticatedProfile();
+  if (caller && isValidUuid(caller.id)) return caller;
+
+  const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
+  if (token) {
+    const payload = verifySession(token);
+    if (payload) {
+      let role: 'CUSTOMER' | 'ADMIN' | 'OWNER' = 'CUSTOMER';
+      if (payload.role === 'OWNER' || payload.role === 'SUPER_ADMIN') role = 'OWNER';
+      else if (payload.role === 'ADMIN' || payload.role === 'OPERATIONS') role = 'ADMIN';
+
+      return {
+        id: payload.userId,
+        fullName: payload.fullName,
+        email: payload.email,
+        phone: payload.mobile,
+        role,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    }
+  }
+
+  const user = await getCurrentUser(req);
+  if (user) {
+    let role: 'CUSTOMER' | 'ADMIN' | 'OWNER' = 'CUSTOMER';
+    if (user.role === 'OWNER' || user.role === 'SUPER_ADMIN') role = 'OWNER';
+    else if (user.role === 'ADMIN' || user.role === 'OPERATIONS') role = 'ADMIN';
+
+    return {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      phone: user.mobile,
+      role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+  }
+
+  return null;
+}
 
 /**
  * GET /api/cart
@@ -9,7 +68,7 @@ import { getAuthenticatedProfile } from '@/lib/auth/session';
  */
 export async function GET(req: NextRequest) {
   try {
-    const caller = await getAuthenticatedProfile();
+    const caller = await getCallerProfile(req);
     if (!caller) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized: Authentication required.' },
@@ -28,23 +87,40 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const result = db.getCart(requestedUserId, caller);
-    if (!result.success) {
+    // Explicit test seam: preserve in-memory test fixtures when running without database connection
+    if (!hasDatabaseUrl || !prisma) {
+      const result = db.getCart(requestedUserId, caller);
+      if (!result.success) {
+        return NextResponse.json(
+          { success: false, error: result.error },
+          { status: result.status || 400 }
+        );
+      }
+      return NextResponse.json({
+        success: true,
+        cart: result.cart,
+      });
+    }
+
+    // Database mode: Verify authentic UUID ownership key
+    if (!isValidUuid(requestedUserId)) {
       return NextResponse.json(
-        { success: false, error: result.error },
-        { status: result.status || 400 }
+        { success: false, error: 'Unauthorized: Valid account identifier required.' },
+        { status: 401 }
       );
     }
 
+    const cart = await getAuthoritativeCart(requestedUserId);
     return NextResponse.json({
       success: true,
-      cart: result.cart,
+      cart,
     });
   } catch (err: any) {
-    return NextResponse.json(
-      { success: false, error: err.message || 'Failed to fetch cart.' },
-      { status: 500 }
-    );
+    if (err instanceof CartError) {
+      return NextResponse.json({ success: false, error: err.message }, { status: err.status });
+    }
+    console.error('[API CART GET ERROR]: Database operation failed');
+    return NextResponse.json({ success: false, error: 'Failed to fetch cart.' }, { status: 500 });
   }
 }
 
@@ -55,7 +131,7 @@ export async function GET(req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
   try {
-    const caller = await getAuthenticatedProfile();
+    const caller = await getCallerProfile(req);
     if (!caller) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized: Authentication required.' },
@@ -83,31 +159,69 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = db.addToCart(
+    // Validate quantity is a positive integer before delegating
+    if (
+      typeof quantity !== 'number' ||
+      !Number.isInteger(quantity) ||
+      quantity <= 0 ||
+      isNaN(quantity)
+    ) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid quantity: Quantity must be a positive integer greater than zero.' },
+        { status: 400 }
+      );
+    }
+
+    // Explicit test seam: preserve in-memory test fixtures when running without database connection
+    if (!hasDatabaseUrl || !prisma) {
+      const result = db.addToCart(
+        effectiveUserId,
+        productId,
+        selectedWeight,
+        quantity,
+        caller
+      );
+
+      if (!result.success) {
+        return NextResponse.json(
+          { success: false, error: result.error },
+          { status: result.status || 400 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: 'Product added to cart successfully.',
+        cart: result.cart,
+      });
+    }
+
+    // Database mode: Verify authentic UUID ownership key
+    if (!isValidUuid(effectiveUserId)) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: Valid account identifier required.' },
+        { status: 401 }
+      );
+    }
+
+    const cart = await addCartItemAtomic(
       effectiveUserId,
       productId,
       selectedWeight,
-      quantity,
-      caller
+      quantity
     );
-
-    if (!result.success) {
-      return NextResponse.json(
-        { success: false, error: result.error },
-        { status: result.status || 400 }
-      );
-    }
 
     return NextResponse.json({
       success: true,
       message: 'Product added to cart successfully.',
-      cart: result.cart,
+      cart,
     });
   } catch (err: any) {
-    return NextResponse.json(
-      { success: false, error: err.message || 'Failed to add item to cart.' },
-      { status: 500 }
-    );
+    if (err instanceof CartError) {
+      return NextResponse.json({ success: false, error: err.message }, { status: err.status });
+    }
+    console.error('[API CART POST ERROR]: Database operation failed');
+    return NextResponse.json({ success: false, error: 'Failed to add item to cart.' }, { status: 500 });
   }
 }
 
@@ -118,7 +232,7 @@ export async function POST(req: NextRequest) {
  */
 export async function PATCH(req: NextRequest) {
   try {
-    const caller = await getAuthenticatedProfile();
+    const caller = await getCallerProfile(req);
     if (!caller) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized: Authentication required.' },
@@ -138,12 +252,67 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
+    // Explicit test seam: preserve in-memory test fixtures when running without database connection
+    if (!hasDatabaseUrl || !prisma) {
+      let resolvedItemId = itemId;
+      if (!resolvedItemId && productId) {
+        const found = db.findCartItem(effectiveUserId, productId, selectedWeight || '500g');
+        if (found) {
+          resolvedItemId = found.id;
+        }
+      }
+
+      if (!resolvedItemId) {
+        return NextResponse.json(
+          { success: false, error: 'Bad Request: itemId or valid (productId, selectedWeight) is required.' },
+          { status: 400 }
+        );
+      }
+
+      let result;
+      if (action === 'INCREASE') {
+        result = db.increaseCartItemQuantity(effectiveUserId, resolvedItemId, delta, caller);
+      } else if (action === 'DECREASE') {
+        result = db.decreaseCartItemQuantity(effectiveUserId, resolvedItemId, delta, caller);
+      } else if (action === 'SET') {
+        if (quantity === undefined || typeof quantity !== 'number') {
+          return NextResponse.json(
+            { success: false, error: 'Bad Request: numeric quantity is required for SET action.' },
+            { status: 400 }
+          );
+        }
+        result = db.updateCartItemQuantity(effectiveUserId, itemId, quantity, caller);
+      } else {
+        return NextResponse.json(
+          { success: false, error: "Invalid action. Supported actions: 'SET', 'INCREASE', 'DECREASE'." },
+          { status: 400 }
+        );
+      }
+
+      if (!result.success) {
+        return NextResponse.json(
+          { success: false, error: result.error },
+          { status: result.status || 400 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        cart: result.cart,
+      });
+    }
+
+    // Database mode: Verify authentic UUID ownership key
+    if (!isValidUuid(effectiveUserId)) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: Valid account identifier required.' },
+        { status: 401 }
+      );
+    }
+
     let resolvedItemId = itemId;
     if (!resolvedItemId && productId) {
-      const found = db.findCartItem(effectiveUserId, productId, selectedWeight || '500g');
-      if (found) {
-        resolvedItemId = found.id;
-      }
+      resolvedItemId = await findCartItemId(effectiveUserId, productId, selectedWeight || '500g');
     }
 
     if (!resolvedItemId) {
@@ -153,11 +322,11 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    let result;
+    let cart;
     if (action === 'INCREASE') {
-      result = db.increaseCartItemQuantity(effectiveUserId, resolvedItemId, delta, caller);
+      cart = await changeCartItemQuantityDelta(effectiveUserId, resolvedItemId, delta, 'INCREASE');
     } else if (action === 'DECREASE') {
-      result = db.decreaseCartItemQuantity(effectiveUserId, resolvedItemId, delta, caller);
+      cart = await changeCartItemQuantityDelta(effectiveUserId, resolvedItemId, delta, 'DECREASE');
     } else if (action === 'SET') {
       if (quantity === undefined || typeof quantity !== 'number') {
         return NextResponse.json(
@@ -165,7 +334,7 @@ export async function PATCH(req: NextRequest) {
           { status: 400 }
         );
       }
-      result = db.updateCartItemQuantity(effectiveUserId, itemId, quantity, caller);
+      cart = await updateCartItemQuantityAtomic(effectiveUserId, resolvedItemId, quantity);
     } else {
       return NextResponse.json(
         { success: false, error: "Invalid action. Supported actions: 'SET', 'INCREASE', 'DECREASE'." },
@@ -173,22 +342,16 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    if (!result.success) {
-      return NextResponse.json(
-        { success: false, error: result.error },
-        { status: result.status || 400 }
-      );
-    }
-
     return NextResponse.json({
       success: true,
-      cart: result.cart,
+      cart,
     });
   } catch (err: any) {
-    return NextResponse.json(
-      { success: false, error: err.message || 'Failed to update cart item.' },
-      { status: 500 }
-    );
+    if (err instanceof CartError) {
+      return NextResponse.json({ success: false, error: err.message }, { status: err.status });
+    }
+    console.error('[API CART PATCH ERROR]: Database operation failed');
+    return NextResponse.json({ success: false, error: 'Failed to update cart item.' }, { status: 500 });
   }
 }
 
@@ -198,7 +361,7 @@ export async function PATCH(req: NextRequest) {
  */
 export async function DELETE(req: NextRequest) {
   try {
-    const caller = await getAuthenticatedProfile();
+    const caller = await getCallerProfile(req);
     if (!caller) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized: Authentication required.' },
@@ -229,11 +392,47 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    let result;
+    // Explicit test seam: preserve in-memory test fixtures when running without database connection
+    if (!hasDatabaseUrl || !prisma) {
+      let result;
+      if (clearAll) {
+        result = db.clearCart(effectiveUserId, caller);
+      } else if (itemId) {
+        result = db.removeCartItem(effectiveUserId, itemId, caller);
+      } else {
+        return NextResponse.json(
+          { success: false, error: 'Bad Request: Provide either itemId to delete or clearAll=true.' },
+          { status: 400 }
+        );
+      }
+
+      if (!result.success) {
+        return NextResponse.json(
+          { success: false, error: result.error },
+          { status: result.status || 400 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: clearAll ? 'Cart cleared successfully.' : 'Cart item removed successfully.',
+        cart: result.cart,
+      });
+    }
+
+    // Database mode: Verify authentic UUID ownership key
+    if (!isValidUuid(effectiveUserId)) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: Valid account identifier required.' },
+        { status: 401 }
+      );
+    }
+
+    let cart;
     if (clearAll) {
-      result = db.clearCart(effectiveUserId, caller);
+      cart = await clearCartAtomic(effectiveUserId);
     } else if (itemId) {
-      result = db.removeCartItem(effectiveUserId, itemId, caller);
+      cart = await removeCartItemAtomic(effectiveUserId, itemId);
     } else {
       return NextResponse.json(
         { success: false, error: 'Bad Request: Provide either itemId to delete or clearAll=true.' },
@@ -241,22 +440,16 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    if (!result.success) {
-      return NextResponse.json(
-        { success: false, error: result.error },
-        { status: result.status || 400 }
-      );
-    }
-
     return NextResponse.json({
       success: true,
       message: clearAll ? 'Cart cleared successfully.' : 'Cart item removed successfully.',
-      cart: result.cart,
+      cart,
     });
   } catch (err: any) {
-    return NextResponse.json(
-      { success: false, error: err.message || 'Failed to delete from cart.' },
-      { status: 500 }
-    );
+    if (err instanceof CartError) {
+      return NextResponse.json({ success: false, error: err.message }, { status: err.status });
+    }
+    console.error('[API CART DELETE ERROR]: Database operation failed');
+    return NextResponse.json({ success: false, error: 'Failed to delete from cart.' }, { status: 500 });
   }
 }

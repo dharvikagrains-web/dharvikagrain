@@ -12,29 +12,43 @@ export async function GET(
       return NextResponse.json({ error: 'Order Number is required' }, { status: 400 });
     }
 
+    // 1. Mandatory authentication check
+    const currentUser = await getCurrentUser(req);
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Authentication required to view order details.' },
+        { status: 401 }
+      );
+    }
+
+    // 2. Retrieve order after authentication
     const order = db.getOrder(orderNumber);
     if (!order) {
       return NextResponse.json({ error: `Order #${orderNumber} not found` }, { status: 404 });
     }
 
-    // Security check: Verify customer authorization
-    const currentUser = await getCurrentUser();
-    if (currentUser) {
-      // Admin roles can view any order
-      const isAdmin = currentUser.role === 'SUPER_ADMIN' || currentUser.role === 'ADMIN' || currentUser.role === 'OPERATIONS';
-      if (!isAdmin) {
-        // Customer can only view their own order
-        const isOwner =
-          order.email.toLowerCase() === currentUser.email.toLowerCase() ||
-          order.mobile.replace(/\D/g, '').slice(-10) === currentUser.mobile.replace(/\D/g, '').slice(-10);
+    // 2. Authorization check: Admin roles or owning customer only
+    const isAdmin =
+      currentUser.role === 'SUPER_ADMIN' ||
+      currentUser.role === 'ADMIN' ||
+      currentUser.role === 'OPERATIONS' ||
+      currentUser.role === 'OWNER';
 
-        if (!isOwner) {
-          return NextResponse.json(
-            { error: 'Forbidden: You do not have permission to view this order.' },
-            { status: 403 }
-          );
-        }
-      }
+    const orderEmail = (order.email || '').toLowerCase().trim();
+    const userEmail = (currentUser.email || '').toLowerCase().trim();
+    const orderMobile = (order.mobile || '').replace(/\D/g, '').slice(-10);
+    const userMobile = (currentUser.mobile || '').replace(/\D/g, '').slice(-10);
+
+    const isOwner =
+      (orderEmail && userEmail && orderEmail === userEmail) ||
+      (order.customerId && order.customerId === currentUser.id) ||
+      (orderMobile && userMobile && orderMobile === userMobile);
+
+    if (!isAdmin && !isOwner) {
+      return NextResponse.json(
+        { error: 'Forbidden: You do not have permission to view this order.' },
+        { status: 403 }
+      );
     }
 
     return NextResponse.json({
@@ -62,7 +76,23 @@ export async function GET(
         timeline: order.timeline,
       },
     });
-  } catch (err: any) {
+  } catch {
     return NextResponse.json({ error: 'Failed to retrieve order' }, { status: 500 });
   }
+}
+
+export async function POST() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+}
+
+export async function PUT() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+}
+
+export async function PATCH() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+}
+
+export async function DELETE() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }
