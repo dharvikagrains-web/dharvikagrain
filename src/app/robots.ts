@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { SITE_URL } from '@/config/site';
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/checkout', '/order-success', '/account', '/admin', '/api'],
     },
-    sitemap: 'https://dharvikagrains.in/sitemap.xml',
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }
+

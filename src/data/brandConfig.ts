@@ -1,4 +1,5 @@
 import { BrandConfig } from '@/types';
+import { SHIPPING_FREE_THRESHOLD, SHIPPING_FLAT_RATE } from '@/config/site';
 
 export const brandConfig: BrandConfig = {
   brandName: 'DHARVIKA GRAINS',
@@ -17,7 +18,8 @@ export const brandConfig: BrandConfig = {
   fssaiNumber: '13626011000284',
   instagramHandle: '@dharvikagrains',
   instagramUrl: 'https://instagram.com/dharvikagrains',
-  freeShippingThreshold: 500, // Free shipping above ₹500
-  flatShippingRate: 49,
+  freeShippingThreshold: SHIPPING_FREE_THRESHOLD,
+  flatShippingRate: SHIPPING_FLAT_RATE,
   currencySymbol: '₹',
 };
+

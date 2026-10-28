@@ -84,7 +84,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="p-2 -ml-2 text-[#292B25] hover:text-[#354C36] transition-colors rounded-[4px]"
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center -ml-2 text-[#292B25] hover:text-[#354C36] transition-colors rounded-[6px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#354C36] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F4EA]"
               aria-label="Open navigation menu"
             >
               <Menu className="w-6 h-6 stroke-[1.8]" />
@@ -93,7 +93,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
 
           {/* Brand Logo & Wordmark */}
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="group flex items-center gap-2.5 sm:gap-3 text-left">
+            <Link href="/" className="group flex items-center gap-2.5 sm:gap-3 text-left py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#354C36] rounded-[6px]">
               <div className="relative w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0 rounded-[6px] bg-white p-1 border border-[#E7D8B8] group-hover:border-[#354C36] transition-all overflow-hidden flex items-center justify-center shadow-xs">
                 <Image
                   src={brandConfig.logoImage || '/images/brand/dharvika-emblem-transparent.png'}
@@ -131,7 +131,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`font-dmsans text-[14px] font-medium tracking-wide transition-colors py-1 relative ${
+                  className={`font-dmsans text-[14px] font-medium tracking-wide transition-colors py-1 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#354C36] rounded-[4px] ${
                     isActive
                       ? 'text-[#243725] font-semibold'
                       : 'text-[#5F6156] hover:text-[#243725]'
@@ -147,23 +147,23 @@ export function Header({ onOpenSearch }: HeaderProps) {
           </nav>
 
           {/* Right Commerce Actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1 sm:gap-2">
             {/* Search Trigger Button */}
             <button
               type="button"
               onClick={onOpenSearch}
-              className="hidden md:flex items-center gap-2 bg-white/80 hover:bg-white border border-[#E7D8B8] rounded-[6px] px-3.5 py-2 text-[13px] text-[#5F6156] transition-all shadow-xs group focus:outline-none focus:ring-1 focus:ring-[#354C36]"
-              aria-label="Search catalogue, millets, spices, recipes"
+              className="hidden md:flex items-center gap-2 bg-white/80 hover:bg-white border border-[#E7D8B8] rounded-[6px] px-3.5 min-h-[44px] text-[13px] text-[#5F6156] transition-all shadow-xs group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#354C36] focus-visible:ring-offset-1"
+              aria-label="Search catalog, millets, spices, recipes"
             >
-              <Search className="w-3.5 h-3.5 text-[#5F6156] group-hover:text-[#354C36] transition-colors" />
+              <Search className="w-4 h-4 text-[#5F6156] group-hover:text-[#354C36] transition-colors" />
               <span className="font-dmsans text-[13px]">Search Grains &amp; Spices...</span>
             </button>
 
             <button
               type="button"
               onClick={onOpenSearch}
-              className="md:hidden p-2 text-[#292B25] hover:text-[#354C36] transition-colors rounded-[4px]"
-              aria-label="Open search modal"
+              className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center text-[#292B25] hover:text-[#354C36] transition-colors rounded-[6px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#354C36]"
+              aria-label="Open search"
             >
               <Search className="w-5 h-5 stroke-[1.8]" />
             </button>
@@ -171,7 +171,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
             {/* Account Icon */}
             <Link
               href="/account"
-              className="hidden sm:inline-flex p-2 text-[#292B25] hover:text-[#354C36] transition-colors rounded-[4px]"
+              className="hidden sm:inline-flex min-w-[44px] min-h-[44px] items-center justify-center text-[#292B25] hover:text-[#354C36] transition-colors rounded-[6px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#354C36]"
               aria-label="Customer Account"
             >
               <User className="w-5 h-5 stroke-[1.8]" />
@@ -180,12 +180,15 @@ export function Header({ onOpenSearch }: HeaderProps) {
             {/* Wishlist Icon */}
             <Link
               href="/wishlist"
-              className="hidden sm:inline-flex relative p-2 text-[#292B25] hover:text-[#C47B4B] transition-colors rounded-[4px]"
-              aria-label={`Wishlist (${wishlistCount} items)`}
+              className="hidden sm:inline-flex relative min-w-[44px] min-h-[44px] items-center justify-center text-[#292B25] hover:text-[#C47B4B] transition-colors rounded-[6px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C47B4B]"
+              aria-label={`Wishlist: ${wishlistCount} saved items`}
             >
               <Heart className="w-5 h-5 stroke-[1.8]" />
               {wishlistCount > 0 && (
-                <span className="absolute top-1 right-1 bg-[#C47B4B] text-white text-[10px] font-data font-semibold w-4 h-4 rounded-full flex items-center justify-center">
+                <span
+                  aria-hidden="true"
+                  className="absolute top-1.5 right-1.5 bg-[#C47B4B] text-white text-[10px] font-data font-semibold w-4 h-4 rounded-full flex items-center justify-center shadow-xs"
+                >
                   {wishlistCount}
                 </span>
               )}
@@ -195,12 +198,15 @@ export function Header({ onOpenSearch }: HeaderProps) {
             <button
               type="button"
               onClick={openCart}
-              className="relative p-2 text-[#292B25] hover:text-[#354C36] transition-colors rounded-[4px] focus:outline-none"
+              className="relative min-w-[44px] min-h-[44px] flex items-center justify-center text-[#292B25] hover:text-[#354C36] transition-colors rounded-[6px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#354C36]"
               aria-label={`Shopping cart with ${cartCount} items`}
             >
               <ShoppingBag className="w-5 h-5 stroke-[1.8]" />
               {cartCount > 0 && (
-                <span className="absolute top-1 right-1 bg-[#354C36] text-white text-[10px] font-data font-semibold w-4 h-4 rounded-full flex items-center justify-center">
+                <span
+                  aria-hidden="true"
+                  className="absolute top-1.5 right-1.5 bg-[#354C36] text-white text-[10px] font-data font-semibold w-4 h-4 rounded-full flex items-center justify-center shadow-xs"
+                >
                   {cartCount}
                 </span>
               )}

@@ -1,9 +1,10 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import { Cormorant_Garamond, DM_Sans, Inter, Noto_Serif_Telugu, Noto_Sans_Telugu } from 'next/font/google';
 import './globals.css';
 import { AppShell } from '@/components/layout/AppShell';
 import { brandConfig } from '@/data/brandConfig';
+import { SITE_URL } from '@/config/site';
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -40,8 +41,18 @@ const teluguSans = Noto_Sans_Telugu({
   display: 'swap',
 });
 
+export const viewport: Viewport = {
+  themeColor: '#354C36',
+  colorScheme: 'light',
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://dharvikagrains.in'),
+  metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: '/',
+  },
   title: {
     default: `${brandConfig.brandName} | Authentic Chiru Dhanyalu (Millets) & Pure Spices`,
     template: `%s | ${brandConfig.brandName}`,
@@ -60,7 +71,7 @@ export const metadata: Metadata = {
     'Guntur Red Chilli',
     'Single Origin Indian Spices',
   ],
-  authors: [{ name: brandConfig.brandName, url: 'https://dharvikagrains.in' }],
+  authors: [{ name: brandConfig.brandName, url: SITE_URL }],
   creator: brandConfig.brandName,
   publisher: brandConfig.brandName,
   formatDetection: {
@@ -71,7 +82,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${brandConfig.brandName} | Authentic Chiru Dhanyalu (Millets) & Pure Spices`,
     description: `${brandConfig.tagline} ${brandConfig.subTagline}`,
-    url: 'https://dharvikagrains.in',
+    url: SITE_URL,
     siteName: brandConfig.brandName,
     locale: 'en_IN',
     type: 'website',

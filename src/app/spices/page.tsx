@@ -10,6 +10,14 @@ export const metadata: Metadata = {
   title: 'Pure Single-Origin Indian Spices & Signature Blends | Cold-Ground',
   description:
     'Pure, unadulterated Indian spices: Lakadong Turmeric, Stemless Guntur Chilli, Roasted Dhaniya, Fragrant Cumin, Malabar Pepper, and Heritage Regional Masala.',
+  alternates: {
+    canonical: '/spices',
+  },
+  openGraph: {
+    title: 'Pure Single-Origin Indian Spices | Dharvika Grains',
+    description: 'Cold-ground single-origin spices and authentic Deccan masalas.',
+    url: '/spices',
+  },
 };
 
 export default function SpicesPage() {

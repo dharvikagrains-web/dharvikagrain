@@ -10,6 +10,14 @@ export const metadata: Metadata = {
   title: 'Chiru Dhanyalu (Traditional Millets) | Unpolished & Pure Grains',
   description:
     'Discover authentic unpolished Indian millets: Korralu (Foxtail), Samalu (Little), Arikelu (Kodo), Udalu (Barnyard), Ragi (Finger), and Jowar (Sorghum). Direct from rain-fed drylands.',
+  alternates: {
+    canonical: '/millets',
+  },
+  openGraph: {
+    title: 'Chiru Dhanyalu (Traditional Millets) | Dharvika Grains',
+    description: 'Deccan rain-fed millets. 100% unpolished with bran intact.',
+    url: '/millets',
+  },
 };
 
 const culinaryGuide = [

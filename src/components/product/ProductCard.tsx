@@ -8,6 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { formatCurrency, calculateDiscount } from '@/lib/utils';
 import { Heart, Plus, Check, Star } from 'lucide-react';
+import { ProductBadge } from '@/components/ui/ProductBadge';
 
 interface ProductCardProps {
   product: Product;
@@ -66,36 +67,34 @@ export function ProductCard({ product }: ProductCardProps) {
     <article className="group bg-white border border-[#E7D8B8] hover:border-[#354C36]/50 rounded-[8px] sm:rounded-[10px] overflow-hidden transition-all duration-300 flex flex-col justify-between h-full shadow-[0_1px_3px_rgba(41,43,37,0.04)] hover:shadow-[0_6px_20px_rgba(41,43,37,0.06)]">
       {/* Visual Product Stage */}
       <div className="relative bg-[#FBF9F3] p-2.5 sm:p-4 border-b border-[#EBE1CF]">
-        {/* Top Badges & Wishlist Action */}
+        {/* Top Badges & Wishlist Action: Discount in top-left, Bestseller + Wishlist in top-right */}
         <div className="flex items-center justify-between gap-1.5 mb-2 z-10 relative">
           <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
-            {product.bestseller ? (
-              <span className="text-[9px] sm:text-[10.5px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-[4px] bg-[#E7D8B8]/50 text-[#243725] border border-[#D5C29B]">
-                Bestseller
-              </span>
-            ) : discount > 0 ? (
-              <span className="text-[9px] sm:text-[10.5px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-[4px] bg-[#F7EBE1] text-[#C47B4B] border border-[#EACBB5]">
-                {discount}% OFF
-              </span>
+            {discount > 0 ? (
+              <ProductBadge type="discount" value={discount} />
             ) : (
-              <span className="text-[9px] sm:text-[10.5px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-[4px] bg-white text-[#5F6156] border border-[#E7D8B8]">
-                {product.category === 'millets' ? 'Chiru Dhanyalu' : 'Pure Spice'}
-              </span>
+              <ProductBadge
+                type="category"
+                value={product.category === 'millets' ? 'Chiru Dhanyalu' : 'Pure Spice'}
+              />
             )}
           </div>
 
-          <button
-            type="button"
-            onClick={handleWishlistClick}
-            className={`w-6 h-6 sm:w-7 sm:h-7 rounded-[4px] sm:rounded-[6px] border flex items-center justify-center transition-colors shrink-0 cursor-pointer ${
-              inWishlist
-                ? 'bg-[#C47B4B] border-[#C47B4B] text-white'
-                : 'bg-white border-[#E7D8B8] text-[#5F6156] hover:text-[#C47B4B] hover:border-[#C47B4B]'
-            }`}
-            aria-label={inWishlist ? 'Remove from wishlist' : 'Save to wishlist'}
-          >
-            <Heart className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current stroke-[1.5]" />
-          </button>
+          <div className="flex items-center gap-1.5 shrink-0">
+            {product.bestseller && <ProductBadge type="bestseller" />}
+            <button
+              type="button"
+              onClick={handleWishlistClick}
+              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-[4px] sm:rounded-[6px] border flex items-center justify-center transition-colors shrink-0 cursor-pointer ${
+                inWishlist
+                  ? 'bg-[#C47B4B] border-[#C47B4B] text-white'
+                  : 'bg-white border-[#E7D8B8] text-[#5F6156] hover:text-[#C47B4B] hover:border-[#C47B4B]'
+              }`}
+              aria-label={inWishlist ? 'Remove from wishlist' : 'Save to wishlist'}
+            >
+              <Heart className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current stroke-[1.5]" />
+            </button>
+          </div>
         </div>
 
         {/* Clean Square Product Image Frame */}

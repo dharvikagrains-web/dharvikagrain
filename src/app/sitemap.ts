@@ -2,9 +2,10 @@ import { MetadataRoute } from 'next';
 import { products } from '@/data/products';
 import { recipes } from '@/data/recipes';
 import { journalArticles } from '@/data/journal';
+import { SITE_URL } from '@/config/site';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://dharvikagrains.in';
+  const baseUrl = SITE_URL;
 
   const staticPages = [
     '',

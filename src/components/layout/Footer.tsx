@@ -4,11 +4,14 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { brandConfig } from '@/data/brandConfig';
+import { products } from '@/data/products';
+import { SHIPPING_FREE_THRESHOLD } from '@/config/site';
 import { ArrowRight, ShieldCheck, Truck, RefreshCw, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const hasOilProducts = products.some((p) => p.category.toLowerCase().includes('oil'));
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +38,7 @@ export function Footer() {
           <div className="flex items-start gap-3">
             <Truck className="w-5 h-5 text-[#E7D8B8] flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="text-[14px] font-semibold text-white tracking-wide">Complimentary Shipping &gt; ₹500</h4>
+              <h4 className="text-[14px] font-semibold text-white tracking-wide">Complimentary Shipping &gt; ₹{SHIPPING_FREE_THRESHOLD}</h4>
               <p className="text-[12px] text-[#A6A295] mt-0.5 leading-relaxed">
                 Pan-India prompt dispatch in fresh moisture-barrier packs.
               </p>
@@ -124,11 +127,13 @@ export function Footer() {
                   Signature Spice Blend
                 </Link>
               </li>
-              <li>
-                <Link href="/shop?category=oils" className="hover:text-white transition-colors">
-                  Wood-Pressed Oils
-                </Link>
-              </li>
+              {hasOilProducts && (
+                <li>
+                  <Link href="/shop?category=oils" className="hover:text-white transition-colors">
+                    Wood-Pressed Oils
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link href="/shop?category=combos" className="hover:text-white transition-colors">
                   Curated Pantry Kits

@@ -15,6 +15,7 @@ import {
   Sun,
   Droplets,
 } from 'lucide-react';
+import { SHIPPING_FREE_THRESHOLD } from '@/config/site';
 
 const heritageMillets = [
   {
@@ -193,7 +194,7 @@ export default function HomePage() {
 
             {/* Supporting Copy */}
             <p className="text-sm sm:text-base text-[#DCD6C7] leading-relaxed max-w-lg font-normal">
-              Stone-cleaned, unpolished native millets and cold-ground spices directly from Andhra dryland collectives to your home kitchen.
+              Stone-cleaned native millets and cold-ground spices directly from Andhra dryland collectives to your home kitchen.
             </p>
 
             {/* CTA Pill Buttons & Trust Indicators */}
@@ -224,7 +225,7 @@ export default function HomePage() {
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#E7D8B8]" /> FSSAI Central Lic. 13626011000284
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#E7D8B8]" /> Free Delivery Above ₹999
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#E7D8B8]" /> Free Delivery Above ₹{SHIPPING_FREE_THRESHOLD}
                 </span>
               </div>
             </div>
@@ -360,7 +361,7 @@ export default function HomePage() {
                 Traditional wisdom isn&apos;t mass-produced.
               </p>
               <p className="text-[12px] text-[#D8D2C2] leading-relaxed">
-                Directly connected to rain-fed farmer clusters in Andhra Pradesh. Zero chemical polish.
+                Directly connected to rain-fed farmer clusters in Andhra Pradesh. Nutrient-rich bran layer 100% intact.
               </p>
               <Link
                 href="/about"
@@ -439,7 +440,7 @@ export default function HomePage() {
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-serif text-white font-semibold leading-tight">
-              Fuel every day with unpolished, honest grains.
+              Fuel every day with wholesome, nutrient-dense whole grains.
             </h2>
 
             <p className="text-sm text-[#DCD6C7] leading-relaxed">
@@ -469,7 +470,7 @@ export default function HomePage() {
               Up to 8x more fiber than polished rice.
             </p>
             <p className="text-[11px] text-[#5F6156]">
-              Zero synthetic bleach · Zero chemical polish.
+              Zero synthetic bleach · Natural bran preserved.
             </p>
           </div>
         </div>
@@ -499,7 +500,7 @@ export default function HomePage() {
                 Families Nourished Across South India
               </p>
               <p className="text-[11.5px] text-[#8A8B80]">
-                Supplying fresh unpolished grains directly to households every month.
+                Supplying fresh, wholesome whole grains directly to households every month.
               </p>
             </div>
 
@@ -947,7 +948,7 @@ export default function HomePage() {
                 </span>
               </div>
               <p className="text-[13px] text-[#5F6156] leading-relaxed italic">
-                &ldquo;Authentic unpolished grains with natural bran layers intact. Truly low glycemic impact, excellent for balanced daily cooking.&rdquo;
+                &ldquo;Authentic whole grains with natural bran layers intact. Truly low glycemic impact, excellent for balanced daily cooking.&rdquo;
               </p>
             </div>
           </div>
@@ -962,7 +963,7 @@ export default function HomePage() {
           Dharvika Grains: Pure Chiru Dhanyalu for Contemporary Living
         </h3>
         <p className="text-xs sm:text-sm text-[#5F6156] leading-relaxed mt-2 max-w-2xl mx-auto">
-          We work directly with dryland farming communities to bring genuine unpolished grains, single-origin spices, and cold-milled pantry essentials to Indian households without bleaching agents, synthetic polishes, or false claims.
+          We work directly with dryland farming communities to bring genuine native grains, single-origin spices, and cold-milled pantry essentials to Indian households without bleaching agents, synthetic additives, or false claims.
         </p>
       </section>
     </div>
